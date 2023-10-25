@@ -1,0 +1,126 @@
+{% extends 'app1/base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="card radius-15 m-3">
+    <div class="row p-3">
+       
+            <div class="col-md-12">
+               <center>
+               <h2> New loan Acoount</h2>
+            </center>
+            </div>
+            
+            
+            <hr style="width:95%">
+        
+    </div>
+</div>
+<div class="page-content">
+    <div class="card radius-15 p-5 ">
+
+
+
+<form id="bankForm" method="post" action="{% url 'create_loan_account' %}">
+    {% csrf_token %}
+    <div class="row p">
+        <div class="col-md-5 p-2">ACCOUNT NAME</div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2">LENDER BANK</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5  p-2"><input class="form-control bg-grey" type="text" name="acc_name" value=""></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2"> <select     name="lender" class="form-control  text-white" id="">
+            <option class="form-control bg-dark text-white" value="cash">CASH</option>
+            {% for i in bank %}
+            <option class="form-control bg-dark text-white" value="{{i.bankname}}">{{i.bankname}}</option>
+            {% endfor %}
+        </select> </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2">ACCOUNT NUMBER</div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2">DESCRIPTION</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2"><input class="form-control" type="number" name="acc_number" value=""></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2"><input class="form-control" type="text" name="desc" value=""></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2">CURRENT BALANCE</div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2">BALANCE AS OF</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2"><input class="form-control" type="text" name="balance" value=""></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2"><input class="form-control" type="date" name="date" value=""></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2">LOAN RECIEVED in</div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2">INTREST RATE %</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2"><select   name="recieved" class="form-control  text-white" id="">
+            <option class="form-control bg-dark text-white" value="cash">CASH</option>
+            {% for i in bank %}
+            <option class="form-control bg-dark text-white" value="{{i.bankname}}">{{i.bankname}}</option>
+            {% endfor %}
+        </select>  </div>  <div class="col-md-2"></div>
+        <div class="col-md-5 p-2"><input class="form-control" type="text" placeholder="%" name="intrest" value="%"></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2">TERM</div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2">PROCESSING FEE</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2"> <input type="text" name="term" class="form-control" ></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5 p-2"><input class="form-control" type="text" name="processing" value=""></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2">PROCESSING PAID FROM</div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5"></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-5 p-2"> <select    name="paid" class="form-control  text-white" id="">
+            <option class="form-control bg-dark text-white" value="cash">CASH</option>
+            {% for i in bank %}
+            <option class="form-control bg-dark text-white" value="{{i.bankname}}">{{i.bankname}}</option>
+            {% endfor %}
+        </select>      </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5"></div>
+    </div>
+    
+
+    
+    <div class="row mb-5">
+        <div class="col-md-9 mt-3"></div>
+        <div class="col-md-2 mt-3">
+          <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-grey pull-left">
+            Save Loan Account
+          </button>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+</form>
+</div>
+</div>
+{% endblock %}

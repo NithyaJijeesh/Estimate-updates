@@ -1,0 +1,120 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+{% if user.is_authenticated %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .bar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .bar .left {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .bar .left input {
+        padding-left: 4vw;
+        height: 5vh;
+    }
+</style>
+
+
+<div class="page-content">
+    <div class="card radius-15">
+        <div class="card-title" id="div2">
+            <center>
+                <h6 style="padding-top: 20px;">{{cmp1.cname}}</h6>
+                <h2 class="my-4 text-uppercase" id="headline">SALES BY {{pk}}</h2>
+            </center>
+            <hr>
+        </div>
+        <div class="card-body">
+            <div class="bar">
+                <div class="left">
+                    <div class="px-2 dropdown">
+                        <input type="text" id="searchInput" placeholder="Search..."
+                            class="dropdown-toggle form-control " autocomplete="off" data-toggle="dropdown">
+                        <div class="dropdown-menu" style="background-color: #7690da;">
+                            <a id="d-item" class="dropdown-item" href="{% url 'sales_by_item_graphview' %}"
+                                style="height: 40px; font-size: 15px; color: white; ">Total Sale</a>
+
+                            {% for i in item %}
+                            <a id="d-item" class="dropdown-item" href="{% url 'sales_by_item_graphview_btn' i.name %}"
+                                style="height: 40px; font-size: 15px; color: white; ">{{i.name}}</a>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card radius-15">
+
+        <div class="card-body">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    const total_monthly_totals = {{ total_monthly_total }};
+    //const months = Object.keys(total_monthly_totals);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const totals = Object.values(total_monthly_totals);
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Sales by Month',
+                data: totals,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    color: 'white'
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        // This more specific font property overrides the global property
+                        font: {
+                            color: 'white'
+                        }
+                    }
+                }
+            }
+        }
+
+    });
+
+
+    $rows = $('.dropdown-menu #d-item');
+    $('#searchInput').keyup(function () {
+        var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+        $rows.show().filter(function () {
+            var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+            return !~text.indexOf(val);
+        }).hide();
+    });
+
+</script>
+
+
+{% endif %}
+
+{% endblock %}
