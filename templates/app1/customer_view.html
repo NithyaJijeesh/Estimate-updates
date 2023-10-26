@@ -1,7 +1,8 @@
 {% extends 'app1/base.html' %}
 {% block body %}
+{% load social_share %}
     {% load static %}
-
+    {% if user.is_authenticated %}
     <style>
         .card-registration .select-input.form-control[readonly]:not([disabled]) {
             font-size: 1rem;
@@ -132,45 +133,95 @@
         .widget-main {
             padding: 12px
         }
+
+        @media print{
+        body{
+            visibility: hidden !important; /* hide everything in body when in print mode*/
+        }
+
+        .printContainer {
+            visibility: visible !important; /* Override the rule above to only show the printables*/
+            position: absolute;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: large;
+        } 
+    }
         
-        
+    #listdiv li:hover{
+        background-color: grey;
+        padding-bottom: 1vh;
+    }
+    #listdiv li{
+        padding-bottom: 1vh;
+    }
        
     </style>
-<script>
-    
-    function Overview() {
-            
-                document.getElementById('overview').style.display = 'block';
-                document.getElementById('details').style.display = 'none';
-                document.getElementById('statment').style.display = 'none';
-                document.getElementById('transation').style.display = 'none';
-                document.getElementById('form1').style.display = 'none';
-                
-        }
+    <script>
+
         function Details() {
-            document.getElementById('overview').style.display = 'none';
             document.getElementById('details').style.display = 'block';
             document.getElementById('statment').style.display = 'none';
             document.getElementById('transation').style.display = 'none';
             document.getElementById('form1').style.display = 'none';
+            document.getElementById('printlink').style.display = 'none';
+            document.getElementById('pdflink').style.display = 'none';
+            document.getElementById('sharelink').style.display = 'none';
+            document.getElementById('detailslink').style.backgroundColor='rgba(22,37,50,255)'
+            document.getElementById('transactionlink').style.backgroundColor='transparent'
+            document.getElementById('statementlink').style.backgroundColor='transparent'
+            
+            top_element = document.getElementById('top')
+            top_element.classList.remove('col-md-4')
+            top_element.classList.add('col-md-7')
+
+            bottom_element = document.getElementById('bottom')
+            bottom_element.classList.remove('col-md-8')
+            bottom_element.classList.add('col-md-5')
         }
+        
         function Statment() {
-            document.getElementById('overview').style.display = 'none';
             document.getElementById('details').style.display = 'none';
             document.getElementById('statment').style.display = 'block';
             document.getElementById('transation').style.display = 'none';
             document.getElementById('form1').style.display = 'block';
-                  
+            document.getElementById('printlink').style.display = 'block';
+            document.getElementById('pdflink').style.display = 'block';
+            document.getElementById('sharelink').style.display = 'block';
+            document.getElementById('detailslink').style.backgroundColor='transparent'
+            document.getElementById('transactionlink').style.backgroundColor='transparent'
+            document.getElementById('statementlink').style.backgroundColor='rgba(22,37,50,255)'
+
+            top_element = document.getElementById('top')
+            top_element.classList.remove('col-md-7')
+            top_element.classList.add('col-md-4')
+
+            bottom_element = document.getElementById('bottom')
+            bottom_element.classList.remove('col-md-5')
+            bottom_element.classList.add('col-md-8')
         }
         function transaction() {
-            document.getElementById('overview').style.display = 'none';
             document.getElementById('details').style.display = 'none';
             document.getElementById('statment').style.display = 'none';
             document.getElementById('transation').style.display = 'block';
             document.getElementById('form1').style.display = 'none';
-
+            document.getElementById('printlink').style.display = 'none';
+            document.getElementById('pdflink').style.display = 'none';
+            document.getElementById('sharelink').style.display = 'none';
+            document.getElementById('detailslink').style.backgroundColor='transparent'
+            document.getElementById('transactionlink').style.backgroundColor='rgba(22,37,50,255)'
+            document.getElementById('statementlink').style.backgroundColor='transparent'  
             
-                  
+            top_element = document.getElementById('top')
+            top_element.classList.remove('col-md-4')
+            top_element.classList.add('col-md-7')    
+            
+            bottom_element = document.getElementById('bottom')
+            bottom_element.classList.remove('col-md-8')
+            bottom_element.classList.add('col-md-5')
         }
         function filterDate(element) {
             if (element.value == 'Custom') {
@@ -182,7 +233,7 @@
             }
         }
 
-</script>
+    </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
    
@@ -253,56 +304,79 @@
 
     <div class="page-content " >
         <div class="card radius-15">
-            <div class="card-body">
+            <div class="card-body" style="width:100%;">
                 <div class="card-title">
                     <center><h2 class="mb-0">{{ customer.title }}. {{ customer.firstname }} {{ customer.lastname }}</h2></center>
                     <hr>
-                    <div class="btn-group" style="float: left; ">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-7" style="float: left; " id="top">
+    
+                                <a style="padding: 10px; cursor: pointer; border-radius: 1vh; background-color: rgba(22,37,50,255);" onclick="Details()" id="detailslink" >Details</a>
+                                <a style="padding: 10px; cursor: pointer; border-radius: 1vh;" onclick="transaction()" id="transactionlink" > Transactions</a>
+                                <a style="padding: 10px; cursor: pointer; border-radius: 1vh;" onclick="Statment()" id="statementlink" > Statement</a>
+                            </div> 
+    
+                            <div class="col-md-5" id="bottom">
+                                <div style="float: right; margin-left: 2vh;">
+                                    <div class="dropdown p-0 nav-item"  id="sharelink" style="display: none;">
+                                        <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey fa fa-share-alt" data-toggle="dropdown"> Share</li>
+                                        <ul class="dropdown-menu" style="background-color: black;" id="listdiv">
+                                            <li style="text-align: center;" > {% post_to_whatsapp object_or_url "WhatsApp" %}</li>
+                                            <li style="text-align: center;" >{% send_email object.title "Customer Details: {{object.title}}. Check it out!" object_or_url "Email" %}</li>
+                                        </ul>
+                                    </div>
+                                </div>
 
-                        <a style="padding: 10px; cursor: pointer;" onclick="Details()" >Details</a>
-                        <a style="padding: 10px; cursor: pointer;" onclick="Overview()"> Overview</a>
-                        <a style="padding: 10px; cursor: pointer;" onclick="transaction()"> Transactions</a>
-                        <a style="padding: 10px; cursor: pointer;" onclick="Statment()"> Statement</a>
-                    </div> 
-                    <div class="btn-group" style="float: right; ">
-                       
-                            
-                            
-                            <div>
-                                <center>
-                                    <a href="{% url 'editcustomer' customer.customerid %}" class=" fas fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">
-                                        Edit
-                                    </a>&nbsp;&nbsp;&nbsp;
+                                <div style="float: right; margin-left: 2vh;">
+                                    <a  class=" btn btn-outline-info rounded-pill text-grey fa fa-file" role="button" id="pdflink" style="display: none;"> &nbsp;PDF</a> 
+
+                                </div>
+
+                                <div style="float: right; margin-left: 2vh;">
+                                    <a class=" btn btn-outline-info rounded-pill text-grey fa fa-print  " role="button" id="printlink" style="display: none; " onclick="printtable()">&nbsp;Print</a>
+
+                                </div>
+
+                                <div style="float: right; margin-left: 2vh;">
+                                    <button type="button"
+                                    class="btn btn-outline-info rounded-pill text-grey dropdown-toggle dropdown-toggle-split fa fa-paperclip" 
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only ">Toggle Dropdown</span>
+                                        Attach file
+                                    </button>
+    
+                                    <div class="dropdown-menu" >
+                                        <a class="dropdown-item"  style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
+                                        {% if customer.file != "default.jpg" %}
+                                        <a class="dropdown-item fa fa-download" style="cursor: pointer;"download  href="{{customer.file.url}}" >Download file</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div style="float: right; margin-left: 2vh;">
+                                    <a href="{% url 'deletecustomer' customer.customerid %}"  class="btn btn-outline-info rounded-pill text-grey fa fa-trash" role="button" >&nbsp;Delete</a>
+                                </div>
+
+                                <div style="float: right; margin-left: 2vh;">
                                     {% if customer.status == act%}
-                                    <a href="{% url 'active_cust' customer.customerid %}" class=" fas fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Inactivate</a> &nbsp;&nbsp;&nbsp;
+                                    <a href="{% url 'inactive_cust' customer.customerid %}" class=" fa fa-exchange btn btn-outline-info rounded-pill text-grey " role="button" >&nbsp;Activate</a> 
                                     {% else %}
-                                    <a href="{% url 'inactive_cust' customer.customerid %}" class=" fas fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Activate</a> &nbsp;&nbsp;&nbsp;
+                                    <a href="{% url 'active_cust' customer.customerid %}" class=" fa fa-exchange btn btn-outline-info rounded-pill text-grey " role="button" >&nbsp;Inactivate</a> 
                                     {% endif %}
-                                   
-                                    <a   class="btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button"> 
+                                </div>
 
-                                        <form  action="{% url 'deletecustomer' customer.customerid %}"   > 
-                                           <i class="fas fa-trash-o delete"> Delete</i>
-                                           <input name="_method" type="hidden" value="DELETE">
-                                           
-                                           </form> </a>
-                                </center>
+                                <div style="float: right;"> 
+                                    <a href="{% url 'editcustomer' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey  "  role="button">
+                                        Edit
+                                    </a>
+                                </div>
+    
+    
+    
                             </div>
-                            <button type="button"
-                                    class="btn btn-outline-info rounded-pill text-grey mt-3 mb-3 ml-3  dropdown-toggle dropdown-toggle-split fas fa-paperclip"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 8px;">
-                                <span class="sr-only ">Toggle Dropdown</span>
-                                Attach file
-                            </button>
-                            <div class="dropdown-menu" >
-                                <a class="dropdown-item"  style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
-                                {% if customer.file != "default.jpg" %}
-                                <a class="dropdown-item fas fa-download" style="cursor: pointer;"download  href="{{customer.file.url }}" >Download file</a>
-                                {% endif %}
-                           
-                            </div>
-                        
-                    </div> 
+                        </div> 
+                    </div>
                 </div>
             </div>
         </div>
@@ -323,7 +397,7 @@
                             <select class="form-control" id="filterstyle" onclick="filterDate(this)"
                                     list="hosting-plan"
                                     type="text">
-                                    
+                                    <option hidden>Select Report Period</option>
                                 <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
                             </select>
                         </div>
@@ -340,22 +414,6 @@
                         </div>
                         <div class="col-md-3"></div>
                     </div>
-                    <br>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-5"></div>
-                        <div class="col-md-2">
-
-                        </div>
-                        
-                        <div class="col-md-2">
-
-                            <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Search</button>
-                        </div>
-                        <div class="col-md-2">
-                            <a class="fas fa-print" style="padding: 10px; cursor: pointer; float: right; "  href="javascript:generatePDF()" id="downloadButton" > PDF</a>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
@@ -365,623 +423,558 @@
             <div class="card-body p-0" >
                
                 <div id="details">
-                <div class="row g-0" >
-                   
-                    <div class="col-lg-8">
-                        <div class="p-5">
-                            <div class="d-flex justify-content-between align-items-center mb-5">
-                                <h1 class="fw-bold mb-0 text-black">{{ customer.title }}. {{ customer.firstname }} {{ customer.lastname }}</h1>
-                          
-                            </div>
-                            <hr class="my-4">
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-2 mt-3">
-                                    <h6 class="mb-0">Company</h6>
+                    <div class="row g-0" >
+                        <div class="col-lg-8">
+                            <div class="p-5">
+                                <div class="d-flex justify-content-between align-items-center mb-5">
+                                    <h1 class="fw-bold mb-0 text-black">{{ customer.title }}. {{ customer.firstname }} {{ customer.lastname }}</h1>
                                 </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.company }}</p>
+                                <hr class="my-4">
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">Company</h6>
+                                    </div>
+                                    <div class="col-md-1 mt-3">
+                                        :
+                                    </div>
+                                    <div class="col-md-3 mt-3">
+                                        <p class="mb-0">{{ customer.company }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Email</h6>
+                                    </div>
+                                    <div class="col-md-1 mt-3">
+                                        :
+                                    </div>
+                                    <div class="col-md-3 mt-3">
+                                        <p class="mb-0">{{ customer.email }}</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">Email</h6>
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">Mobile</h6>
+                                    </div>
+                                    <div class="col-md-1 mt-3">
+                                        :
+                                    </div>
+                                    <div class="col-md-3 mt-3">
+                                        <p class="mb-0">{{ customer.mobile }}</p>
+                                    </div>
+                                    
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Website</h6>
+                                    </div>
+                                    <div class="col-md-1 mt-3">
+                                        :
+                                    </div>
+                                    {% if customer.website  %}
+                                    <div class="col-md-3 mt-3">
+                                        <p class="mb-0">{{ customer.website }}</p>
+                                    </div>
+                                    {% else %}
+                                    <div class="col-md-3 mt-3">
+                                        <p class="mb-0">none</p>
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.email }}</p>
-                                </div>
-                            </div>
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-2 mt-3">
-                                    <h6 class="mb-0">Mobile</h6>
-                                </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.mobile }}</p>
-                                </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">Website</h6>
-                                </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.website }}</p>
-                                </div>
-                            </div>
-                            <hr class="my-4">
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-4 mt-3">
-                                    <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Billing Address</h5>
-                                </div>
-                                <div class="col-md-4 mt-3"></div>
-                                <div class="col-md-4 mt-3"></div>
+                                <hr class="my-4"><br>
 
-                                <div class="col-md-2 mt-3">
-                                    <h6 class="mb-0">Street</h6>
-                                </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.street }}</p>
-                                </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">City</h6>
-                                </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.city }}</p>
+                                <div class="row ">
+                                    <div class="col-md-6" >
+                                        <div class="card-content bg-transparent border-0 ml-4" >
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h5 class="ml-3" style="text-align: center;">Billing Address</h5>
+                                                    <hr>
+                                                </div>
+                                            </div><br>
+                                            <div class="row">
+                                                <div class="col-md-3" >
+                                                    <h6 class="mb-0">Street</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.street }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">City</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.city }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">State</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.state }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">Pincode</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.pincode }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">Country</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.country }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card-content bg-transparent border-0 ml-4" >
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h5 class="ml-3" style="text-align: center;">Shipping Address</h5>
+                                                    <hr>
+                                                </div>
+                                            </div><br>
+                                            <div class="row">
+                                                <div class="col-md-3" >
+                                                    <h6 class="mb-0">Street</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.shipstreet }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">City</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.shipcity }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">State</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.shipstate }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">Pincode</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.shippincode }}</p>
+                                                </div>
+                                            </div><br><br>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <h6 class="mb-0">Country</h6>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    :
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p class="mb-0" style="text-align: right;">{{ customer.shipcountry }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-2 mt-3">
-                                    <h6 class="mb-0">State</h6>
+                        </div>
+                        <div class="col-md-4" style="background-color: rgba(22,37,50,255); border-top-right-radius:2vh; border-bottom-right-radius: 2vh;">
+                            <div class="p-5">
+                                <h3 class="fw-bold mb-5 mt-2 pt-1">GST</h3>
+                                <hr class="my-4">
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="">GSTIN</h5>
+                                    <h6>{{ customer.gstin }}</h6>
                                 </div>
-                                <div class="col-md-2 mt-3">
-                                    <p class="mb-0">{{ customer.state }}</p>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h5 class="mb-3">GST Type</h5>
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 style="text-align:right;">{{customer.gsttype }}</h6> 
+                                    </div>
                                 </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">Pincode</h6>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="">PAN Number</h5>
+                                    <h6>{{ customer.panno }}</h6>
                                 </div>
-                                <div class="col-md-2 mt-3">
-                                    <p class="mb-0">{{ customer.pincode }}</p>
-                                </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">Country</h6>
-                                </div>
-                                <div class="col-md-2 mt-3">
-                                    <p class="mb-0">{{ customer.country }}</p>
-                                </div>
-                            </div><hr>
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-4 mt-3">
-                                    <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Shipping Address</h5>
-                                </div>
-                                <div class="col-md-4 mt-3"></div>
-                                <div class="col-md-4 mt-3"></div>
 
-                                <div class="col-md-2 mt-3">
-                                    <h6 class="mb-0">Street</h6>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="">Opening Balance</h5>
+                                    <h6>{{ customer.opening_balance }}</h6>
                                 </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.shipstreet }}</p>
+
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="">Credit Limit</h5>
+                                    <h6>{{ customer.credit_limit }}</h6>
                                 </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">City</h6>
+
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="">Status </h5>
+                                    <h6>{{ customer.status }}</h6>
                                 </div>
-                                <div class="col-md-4 mt-3">
-                                    <p class="mb-0">{{ customer.shipcity }}</p>
-                                </div>
+                                <hr class="my-4">
                             </div>
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-2 mt-3">
-                                    <h6 class="mb-0">State</h6>
-                                </div>
-                                <div class="col-md-2 mt-3">
-                                    <p class="mb-0">{{ customer.shipstate }}</p>
-                                </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">Pincode</h6>
-                                </div>
-                                <div class="col-md-2 mt-3">
-                                    <p class="mb-0">{{ customer.shippincode }}</p>
-                                </div>
-                                <div class="col-md-2 mt-3 vl">
-                                    <h6 class="mb-0">Country</h6>
-                                </div>
-                                <div class="col-md-2 mt-3">
-                                    <p class="mb-0">{{ customer.shipcountry }}</p>
-                                </div>
-                            </div>
-                            <hr class="my-4">
                         </div>
                     </div>
-                    <div class="col-lg-4 bg-grey">
-                        <div class="p-5">
-                          
-                            <h3 class="fw-bold mb-5 mt-2 pt-1">GST</h3>
-                            <hr class="my-4">
-                            <div class="d-flex justify-content-between mb-4">
-                                <h5 class="">GSTIN</h5>
-                                <h6>{{ customer.gstin }}</h6>
-                            </div>
-                            <h5 class="mb-3">GST Type</h5>
-                            <div class="mb-4 pb-2">
-                                {{customer.gsttype }}
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                                <h5 class="">PAN Number</h5>
-                                <h6>{{ customer.panno }}</h6>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-4">
-                                <h5 class="">Opening Balance</h5>
-                                <h6>{{ customer.opening_balance }}</h6>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                                <h5 class="">Status</h5>
-                                <h6>{{ customer.status }}</h6>
-                            </div>
-                            <hr class="my-4">
-                            
-                            
-                        </div>
-                    </div>
                 </div>
-
-                </div>
-
-                <div id="overview" style="display: none;">
-                    <div class="container-fluid" >
-                        <!-- <div class="row"><div class="col-lg-3"><div class="text-muted">Payment due period</div> 
-                        <div>Due on Receipt</div></div>
-                         </div> -->
-                         <div class="row ml-0 mt-6"><p class="" style="margin-top: 50px; font-size: 20px;">Receivables</p></div>
-                        <table class="table table-responsive-md mt-4 table-hover">
-                            <thead>
-                            <tr>
-                                <th style="text-align: center;">CURRENCY</th>
-                                <th style="text-align: center;">OUTSTANDING RECEIVABLES</th>
-                                <th style="text-align: center;">UNUSED CREDITS</th>
-                               
-                                
-                            </tr>
-                            </thead>
-                            <tbody>
-                                
-                                <tr class="table-row " data-href="{% url 'goinvoices' %}">
-                                <td style="text-align: center;">INR- Indian Rupee</td>
-                                <td style="text-align: center;">{{customer.receivables}}</td>
-                                <td style="text-align: center;">{{sum2}}</td>
-                                </tr>
-                               
-                            
-                                </tbody>
-
-                            </table>
-
-
-                            <div class="row ml-0 mt-6"><a data-toggle="modal" data-target="#openmodal" style="margin-top: 15px; margin-bottom: 10px; margin-left: 20px; cursor: pointer;  font-size: 16px;">View Opening Balance</a></div>
-                </div>
-
-                </div>
-
-                <!-- openbalance modal -->
-                <div class="modal fade" id="openmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Edit Opening Balance</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <form method="POST" action="{% url 'update_opening_balance' customer.customerid %}">{% csrf_token %}
-                        <div class="modal-body">
-                          <input type="number" class="form-control" value="{{customer.opening_balance}}" name="openbalance">
-
-                        </div>
-                        <div class="modal-footer">
-                          
-                          <button type="submit" class="btn btn-primary">Edit</button>
-                        </div>
-                    </form>
-                      </div>
-                    </div>
-                  </div>
-                 <!-- openbalance modal -->
-            
-
-
-
-
-
                 <div id="statment" style="display: none;">
-
-                    
-
                     <div class="container-fluid" >
-                       
-
-                        
                         <div class="py-5">
-                            
-                            
-                              <div class="row hidden-md-up" style="margin-top: 15px;">
-                                <div class="col-md-7" style="margin: auto;">
-                                  <div class="card">
+                              <div class="row hidden-md-up" style="margin-top: 15px;" >
+                                <div class="col-md-9" style="margin: auto;" >
+                                  <div class="card" id="printdiv">
                                     <div id="whatToPrint">
                                     <div class="card-block">
                                       <div class="card-body">
                                         <div class="container bootdey"  >
                                             <div class="row">
-                                                    <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
-                                                        <div class="widget-box">
-                                                            <div class="widget-header widget-header-large" >
-                                                                <h6 class="widget-title ">
-                                                                    Statement of Accounts<br>
-                                                                    <input  id="df" value="{{tod}}" style="border: none; background-color:#444; width: 13%;"  >to
-                                                                    <input type="text" id="dl" value="{{tod}}" style="border: none; background-color: none; background-color:#444;">
-                                                                </h6>
-                                            
-                                                              
-                                                            </div>
-                                            
-                                                            <div class="widget-body">
-                                                                <div class="widget-main padding-24">
-                                                                    <div class="row"  style="padding:20px;" >
-                                                                        <div class="col-sm-12">
-                                                                            <div class="col-6">
-                                                                                <div style="width:30px;">
-                                                                                    <img src="/media/images/default.png">
-                                                                                  </div>
-                                                              
-                                                                            </div>
-                                            
-                                                                            <div class="col-6">
-                                                                                <p style="font-size:10px;color:black;"> {{cmp1.city}} <br>
-                                                                                    {{cmp1.pincode}}<br>
-                                                                                    {{cmp1.state}},India <br>
-                                                                                    {{cmp1.cemail}}
-                                                                                    <br>
-                                                                                    {{cmp1.pincode}}<br></p>
-                                                                               
-                                                                            </div>
-                                                                             <hr>
-                                                                        </div><!-- /.col -->
-                                                                       
-                                                                      
-                                                                    </div><!-- /.row -->
-                                           
-                                                                    <div class="row col-12">
-                                                                        <div class="col-6">
-                                                                            <p style="font-size:10px;color:black;">To,<br>{{customer.firstname}} {{customer.lastname}}<br>
-                                                                                {{customer.street}},{{customer.city}}<br>
-                                                                                {{customer.state}},{{customer.country}}<br>
-                                                                                {{customer.pincode }}<br>
-                                                                                {{customer.email}}
-                                                                                <br>
-                                                                                {{customer.phone}}<br></p>
-                                                                        </div>
-                                                                        <div class="col-6" >
-                                                                            <table style="font-size:10px;color:black;">
-                                                                                <tr>
-                                                                                    <td>Account Summary</td>
-                                                                                </tr>
-                                                                                
-                                                                                <tr>
-                                                                                    <td>Opening balance</td>
-                                                                                    <td> <input type="text" id="open"  value="{{bal_amount}}" style="border: none;"></td>
-                                                                                </tr>
-                                                                                
-                                                                                <tr>
-                                                                                    <td>Invoiced Amount</td>
-                                                                                    <td>  <input type="text" id="invamount" value="{{invoiced}}" style="border: none;"></td>
-                                                                                </tr>
-                                                                                <tr style="border-bottom: 1px solid black; width:100%;">
-                                                                                    <td>Amount received</td>
-                                                                                    <td>  <input type="text" id="received"  value="{{re}}" style="border: none;"></td>
-                                                                                </tr>
-                                                                                <tr >
-                                                                                    <td>Balance Due</td>
-                                                                                    <td>  <input type="text" id="due" value="{{baldue}}" style="border: none;"></td>
-                                                                                </tr>
-                        
-                                                                            </table>
-                                                                       
-                                                                    </div>
-                                                                </div><br>
-                                                                <div class="col-md-12">
-                                                                    <table border="0" id="logic" class=" table-striped" width="100%" style="font-size:10px;color:black;">
-                                                                    <thead class="thead-dark">
-                                                                        <tr >
-                                                                           <th>Date</th>
-                                                                           <th>Transactions</th>
-                                                                           <th>Details</th>
-                                                                           <th>Amount</th>
-                                                                           <th>Payments</th>
-                                                                           <th>Balance</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody >
-
-                                                                        <tr >
-                                                                            <td>{{tod }}</td>
-                                                                            <td>***Opening Balance***</td>
-                                                                            <td></td>
-                                                                            <td>{{bal_amount}}</td>
-                                                                            <td></td>
-                                                                            <td>{{bal_amount}}</td>
-                                                                         </tr>
-
-
-                                                                        {% for i in statment %}
-                                                                        <tr>
-                                                                            <td>{{i.Date | date:'d-m-Y'}}</td>
-                                                                            <td>{{i.Transactions}}</td>
-                                                                            
-                                                                            <td>{% if i.inv != null  %}
-                                                                                 INV-{{i.inv.invoiceno}} due on {{i.inv.duedate}}
-                                                                                 {% endif %} 
-                                                                                 {% if i.pay != null  %}
-                                                                                 ₹{{i.Payments}} 
-                                                                                 {% endif %} 
-                                                                                </td>
-                                                                            
-                                                                            
-                                                                            <td>
-                                                                                {% if i.Amount %}
-                                                                                {{i.Amount}}
-                                                                                {% endif %}
-                                                                            </td>
-                                                                            <td>{% if i.Payments %}
-                                                                                {{i.Payments}}
-                                                                                {% endif %}
-                                                                                </td>
-                                                                            <td>{% if i.Balance %}
-                                                                                {{i.Balance}}
-                                                                                {% endif %} </td>
-                                                                        </tr>
-                                                                    {% endfor %}
-                                                                        
-                                                                        <br>
-                                                                        <tr>
-                                                                            <td colspan="5">Balance Due</td>
-                                                                            <td>{{baldue}}</td>
-                        
-                                                                        </tr>
-                                                                        </tbody >
-                                                                        <tbody>
-                                                                            
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                <div class="col-md-12 tab_logic">
-                                                                    <table border="0" id="tab_logic" class=" table-striped" width="100%" style="font-size:10px;color:black;">
-                                                                    <thead class="thead-dark">
-                                                                        <tr >
-                                                                           <th>Date</th>
-                                                                           <th>Transactions</th>
-                                                                           <th>Details</th>
-                                                                           <th>Amount</th>
-                                                                           <th>Payments</th>
-                                                                           <th>Balance</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody >
-                                                                            
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                   
-                                                                
-                                                                   
-                                            
-                                                                    <div class="hr hr8 hr-double hr-dotted"></div>
-                                            
-                                                                    
+                                                <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
+                                                    <div class="widget-box">
+                                                        <div class="widget-body">
+                                                            <div class="widget-main padding-24">
+                                                                <div class="row"  style="padding:20px;" >
+                                                                    <div class="col-sm-12" style="background-image: linear-gradient(#1b83e8, black); color: white;">
+                                                                        <p style="font-size: 4vh; text-align: center;">Statement of Accounts</p>
+                                                                        <p style=" text-align: center;"> {{cmp1.cname}} <br>
+                                                                            {{cmp1.caddress}} <br>
+                                                                            {{cmp1.city}},
+                                                                            {{cmp1.state}}<br>
+                                                                            {{cmp1.cemail}}
+                                                                            <br></p>
+                                                                        <!-- <div class="col-6">
+                                                                            <div style="width:30px;">
+                                                                                <img src="/media/images/default.png">
+                                                                                </div>
                                                             
+                                                                        </div><br> -->
+                                                                    </div><!-- /.col -->
+                                                                </div><!-- /.row -->
+                                                                <br>
+                                                                <div class="row col-12">
+                                                                    <div class="col-6">
+                                                                        <p style="color:black;">Customer Details : </p>
+                                                                        <p style="color:black;">{{customer.firstname}} {{customer.lastname}}<br>
+                                                                            {{customer.street}},{{customer.city}}<br>
+                                                                            {{customer.state}},{{customer.country}}<br>
+                                                                            {{customer.pincode }}<br>
+                                                                            {{customer.email}}<br>
+                                                                            {{customer.phone}}<br>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="col-md-2"></div><br>
+                                                                    <div class="col-4">
+                                                                        <div class="d-flex justify-content-between" style="color: black;">
+                                                                            <p class="">Opening balance</p>
+                                                                            <p>:</p>
+                                                                            <p>{{ bal_amount }}</p>
+                                                                        </div>
+                                                                        <div class="d-flex justify-content-between " style="color: black;">
+                                                                            <p class="">Invoiced Amount</p>
+                                                                            <p>:</p>
+                                                                            <p>{{ invoiced }}</p>
+                                                                        </div>
+                                                                        <div class="d-flex justify-content-between " style="color: black;">
+                                                                            <p class="">Amount Received</p>
+                                                                            <p>:</p>
+                                                                            <p>{{ re }}</p>
+                                                                        </div>
+                                                                        <div class="d-flex justify-content-between " style="color: black;">
+                                                                            <p class="">Balance Due</p>
+                                                                            <p>:</p>
+                                                                            <p>{{ baldue }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div><br><br><br>
+                                                                <div class="col-md-12">
+                                                                    <table border="0" id="logic" class=" table-striped" width="100%" style="color:black;">
+                                                                        <thead class="thead-dark">
+                                                                            <tr class="bg-dark text-white" style="text-align: center;">
+                                                                                <th>Date</th>
+                                                                                <th>Transactions</th>
+                                                                                <th>Bill Number</th>
+                                                                                <th>Total</th>
+                                                                                <th>Balance</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody style="text-align: center;">
+                                                                            {% for invoices in invs %}
+                                                                                <tr>
+                                                                                    <td>{{ invoices.invoicedate | date:'d-m-Y' }}</td>
+                                                                                    <td>Invoice</td>
+                                                                                    <td>{{ invoices.invoiceno }}</td>
+                                                                                    <td>{{ invoices.grandtotal }}</td>
+                                                                                    <td>{{ invoices.baldue }}</td>
+                                                                                </tr>
+                                                                            {% endfor %}
+                                            
+                                                                            {% for i in payme %}
+                                                                                <tr>
+                                                                                    <td>{{ i.paymdate  | date:'d-m-Y' }}</td>
+                                                                                    <td>Customer Payment</td>
+                                                                                    <td>{{ i.refno }}</td>
+                                                                                    <td>{{ i.amtcredit }}</td>
+                                                                                    <td>{{ i.balance }}</td>
+                                                                                </tr>
+                                                                            {% endfor %}
+                                            
+                                                                            {% for estimate in est1 %}
+                                                                                <tr>
+                                                                                    <td>{{ estimate.estimatedate | date:'d-m-Y' }}</td>
+                                                                                    <td>Estimate</td>
+                                                                                    <td>{{ estimate.estimateno }}</td>
+                                                                                    <td>{{ i.amtcredit }}</td>
+                                                                                    <td>{{ estimate.estimatetotal }}</td>
+                                                                                </tr>
+                                                                            {% endfor %}
+                                                                            {% for sale in sel1 %}
+                                                                                <tr>
+                                                                                    <td>{{ sale.saledate | date:'d-m-Y' }}</td>
+                                                                                    <td>Sales Order</td>
+                                                                                    <td>{{ sale.saleno }}</td>
+                                                                                    <td>{{ sale.salestotal }}</td>
+                                                                                    <td>{{ sale.balance }}</td>
+                                                                                </tr>
+                                                                            {% endfor %}
+
+                                                                        </tbody >
+                                                                    </table>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>    
-                                    
-                                      
-                                     
+                                        </div>
                                     </div>
-                                  </div>
                                 </div>
-                                
-                               
-                              </div>
                             </div>
-                          </div>
                         </div>
-                        </div>  
-
-
-                </div>
-            </div>
-
-
-                <div id="transation" style="display: none;" >
-
-                    <div style=" margin-top: 20px;">
-
-                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dispinv()" >Invoice</a>
-                        <a href="{% url 'goaddinvoices' %}" class="fas fa-plus" style="float: right; margin-right: 20px;">Add new</a>
-                        
-                    </div> 
-                    <div id="invtable" style="display:none;">
-                        
-                        <table class="table table-responsive-md mt-3 table-hover" >
-                            <thead>
-                            <tr>
-                                
-                                <th style="text-align: center;">INVOICE DATE</th>
-                                <th style="text-align: center;">INVOICE NO</th>
-                                <th style="text-align: center;">ORDER NO</th>
-                              
-                                <th style="text-align: center;">STATUS</th>
-                                <th style="text-align: center;">DUE DATE</th>
-                                <th style="text-align: center;">GRAND TOTAL</th>
-                                <th style="text-align: center;">BALANCE DUE</th>
-                                
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for invoices in invs %}
-                                {% if invoices.cid_id == cmp1.cid %}
-        
-                                    <tr tr class="table-row " data-href="{% url 'invoice_view' invoices.invoiceid %}">
-                                        <td style="text-align: center;">{{ invoices.invoicedate }}</td>
-                                        <th style="text-align: center;">{{ invoices.invoiceno }}</th>
-                                        <td style="text-align: center;">{{ invoices.invoice_orderno }}</td>
-                                        
-                                        <td style="text-align: center;">{{ invoices.status }}</td>
-                                        <td style="text-align: center;">{{ invoices.duedate }}</td>
-                                        <td style="text-align: center;">{{ invoices.grandtotal }}</td>
-                                        <td style="text-align: center;">{{ invoices.baldue }}</td>
-                                        
-        
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                            </tbody>
-                            </table>
-                        
-
                     </div>
-                    <br>
-                    <div style=" margin-top: 20px;">
+                </div>
+            </div>  
+        </div>
+    </div>
 
-                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dispay()" >Customer Payment</a>
-                        <a href="{% url 'payment_received' %}" class="fas fa-plus" style="float: right; margin-right: 20px;">Add new</a>
-                        
-                    </div> 
-                    <div id="paytable" style="display:none;">
-                        
-                        <table class="table table-responsive-md mt-4 table-hover">
+            <div id="transation" style="display: none;" >
+                <div class="row" >
+                    <div class="p-5" style="margin-left: 2vh;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1 class="fw-bold mb-0 text-black">{{ customer.title }}. {{ customer.firstname }} {{ customer.lastname }}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: -8vh; justify-content: space-between;">
+                    <div style="text-align: left; margin-left: 8vh;">
+                        <div class=" d-flex">
+                            <h6 class="mb-0">Phone&nbsp;&nbsp;:&nbsp;&nbsp;</h6>
+                            <p class="mb-0" style="text-align: right;">{{customer.mobile}}</p>
+                        </div> <br>
+
+                        <div class=" d-flex">
+                            <h6 class="mb-0">Email&nbsp;&nbsp;:&nbsp;&nbsp;</h6>
+                            <p class="mb-0" style="text-align: right;">{{customer.email}}</p>
+                        </div><br>
+
+                        <div class=" d-flex">
+                            <h6 class="mb-0">Credit Limit&nbsp;&nbsp;:&nbsp;&nbsp;</h6>
+                            <p class="mb-0" style="text-align: right;">{{customer.credit_limit}}</p>
+                        </div>
+                    </div>
+                    <div  style="text-align: right;">
+                        <h6 class="mb-0 mr-5" >Address&nbsp;&nbsp;: &nbsp;&nbsp;{{customer.street}},<br>{{customer.city}},{{customer.state}},{{customer.pincode}}</h6><br>
+                        <h6 class="mb-0 " style="margin-right: 9vh;">GSTIN&nbsp;&nbsp;:&nbsp;&nbsp;{{customer.gstin}}</h6>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row ">
+                        <table class="table table-responsive-md mt-5 mr-5 ml-5 table-hover text-center" id="transactiontable">
                             <thead>
-                            <tr>
-                                <th style="text-align: center;">Date</th>
-                                <th style="text-align: center;">Payment No</th>
-                                <th style="text-align: center;">Reference Number</th>
-                                
-                                <th style="text-align: center;">Applied Amount</th>
-                                <th style="text-align: center;">Amount</th>
-                               
-                            </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>DATE</th>
+                                    <th>TYPE</th>
+                                    <th>BILL NUMBER</th>
+                                    <th>TOTAL</th>
+                                    <th>BALANCE</th>
+                                </tr>
                             </thead>
                             <tbody>
+                                {% for invoices in invs %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{ invoices.invoicedate | date:'d-m-Y' }}</td>
+                                    <td>Invoice</td>
+                                    <td>{{ invoices.invoiceno }}</td>
+                                    <td>{{ invoices.grandtotal }}</td>
+                                    <td>{{ invoices.baldue }}</td>
+                                </tr>
+                                {% endfor %}
+    
                                 {% for i in payme %}
-                                {% if i.cid_id == cmp1.cid %}
-                                    <tr  class="table-row " data-href="{% url 'payment_view' i.paymentid %}" >
-                                        <th style="text-align: center;">{{ i.paymdate  | date:'d-m-Y' }}</th>
-                                        <td style="text-align: center;">{{ i.refno }}</td>
-                                        <td style="text-align: center;"> {{ i.referno }}</td>
-                                       
-                                        <td style="text-align: center;"> {{ i.amtapply }}</td>
-                                        <td style="text-align: center;">{{ i.amtcredit }}</td>
-                                        
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                    <br>
-                    <div style=" margin-top: 20px;">
-
-                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="disest()" >Estimate</a>
-                        <a href="{% url 'estindex2' %}" class="fas fa-plus" style="float: right; margin-right: 20px;">Add new</a>
-                        
-                    </div> 
-                    <div id="esttable" style="display:none;">
-                        
-                        <table class="table table-responsive-md mt-4 table-hover">
-                            <thead>
-                            <tr>
-                                <th style="text-align: center;">Date</th>
-                                <th style="text-align: center;">Estimate No</th>
-                                <th style="text-align: center;">Reference Number</th>
-                                
-                                <th style="text-align: center;">Status</th>
-                                <th style="text-align: center;">Amount</th>
-                               
-                            </tr>
-                            </thead>
-                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td>{{ i.paymdate  | date:'d-m-Y' }}</td>
+                                    <td>Customer Payment</td>
+                                    <td>{{ i.refno }}</td>
+                                    <td>{{ i.amtcredit }}</td>
+                                    <td>{{ i.balance }}</td>
+                                </tr>
+                                {% endfor %}
+    
                                 {% for estimate in est1 %}
-                                {% if estimate.cid_id == cmp1.cid %}
-                                    <tr  class="table-row " data-href="{% url 'estimate_view' estimate.estimateid %}" >
-                                        <th style="text-align: center;">{{ estimate.estimatedate | date:'d-m-Y' }}</th>
-                                        <td style="text-align: center;">{{ estimate.estimateno }}</td>
-                                        <td style="text-align: center;"> {{ estimate.reference_number }}</td>
-                                       
-                                        <td style="text-align: center;"> {{ estimate.status }}</td>
-                                        <td style="text-align: center;">{{ estimate.estimatetotal }}</td>
-                                        
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                    <br>
-                    <div style=" margin-top: 20px;">
-
-                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dissale()" >Sales Order</a>
-                        <a href="{% url 'newsalesorder' %}" class="fas fa-plus" style="float: right; margin-right: 20px;">Add new</a>
-                        
-                    </div> 
-                    <div id="saletable" style="display:none;">
-                        
-                        <table class="table table-responsive-md mt-4 table-hover">
-                            <thead>
-                            <tr>
-                                <th style="text-align: center;">Date</th>
-                                <th style="text-align: center;">Sales Order No</th>
-                                <th style="text-align: center;">Reference Number</th>
-                                <th style="text-align: center;">Coustomer Name</th>
-                                <th style="text-align: center;">Status</th>
-                                <th style="text-align: center;">Amount</th>
-                                <!-- <th style="text-align: center;">ACTION</th> -->
-                            </tr>
-                            </thead>
-                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td>{{ estimate.estimatedate | date:'d-m-Y' }}</td>
+                                    <td>Estimate</td>
+                                    <td>{{ estimate.estimateno }}</td>
+                                    <td>{{ i.amtcredit }}</td>
+                                    <td>{{ estimate.estimatetotal }}</td>
+                                </tr>
+                                {% endfor %}
                                 {% for sale in sel1 %}
-                                {% if sale.cid_id == cmp1.cid %}
-                                    <tr tr class="table-row " data-href="{% url 'sales_order_view' sale.id %}" >
-                                        <th style="text-align: center;">{{ sale.saledate | date:'d-m-Y' }}</th>
-                                        <td style="text-align: center;">{{ sale.shipmentdate }}</td>
-                                        <td style="text-align: center;"> {{ sale.reference_number }}</td>
-                                        <td style="text-align: center;">{{ sale.salename }}</td>
-                                        <td style="text-align: center;"> {{ sale.status }}</td>
-                                        <td style="text-align: center;">{{ sale.salestotal }}</td>
-                                        
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{ sale.saledate | date:'d-m-Y' }}</td>
+                                    <td>Sales Order</td>
+                                    <td>{{ sale.saleno }}</td>
+                                    <td>{{ sale.salestotal }}</td>
+                                    <td>{{ sale.balance }}</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
-
                     </div>
-
-
                 </div>
-
-                
-
-               
-
-                </div>
-
-                </div>
-
-
-
-
-
-
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function ($) {
+            $(document).on('click', '#pdflink', function (event) {
+                event.preventDefault();
+                var element = document.getElementById('printdiv');  
+                // element.style.color = 'black';
+                // element.style.backgroundColor = 'white';
+                var opt =
+                {
+                    margin: 1,
+                    filename: 'Customer' + '.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait', }
+                };
+                html2pdf().set(opt).from(element).save();
+            });
+        });
+    </script>
+
+<script>
+    function printtable(){
+        var printContents = document.getElementById("printdiv").innerHTML;
+
+        var $printerDiv = $('<div class="printContainer"></div>'); // create the div that will contain the stuff to be printed
+        $printerDiv.html(printContents); // add the content to be printed
+        $('body').append($printerDiv).addClass("printingContent"); // add the div to body, and make the body aware of printing (we apply a set of css styles to the body to hide its contents)
+
+        window.print(); // call print
+        $printerDiv.remove(); // remove the div
+        $('body').removeClass("printingContent");
+    }
+</script>
+
+    <script>
+        function ApplyDateFilter() { 
+            const startDate = new Date(document.getElementById('fdate').value);
+            const endDate = new Date(document.getElementById('ldate').value);
+            document.getElementById("datediv").style.display = "block";
+            document.getElementById("df").value = document.getElementById('fdate').value;
+            document.getElementById("dl").value = document.getElementById('ldate').value;
+            const table = document.querySelector('#logic');
+            const rows = table.querySelectorAll('tr');
+            
+            rows.forEach((row, index) => {
+                if (index === 0) return; // Skip the header row
+                
+                const dateCell = new Date(parseDate(row.cells[0].textContent));
+
+                if (dateCell >= startDate && dateCell <= endDate) {
+                    row.style.display = ''; // Display rows within the date range
+                } else {
+                    row.style.display = 'none'; // Hide rows outside the date range
+                }
+            });
+    }
+
+    const fromDateInput = document.getElementById("fdate");
+    const toDateInput = document.getElementById("ldate");
+    fromDateInput.addEventListener("change", ApplyDateFilter);
+    toDateInput.addEventListener("change", ApplyDateFilter);
+
+    function parseDate(input) {
+
+            var parts = input.split('-');
+            return parts[1] + '/' + parts[0] + '/' + parts[2];
+
+    }
+
+</script>
+
+<script>
+    var table = document.getElementById('transactiontable');
+    var rows = table.rows;
+
+    for (var i = 1; i < rows.length; i++) {
+        var rowNumber = i;
+        rows[i].cells[0].textContent = rowNumber;
+    }
+</script>
+
 <script>
     function dispinv(){
 
@@ -1005,121 +998,6 @@ document.getElementById('saletable').style.display = 'block';
 }
 
 </script>
-    <script>
-
-        const tbl1 = document.querySelector('#logic');
-        const tbl2 = document.querySelector(".tab_logic");
-        tbl2.style.display="none";
-            
-        
-        $(document).on('submit','#form_post',function(e){
-            e.preventDefault();
-            $.ajax({                      
-                type: "POST",
-                url: "{% url 'search_resept' customer.customerid %}",
-                data: {
-                    
-                    fd :$('#fdate').val(),
-                    ld :$('#ldate').val(),    
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
-                },
-        
-                success:function(response){
-                    console.log(response)
-                    data = response.ct
-                    data2 = response.invoiced
-                    data3 = response.re
-                    data4 =response.sum
-                    data5 = response.df
-                    data6 = response.dl
-                    data7 = response.invitem
-                    data8 = response.st
-                    data9 = response.baldue
-                    data10 = response.opening
-
-                    data11 = response.fst
-
-
-                    $('#tab_logic tbody').append(
-
-                    `<tr>
-                    <td>${data11}</td>
-                    <td>***Opening Balance***</td>
-                    <td></td>
-                    <td>${data10}</td>
-                    <td></td>
-                    <td>${data10}</td>
-                    </tr> `
-
-
-                    )
-                    
-                    
-                    for (i=0;i<data8.length;i++){
-                        
-                        $('#tab_logic tbody').append(
-
-                                `
-                              
-                                <tr>
-                                <td>${data8[i].Date}</td>
-                                <td>${data8[i].Transactions}</td>
-                                                                            
-                                <td>
-                                    
-                                    ${data8[i].Details2} 
-                                    
-                                    </td>
-                                                                            
-                                                                            
-                                <td>
-                                
-                                ${data8[i].Amount}
-                                </td>
-                                <td>
-
-                                    ${data8[i].Payments} 
-                               
-                                
-                                </td>
-                                <td>${data8[i].Balance} 
-                                
-                                 </td>
-                                </tr>
-                                 
-                                    `
-                                
-                            )
-                            
-
-
-                    }
-
-                   
-                    
-                    
-                    $('#tab_logic tbody').append( `<tr>
-                        <td colspan="5">Balance Due</td>
-                        <td>${data9} </td>
-                        
-                        </tr>`)
-                        tbl1.style.display="none";
-                        tbl2.style.display="block";
-                    document.getElementById('invamount').value = data2
-                    document.getElementById('received').value = data3
-                    document.getElementById('due').value = data9
-                    document.getElementById('df').value = data5 
-                    document.getElementById('dl').value = data6
-                    document.getElementById('open').value = data10
-
-                    
-                    
-                  
-                }
-              
-            });
-        });
-        </script>
     
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
@@ -1158,5 +1036,5 @@ $('.delete').click(function(event) {
 });
 
     </script> 
-
+{% endif %}
 {% endblock %}

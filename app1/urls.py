@@ -1262,6 +1262,23 @@ urlpatterns = [
     path('recurinv_rpt',views.recurinv_rpt,name='recurinv_rpt'),
     path('rpt_dropdown',views.rpt_dropdown,name='rpt_dropdown'),
     path('recurinv_cust',views.recurinv_cust,name='recurinv_cust'),
+    
+    path('balancedata',views.balancedata,name='balancedata'),
+    
+    #payment received - urls ---added- shemeem
+    path('payment_received_sortby_cname',views.payment_received_sort_cname,name='payment_received_sort_cname'),
+    path('payment_received_sortby_pymnt_no',views.payment_received_sort_pnum,name='payment_received_sort_pnum'),
+    path('payment_received_filter_draft',views.gopayment_received_draft,name='gopayment_received_draft'),
+    path('payment_received_filter_saved',views.gopayment_received_saved,name='gopayment_received_saved'),
+    path('check_pymnt_number_cont',views.checkPymntNumberConti, name='checkPymntNumberConti'),
+    path('new_pymnt_method',views.new_payment_method, name='new_payment_method'),
+    path('getpymnt_methods',views.get_payment_methods, name='get_payment_methods'),
+    path('get_bank_acc_num', views.get_bankacc_num, name='get_bankacc_num'),
+    
+
+    #Delivery Challan urls === shemeem added
+    path('check_dc_number_cont',views.checkDCNumberConti, name='checkDCNumberConti'),
+    path('dc_draft_to_save/<int:id>',views.challan_draftToSave, name='challan_draftToSave'),
 
  
      

@@ -50,18 +50,25 @@
     <div class="my-5 page" size="A4" >
         <div class="p-5">
             <div id="ember2512" class="tooltip-container ember-view ribbon text-ellipsis">
-                <div class="ribbon-inner ribbon-open" style="background-color: #268ddd; margin-right: 600px; color: white; text-align: center; padding-top: 10px;">{{estimate.status}}<!----></div></div>
+                <div class="ribbon-inner ribbon-open" style="background-color: #268ddd; margin-right: 600px; color: white; text-align: center; padding-top: 10px;">{{estimate.status}}<!----></div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <h3>
+                  <center class="text-black"><b>DELIVERY CHALLAN</b></center>
+                </h3>
+            </div>
             <section class="top-content bb d-flex justify-content-between">
                 <div class="logo">
                     <!-- <img src="logo.png" alt="" class="img-fluid"> -->
                 </div>
                 <div class="top-left">
                     <div class="graphic-path" style="text-align: right;padding-top: 10px;background-color:#22b8d1;margin-left: 550px; text-align: center; color :rgb(0, 0, 0)">
-                        <p>Delivery Challan</p>
-                    </div>
-                    <div class="position-relative" style="margin-left: 550px;text-align: center">
+                        <!-- <p>Delivery Challan</p> -->
                         <p>Challan No. <span>{{estimate.chal_no }}</span></p>
                     </div>
+                    <!-- <div class="position-relative" style="margin-left: 550px;text-align: center">
+                        <p>Challan No. <span>{{estimate.chal_no }}</span></p>
+                    </div> -->
                 </div>
             </section>
             <hr>
@@ -74,11 +81,12 @@
                     </tr>
                     <tr>
                         <td>{{cmp1.cname }}</td>
-                        <td>{{estimate.customer}}</td>
+                        <!-- <td>{{estimate.customer.firstname}} {{estimate.customer.lastname}}</td> -->
+                        <td></td>
                     </tr>
                     <tr>
                         <td>{{cmp1.caddress}}<br>{{cmp1.city}}<br>{{cmp1.state}}<br>{{cmp1.pincode}}</td>
-                        <td style="width: 300px;">{{ estimate.billto}}</td>
+                        <td style="width: 300px;">{{ estimate.billto|linebreaksbr}}</td>
                     </tr>
                     
                 </tbody>
@@ -196,7 +204,7 @@
                     </div>
                     <div class="col-12 mt-5">
                         <!-- <img src="signature.png" class="img-fluid" alt=""> -->
-                        <p class=" m-0 mt-5" style="color:black"> Authorised Signature </p>
+                        <label style="color: #000;"><b>Authorized Signature</b></label><span class="text-dark ml-2">_____________________</span>
                     </div>
                 </div>
             </section>

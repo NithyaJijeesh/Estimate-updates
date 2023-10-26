@@ -69,7 +69,7 @@
                             <select class="custom-select" id="gsttype" onclick="hidinput('hello', this)"
                                     name="gsttype"   
                                     style="background-color: #243e54; color: white;">
-                                <option>{{ customer.gsttype }}</option>
+                                <option value="{{customer.gsttype}}" hidden>{{ customer.gsttype }}</option>
                                  
                                 <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
                                 <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
@@ -83,7 +83,8 @@
                             </select>
                             <div class="invalid-feedback">Please select a valid registration type.</div>
                         </div>
-                        <div class="col-md-4 mt-3">
+                        {% if customer.gstin %}
+                        <div class="col-md-4 mt-3" id="gstdiv">
                             <div class="form-row gstrow" id="hello">
                                 <label for="validationCustom05">GSTIN</label>
                                 <input type="text" class="form-control" onchange="showMessage(this) "
@@ -93,6 +94,7 @@
                                 <div id="warngst" class="text-danger"></div>
                             </div>
                         </div>
+                        {% endif %}
                         <div class="col-md-4 mt-3">
                             <label for="validationCustom03">PAN No.</label>
                             <input type="text" class="form-control" onchange="checkpan(this)"
@@ -102,15 +104,30 @@
                             <div id="warnpan" class="text-danger"></div>
                         </div>
                         <div class="col-md-4 mt-3" >
-                            <div >
-                                <label for="validationCustom05">Opening Balance</label>
-                                <input type="text" class="form-control"  name="openbalance" value="{{ customer.opening_balance}}"
-                                       
-                                       style="background-color: #2f516f;color: white;"
-                                       >
+                            <label for="validationCustom05">Opening Balance</label>
+                            <div class="d-flex">
+                                <select name="bal" id="bal" class="form-select text-white pl-1" style="background-color: #243e54; width: 25%; border-radius: 5px;">
+                                    {% if customer.opening_balance >= 0 %}
+                                        <option value="debit" selected hidden>Debit</option>
+                                    {% else %}
+                                        <option value="credit" selected hidden>Credit</option>
+                                    {% endif %}
+                                    <option value="credit">Credit</option>
+                                    <option value="debit">Debit</option>
+                                </select>
+                                <input type="text" class="form-control" id="openbalance"  name="openbalance" value="{{ customer.opening_balance}}"
+                                        style="background-color: #2f516f;color: white;">
                                 <div class="text-danger m-2" ></div>
                             </div>
                         </div>
+
+                        <div class="col-md-4 mt-3" >
+                            <label for="validationCustom05">Credit Limit</label>
+                            <input type="text" class="form-control" name="crd_lmt"
+                                style="background-color: #2f516f;color: white;" id="crd_lmt" value="{{customer.credit_limit}}">
+                            <div class="text-danger m-2" ></div>
+                        </div>
+
                     </div>
                     &nbsp;
                     <div class="row">
@@ -141,8 +158,8 @@
                     <div class="row">
                         <div class="col-md-6 mt-5">
                             <div class="row">
-                                <div class="col-md-12 mt-3">
-                                    <h5>Billing Address</h5>
+                                <div class="col-md-12 card-title">
+                                    <h5 class="mb-0">Billing Address</h5>
                                 </div>
                             </div>
                             <div class="row">
@@ -163,9 +180,48 @@
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <label for="state">State</label>
-                                    <input type="text" class="form-control" value="{{ customer.state }}"
-                                           id="state" name="state" required
-                                           style="background-color: #2f516f;color: white;">
+                                    <select type="text" class="form-control" id="state" name="state" required
+                                    style="background-color: #2f516f; color: white;">
+                                        <option value="{{ customer.state }}" hidden>{{ customer.state }}</option>
+                                        <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                                        <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                        <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chandigarh">Chandigarh</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                        <option value="Damn anad Diu">Damn anad Diu</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Predesh">Himachal Predesh</option>
+                                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Ladakh">Ladakh</option>
+                                        <option value="Lakshadweep">Lakshadweep</option>
+                                        <option value="Madhya Predesh">Madhya Predesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Puducherry">Puducherry</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Predesh">Uttar Predesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                        <option value="Other Territory">Other Territory</option>
+                                    </select>
                                     <div class="invalid-feedback">Please provide a valid State</div>
                                 </div>
                             </div>
@@ -190,17 +246,16 @@
                             <div class="row">
                                 <div class="col-md-12 d-flex">
                                     <h5>Shipping Address</h5>
-                                    <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                    <input class="ml-4 ml-5" type="checkbox" onclick="poppins()" id="okay"
                                            name="okay">
                                     <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
                                 </div>
                             </div>
                             
                             <div class="row">
-                                <div class="col-md-12 mt-4">
+                                <div class="col-md-12 mt-3">
                                     <label for="shipstreet">Street</label>
                                     <textarea class="form-control" id="shipstreet" name="shipstreet"
-                                              
                                               style="background-color: #2f516f;color: white;">{{ customer.shipstreet }}</textarea>
                                     <div class="invalid-feedback">Please provide a valid Pin Code</div>
                                 </div>
@@ -215,9 +270,48 @@
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <label for="shipstate">State</label>
-                                    <input type="text" class="form-control" value="{{ customer.shipstate }}"
-                                           id="shipstate" name="shipstate" required
-                                           style="background-color: #2f516f;color: white;">
+                                    <select type="text" class="form-control" id="shipstate" name="shipstate" required
+                                    style="background-color: #2f516f; color: white;">
+                                        <option value="{{ customer.shipstate }}" hidden>{{ customer.shipstate }}</option>
+                                        <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                                        <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                        <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chandigarh">Chandigarh</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                        <option value="Damn anad Diu">Damn anad Diu</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Predesh">Himachal Predesh</option>
+                                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Ladakh">Ladakh</option>
+                                        <option value="Lakshadweep">Lakshadweep</option>
+                                        <option value="Madhya Predesh">Madhya Predesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Puducherry">Puducherry</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Predesh">Uttar Predesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                        <option value="Other Territory">Other Territory</option>
+                                    </select>
                                     <div class="invalid-feedback">Please provide a valid State</div>
                                 </div>
                             </div>
@@ -276,36 +370,14 @@
         }
     </script>
     <script>
-
-$(document).ready(function() {
-            $("#gsttype").change(function() {
-            var x=$('#gsttype').val();
-            if(x=="unregistered Business") 
-            {
-                $(".gstrow").removeClass('d-block');
-                $(".gstrow").addClass('d-none');
-
-            }
-            else if(x == 'Overseas'){
-                $(".gstrow").removeClass('d-block');
-                $(".gstrow").addClass('d-none');
-            }
-            else if(x == 'Consumer'){
-                $(".gstrow").removeClass('d-block');
-                $(".gstrow").addClass('d-none');
-            }
-            else 
-            {
-                $(".gstrow").removeClass('d-none');
-                $(".gstrow").addClass('d-block');
-            }
-            
-            });
-        });
         function hidinput(divId, element) {
-            if (element.value == 'GST unregistered' || element.value == 'Consumer' || element.value == 'Overseas') {
+            if (element.value == 'unregistered Business' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById("gstdiv").style.display = 'none';
                 document.getElementById(divId).style.display = 'none';
+                document.getElementById("validationCustom05").value = '';
+
             } else {
+                document.getElementById("gstdiv").style.display = 'block';
                 document.getElementById(divId).style.display = 'block';
             }
         }
@@ -384,6 +456,34 @@ $(document).ready(function() {
                 });
             }, false);
         })();
+    </script>
+    
+    <script>
+        $(document).on('change', '#openbalance',function () {
+            openbal = $("#openbalance").val()
+            if($('#bal').val()=='credit'){
+                if(openbal.slice(0,1) != '-'){
+                    document.getElementById("openbalance").value = "-"+openbal
+                }else{
+                    document.getElementById("openbalance").value = openbal
+                }
+            }else{
+                document.getElementById("openbalance").value = openbal
+            }
+        });
+
+        $(document).on('change', '#bal',function () {
+            openbal = $("#openbalance").val()
+            if(openbal != ""){
+                if($('#bal').val()=='credit'){
+                    openbal = $("#openbalance").val()
+                    document.getElementById("openbalance").value = "-"+openbal
+                }else{
+                    openbal = $("#openbalance").val()
+                    document.getElementById("openbalance").value = openbal.slice(1,)
+                }
+            }
+        });
     </script>
 
 {% endblock %}

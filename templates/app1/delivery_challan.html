@@ -13,6 +13,7 @@
     
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 
         <div class="page-content" id="test">
             <div class="card radius-15">
@@ -20,6 +21,9 @@
                     <div class="card-title">
                         <center><h2 class="mb-0">DELIVERY CHALLAN</h2></center>
                         <hr>
+                        <div class="btn-group col-md-2" style="float: right;">
+                            <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')">Export To Excel</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -50,15 +54,15 @@
                                </a>
                                  
                                 <a class="dropdown-item " href="{% url 'sort_chellan_chellannumber' %}"
-                                    style="height: 40px; font-size: 15px; color: white; text-align: center; " >Chellan Number</a>
+                                    style="height: 40px; font-size: 15px; color: white; text-align: center; " >Challan Number</a>
                                 
                                         
                                 </div> 
                             </div>
                         </div>
-                        <div class="col-md-3"></div>
+                        <div class="col-md-5"></div>
                        
-                        <div class="col-md-1 mx-5" style="width: 40%; margin-top: 8px;">
+                        <!-- <div class="col-md-1 mx-5" style="width: 40%; margin-top: 8px;">
 
                             <div class="dropdown">
                                 <button type="button" class="btn btn-outline-info dropdown-toggle fa fa-filter  text-grey"
@@ -70,7 +74,7 @@
                                         <a class="dropdown-item" href="{% url 'gochallan1' %}"
                                             style="height: 40px; font-size: 15px; color: white; text-align: center;" >Draft</a>
                                         <a class="dropdown-item" href="{% url 'gochallan2' %}"
-                                            style="height: 40px; font-size: 15px; color: white; text-align: center;">Approved</a>
+                                            style="height: 40px; font-size: 15px; color: white; text-align: center;">Saved</a>
                                        
                                     </div> 
                             </div>
@@ -79,7 +83,20 @@
                             <a href="{% url 'goadd_dl_challan' %}" >
                                 <button id="myBtn" class="btn btn-outline-info fa fa-plus text-grey" style="margin-top: 8px;"> Add New</button>
                             </a>
+                        </div> -->
+
+                        <div class="btn-group col-md-2 d-flex align-items-center">
+                            <a class="btn btn-outline-info text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                role="button">Filter By
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'delivery_challan' %}">All</a>
+                                <a class="dropdown-item" href="{% url 'gochallan1' %}">Draft</a>
+                                <a class="dropdown-item" href="{% url 'gochallan2' %}">Saved</a>
+                            </div>
+                            <a href="{% url 'goadd_dl_challan' %}" class="btn btn-outline-info fa fa-plus text-white" role="button"> &nbsp;New</a>
                         </div>
+
                         <!-- <div class="btn-group col-md-2">
                             <button type="button" class="btn btn-outline-info dropdown-toggle fa fa-filter  text-grey"
                                         data-toggle="dropdown"> filter by
@@ -101,8 +118,9 @@
                                 <th>Challan Number</th>
                                 <th>Customer Name</th>
                                 <th>Email</th>
+                                <th>Amount</th>
                                 <th>Status</th>
-                                <th>Total Amount</th>
+                                <th>Action</th>
                             </tr> 
                             </thead>
                             <tbody>
@@ -114,8 +132,13 @@
                                     <td>{{ p.chal_no }}</a></td>
                                     <td>{{ p.customer.firstname }} {{ p.customer.lastname }}</td>
                                     <td>{{ p.customer.email }}</td>
-                                    <td>{{ p.status }}</td>
                                     <td>{{ p.grand }}</td>
+                                    <td>{{ p.status }}</td>
+                                    {% if p.is_converted %}
+                                    <td><button class="btn btn-success btn-sm" disabled>Converted</button></td>
+                                    {% else %}
+                                    <td><a href="{% url 'challan_convert1' p.id %}"><button class="btn btn-outline-light btn-sm">Convert to Invoice</button></a></td>
+                                    {% endif %}
                                 </tr> 
                                 
                             {% endfor %}
@@ -143,6 +166,14 @@
                     }).hide();
                 });
             });
+
+            function ExportToExcel(type, fn, dl) {
+                var elt = document.getElementById('table');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                return dl ?
+                    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                    XLSX.writeFile(wb, fn || ('Delivery_challan.' + (type || 'xlsx')));
+            }
         </script>
 
 <!-- <script>

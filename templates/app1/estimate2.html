@@ -3,6 +3,7 @@
 {% load static %}
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
 
 
 <style>
@@ -29,24 +30,99 @@
                 <div class="row">
                     <div class="col"> </div>
                 </div>
+               
                 <div class="row mt-3">
-                    <div class="col-md-4">
-                        <label class="col-form-label">Customer</label>
-                        <div class="d-flex">
-                            <select name="customer" id="customer" class="form-control" style="width: 95%;">
-                                <option value="NIL" selected>Select Customer</option>
-                                {% for cust in customers %}
-                                    {% if cust.cid_id == cmp1.cid %}
-                                        <option  value="{{ cust.customerid }} {{ cust.firstname }} {{ cust.lastname }}">{{ cust.title }} {{ cust.firstname }} {{ cust.lastname }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                            <a class="btn btn-outline-secondary ml-1" role="button" data-target="#customercreation" data-toggle="modal">+</a>
+                    <div class=" col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="col-form-label">Customer</label>
+                                <div class="d-flex">
+                                    <select name="customer" id="customer" class="form-control" style="width: 95%;">
+                                        <option value="NIL" selected>Select Customer</option>
+                                        {% for cust in customers %}
+                                            {% if cust.cid_id == cmp1.cid %}
+                                                <option  value="{{ cust.customerid }} {{ cust.firstname }} {{ cust.lastname }}">{{ cust.title }} {{ cust.firstname }} {{ cust.lastname }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <a class="btn btn-outline-secondary ml-1" role="button" data-target="#customercreation" data-toggle="modal">+</a>
+                                </div>
+                                <input hidden value="{{cmp1.state}}" id="cmpstate">
+                            </div>
+                            <div class="col-md-6">
+                            <label class="col-form-label" id="gstnum">Email</label>
+                            <input type="text" class="form-control" id="est_email" name="email" placeholder="Email">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                      <label class="col-form-label">Email</label>
-                      <input type="text" class="form-control" id="est_email" name="email" placeholder="Email">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="col-form-label">GST Treatment</label>
+                                <select class="custom-select" id="gsttype" name="gsttype" style="background-color: #43596c; color: white;" required>
+                                    <option value=""></option>
+                                    <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
+                                    <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
+                                    <option value="Unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
+                                    <option value="Overseas">Overseas (Import/Export of supply outside india)</option>
+                                    <option value="Consumer">Consumer</option>
+                                    <option value="Special Economic Zone (SEZ)">Special Economic Zone (SEZ) (Business that is located in a special economic zone of india or a SEZ developer)</option>
+                                    <option value="Demed Exports">Demed Exports (Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</option>
+                                    <option value="Tax Deductor">Tax Deductor (State of central gov,government agencies or local authority)</option>
+                                    <option value="SEZ Developer">SEZ Developer (A person or organization who owns atleast 26% eqaulity in creating business units in special economic zone)</option>
+
+                                </select>
+
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">Palce of Supply</label>
+                                <select type="text" class="form-control" id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onchange="state(this)">
+                                    <option value=""> </option>
+                                    <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                                    <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                    <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                    <option value="Assam">Assam</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Chandigarh">Chandigarh</option>
+                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                    <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                    <option value="Damn anad Diu">Damn anad Diu</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Goa">Goa</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Himachal Predesh">Himachal Predesh</option>
+                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                    <option value="Jharkhand">Jharkhand</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Ladakh">Ladakh</option>
+                                    <option value="Lakshadweep">Lakshadweep</option>
+                                    <option value="Madhya Predesh">Madhya Predesh</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Manipur">Manipur</option>
+                                    <option value="Meghalaya">Meghalaya</option>
+                                    <option value="Mizoram">Mizoram</option>
+                                    <option value="Nagaland">Nagaland</option>
+                                    <option value="Odisha">Odisha</option>
+                                    <option value="Puducherry">Puducherry</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Sikkim">Sikkim</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Telangana">Telangana</option>
+                                    <option value="Tripura">Tripura</option>
+                                    <option value="Uttar Predesh">Uttar Predesh</option>
+                                    <option value="Uttarakhand">Uttarakhand</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Other Territory">Other Territory</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="row d-none" id="gst_number">
+                            <div class="col-md-6">
+                                <label class="col-form-label">GST Number</label>
+                                <input type="text" class="form-control" id="est_gstnum" name="gstnum" placeholder="GST Number">
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-4">
                       <label class="col-form-label">Billing Address</label>
@@ -54,7 +130,8 @@
                       <textarea class="form-control" rows="7" id="bname" name="billingaddress"></textarea>
                     </div>
                 </div>
-                 
+                
+                <hr>
                 <div class="row mt-3">
                     <div class="col-md-3">
                         <label class="col-form-label">Estimate Date</label>
@@ -132,10 +209,10 @@
                             <tbody id="items-table-body">
                             <tr id='addr01'>
                                 <td class="nnum">1</td>
-                                <td style="width: 20%;">
+                                <td style="width: 18%;">
 
                                     <div class="d-flex">
-                                        <select name='product[]' id="product1" class="form-control product" style="background-color: #2f516f; color: white; ">
+                                        <select name='product[]' id="product1" class="form-control product" style="background-color: #2f516f; color: white; width: 150px;">
                                             <option value=" " selected>Select Item</option>
                                 
                                             {% for i in item %}
@@ -151,42 +228,42 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td><input type="text" name='hsn[]' id="hsn1" placeholder='Enter HSN ' class="form-control" style="background-color: #2f516f; color: white;" /></td>
+                                <td><input type="text" name='hsn[]' id="hsn1" placeholder='Enter HSN ' class="form-control" style="background-color: #2f516f; color: white; width: 80px;" /></td>
                                 <td><input type="number" name='qty[]'  placeholder='Enter Qty' id="qty1"  class="form-control qty" step=0 min=0 style="background-color: #2f516f;margin-top: 21px; color: white;" />
                                     <div class="d-flex"><span>Available Qty :</span> <span id="qtyspan1" class=''></span></div>
                                 </td>
-                                <td><input type="number" name='price[]' id="unit1" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
+                                <td><input type="number" name='price[]' id="unit1" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white; width: 100px;" /></td>
                                 <td>
-                                    <input hidden value="{{cmp1.state}}" id="cmpstate">
-                                    <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex">
-                                    <select name='tax1[]' id="tax11" class="form-control tax intra_tax d-none">
-                                        <option selected disabled >Select GST</option>
-                                        <option value=28 >28.0% GST(28%)</option>
-                                        <option value=18 >18.0% GST(18%)</option>
-                                        <option value=12  >12.0% GST(12%)</option>
-                                            <option value=5  >05.0% GST(05%)</option>
-                                        <option value=3  >03.0% GST(03%)</option>
-                                            <option value=0  >0.0% GST(0%)</option>
+                                    
+                                    <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex" style="width: 130px;">
+                                    <select name='tax1[]' id="tax11" class="form-control tax intra_tax d-none" style="width: 130px;">
+                                        <!-- <option selected disabled >Select GST</option> -->
+                                        <option value=28 >28% GST</option>
+                                        <option value=18 >18% GST</option>
+                                        <option value=12  >12% GST</option>
+                                            <option value=5  >5% GST</option>
+                                        <option value=3  >3% GST</option>
+                                            <option value=0  >0% GST</option>
                                     </select>
-                                    <select name='tax2[]' id="tax21" class="form-control tax inter_tax d-none">
-                                        <option selected disabled >Select IGST</option>
-                                        <option value=28 >28.0% IGST(28%)</option>
-                                        <option value=18 >18.0% IGST(18%)</option>
-                                        <option value=12  >12.0% IGST(12%)</option>
-                                            <option value=5  >05.0% IGST(05%)</option>
-                                        <option value=3  >03.0% IGST(03%)</option>
-                                            <option value=0  >0.0% IGST(0%)</option>
+                                    <select name='tax2[]' id="tax21" class="form-control tax inter_tax d-none" style="width: 130px;">
+                                        <!-- <option selected disabled >Select IGST</option> -->
+                                        <option value=28 >28% IGST</option>
+                                        <option value=18 >18% IGST</option>
+                                        <option value=12  >12% IGST</option>
+                                            <option value=5  >5% IGST</option>
+                                        <option value=3  >3% IGST</option>
+                                            <option value=0  >0% IGST</option>
                                     </select>
                                           
                                 </td>
-                                <td><input type="number" name='discount[]'  placeholder='Enter Discount' id="disc1" value=0 class="form-control disc" step=0 min=0 style="background-color: #2f516f;  color: white;"  /></td>
+                                <td><input type="number" name='discount[]'  placeholder='Enter Discount' id="disc1" value=0 class="form-control disc" step=0 min=0 style="background-color: #2f516f;  color: white; width: 100px;"  /></td>
 
                                 <td><input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                                 <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>
 
                                 <td>
-                                    <button type="button" id="1" class="btn  font-weight-bold clone_row fas fa-clone px-2 my-1 py-1" title="Clone Row" style="background-color:rgb(88, 107, 143);"></button><br>
-                                    <button type="button" id="1" class="btn btn-danger remove_row px-2 py-1 mx-1 fas fa-close" title="Remove Row"> </button>
+                                    <button type="button" id="1" class="btn  font-weight-bold clone_row fa fa-clone px-2 my-1 py-1" title="Clone Row" style="background-color:rgb(88, 107, 143);"></button><br>
+                                    <button type="button" id="1" class="btn btn-danger remove_row px-2 py-1 mx-1 fa fa-close" title="Remove Row"> </button>
                                 </td>
                             </tr>
                             </tbody>
@@ -908,12 +985,12 @@
                                                              style="background-color: #2a4964; color: white;"
                                                              id="intra_st" >
                                                              <option >Choose...</option>
-                                                             <option value=0>GST 0 (0%)</option>
-                                                             <option value=5>GST 5 (5%)</option>
-                                                             <option value=12>GST 12 (12%)</option>
-                                                             <option value=18>GST 18 (18%)</option>
-                                                             <option value=28>GST 28 (28%)</option>
-                                                             <option value=0>Out of Scope(0%)</option>
+                                                             <option value=0>GST 0% </option>
+                                                             <option value=5>GST 5% </option>
+                                                             <option value=12>GST 12% </option>
+                                                             <option value=18>GST 18% </option>
+                                                             <option value=28>GST 28% </option>
+                                                             <option value=0>Out of Scope</option>
                                                   </select>
                                                   </div>
                                               
@@ -924,12 +1001,12 @@
                                                                 style="background-color: #2a4964; color: white;"
                                                                 id="inter_st" >
                                                                 <option >Choose...</option>
-                                                                <option value=0>IGST 0 (0%)</option>
-                                                             <option value=5>IGST 5 (5%)</option>
-                                                             <option value=12>IGST 12 (12%)</option>
-                                                             <option value=18>IGST 18 (18%)</option>
-                                                             <option value=28>IGST 28 (28%)</option>
-                                                             <option value=0>Out of Scope(0%)</option>
+                                                                <option value=0>IGST 0%</option>
+                                                             <option value=5>IGST 5% </option>
+                                                             <option value=12>IGST 12%</option>
+                                                             <option value=18>IGST 18% </option>
+                                                             <option value=28>IGST 28% </option>
+                                                             <option value=0>Out of Scope </option>
                                                   </select>
                                                   </div>
                                               </div><br>
@@ -1035,8 +1112,8 @@
 
 
 <script>
-  $(document).ready(function() {
-            $("#gsttype").change(function() {
+    $(document).ready(function() {
+        $("#gsttype").change(function() {
             var x=$('#gsttype').val();
             if(x=="unregistered Business") 
             {
@@ -1058,2310 +1135,610 @@
                 $(".gstrow").addClass('d-block');
             }
             
-            });
         });
-
-  $(document).ready(function() {
-
-
-    var bc = document.getElementById("plosu").value;
-    var compstate = document.getElementById("cmpstate").value;
-    if (bc == compstate ) {
-        document.getElementById('cgst1').style.display = 'flex';
-        document.getElementById('sgst1').style.display = 'flex';
-        document.getElementById('igst1').style.display = 'none'; 
-
-    } else {
-        document.getElementById('cgst1').style.display = 'none';
-        document.getElementById('sgst1').style.display = 'none';
-        document.getElementById('igst1').style.display = 'flex';
-
-    }
-    var i = 1;
-    $("#add_row").click(function() {
-      b = i - 1;
-      $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
-      $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
-      i++;
-    });
-    
     });
 
+    $(document).ready(function() {
+        var bc = document.getElementById("plosu").value;
+        var compstate = document.getElementById("cmpstate").value;
+        if (bc == compstate ) {
+            document.getElementById('cgst1').style.display = 'flex';
+            document.getElementById('sgst1').style.display = 'flex';
+            document.getElementById('igst1').style.display = 'none'; 
 
-  $(document).ready(function(){
-    $('#add').click(function(){
-      var roinc = $("#items-table-body tr").length;
-      roinc++;
-      $('#items-table-body').append(
-          `
-          <tr id='addr0${roinc}'>
-            <td class = 'nnum'>${roinc}</td>
-            <td style="width: 20%;">
-              <div class="d-flex">
-                <select name='product[]' id="product${roinc}" class="form-control product" style="background-color: #2f516f; color: white;">
-                  <option value=" " selected>Select Item</option>
-                    {% for i in item %}
-                      {% if i.cid_id == cmp1.cid %}
-                        <option value="{{ i.name  }}">{{ i.name  }} </option>
-                      {% endif %}
-                    {% endfor %}
-                </select>
+        } else {
+            document.getElementById('cgst1').style.display = 'none';
+            document.getElementById('sgst1').style.display = 'none';
+            document.getElementById('igst1').style.display = 'flex';
 
-                <a href="#">
-                    <button type="button" class="btn btn-outline-secondary ml-1" 
-                    data-target="#newitem" data-toggle="modal">+</button>
-                </a>
-              </div>
-            </td>
-            <td><input type="text" name='hsn[]' id="hsn${roinc}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
-            <td><input type="number" name='qty[]'  placeholder='Enter Qty' id="qty${roinc}" class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;margin-top: 21px;" />
-                <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class=''></span></div>
-            </td>
-            <td><input type="number" name='price[]' id="unit${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
-            <td>
-              <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex">
-
-              <select name='tax1[]' id="tax1${roinc}" class="form-control tax intra_tax d-none">
-                  <option selected disabled > Select GST</option>
-                  <option value=28 >28.0% GST(28%)</option>
-                  <option value=18 >18.0% GST(18%)</option>
-                  <option value=12  >12.0% GST(12%)</option>
-                      <option value=5  >05.0% GST(05%)</option>
-                  <option value=3  >03.0% GST(03%)</option>
-                      <option value=0  >0.0% GST(0%)</option>
-              </select>
-              <select name='tax2[]' id="tax2${roinc}" class="form-control tax inter_tax d-none">
-                  <option selected disabled  >Select IGST</option>
-                  <option value=28 >28.0% IGST(28%)</option>
-                  <option value=18 >18.0% IGST(18%)</option>
-                  <option value=12  >12.0% IGST(12%)</option>
-                      <option value=5  >05.0% IGST(05%)</option>
-                  <option value=3  >03.0% IGST(03%)</option>
-                      <option value=0  >0.0% IGST(0%)</option>
-              </select>
-              
-            </td>  
-            <td style="display: none;"><input type="number" step="any" name='taxamount${roinc}' id="taxamount${roinc}" class="form-control taxamount" /></td>
-
-            <td>
-                <input type="number" name='discount[]' placeholder='Enter Discount' value=0 id="disc${roinc}" class="form-control disc" step=0 min=0>
-            </td>
-            <td><input type="number" name='total[]' id="total${roinc}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
-            <td>
-              <button type="button" id="${roinc}" class="btn  font-weight-bold clone_row fas fa-clone px-2 py-1 my-1" style="background-color:rgb(88, 107, 143);"></button><br>
-              <button type="button" id="${roinc}" class="btn btn-danger px-2 mx-1 py-1 remove_row fas fa-close"></button>
-            </td>
-          </tr>`
+        }
+        var i = 1;
+        $("#add_row").click(function() {
+        b = i - 1;
+        $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+        $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+        i++;
+        });
+    });
     
- 
-        );
+    
+
+
+    $(document).ready(function(){
+        $('#add').click(function(){
+            var roinc = $("#items-table-body tr").length;
+            roinc++;
+            $('#items-table-body').append(
+                `
+                <tr id='addr0${roinc}'>
+                    <td class = 'nnum'>${roinc}</td>
+                    <td style="width: 20%;">
+                    <div class="d-flex">
+                        <select name='product[]' id="product${roinc}" class="form-control product" style="background-color: #2f516f; color: white;">
+                        <option value=" " selected>Select Item</option>
+                            {% for i in item %}
+                            {% if i.cid_id == cmp1.cid %}
+                                <option value="{{ i.name  }}">{{ i.name  }} </option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        <a href="#">
+                            <button type="button" class="btn btn-outline-secondary ml-1" 
+                            data-target="#newitem" data-toggle="modal">+</button>
+                        </a>
+                    </div>
+                    </td>
+                    <td><input type="text" name='hsn[]' id="hsn${roinc}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="number" name='qty[]'  placeholder='Enter Qty' id="qty${roinc}" class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;margin-top: 21px;" />
+                        <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class=''></span></div>
+                    </td>
+                    <td><input type="number" name='price[]' id="unit${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
+                    <td>
+                    <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex">
+
+                    <select name='tax1[]' id="tax1${roinc}" class="form-control tax intra_tax d-none">
+                        <option selected disabled > Select GST</option>
+                        <option value=28 >28.0% GST(28%)</option>
+                        <option value=18 >18.0% GST(18%)</option>
+                        <option value=12  >12.0% GST(12%)</option>
+                            <option value=5  >05.0% GST(05%)</option>
+                        <option value=3  >03.0% GST(03%)</option>
+                            <option value=0  >0.0% GST(0%)</option>
+                    </select>
+                    <select name='tax2[]' id="tax2${roinc}" class="form-control tax inter_tax d-none">
+                        <option selected disabled  >Select IGST</option>
+                        <option value=28 >28.0% IGST(28%)</option>
+                        <option value=18 >18.0% IGST(18%)</option>
+                        <option value=12  >12.0% IGST(12%)</option>
+                            <option value=5  >05.0% IGST(05%)</option>
+                        <option value=3  >03.0% IGST(03%)</option>
+                            <option value=0  >0.0% IGST(0%)</option>
+                    </select>
+                    
+                    </td>  
+                    <td style="display: none;"><input type="number" step="any" name='taxamount${roinc}' id="taxamount${roinc}" class="form-control taxamount" /></td>
+
+                    <td>
+                        <input type="number" name='discount[]' placeholder='Enter Discount' value=0 id="disc${roinc}" class="form-control disc" step=0 min=0>
+                    </td>
+                    <td><input type="number" name='total[]' id="total${roinc}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
+                    <td>
+                    <button type="button" id="${roinc}" class="btn  font-weight-bold clone_row fas fa-clone px-2 py-1 my-1" style="background-color:rgb(88, 107, 143);"></button><br>
+                    <button type="button" id="${roinc}" class="btn btn-danger px-2 mx-1 py-1 remove_row fas fa-close"></button>
+                    </td>
+                </tr>`
+            );
+        });
         $('.product').each(function(index, dropdown) {
-                    var row = $(dropdown).closest('.items-table-body'); // Assuming each row has a class 'item-row'
-                    $.ajax({
-                        url: "{% url 'item_dropdown' %}",
-                        type: "GET",
-                        dataType: "json",
-                        data: row.find('select').serialize(),
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-
-                        success: function(data) {
-                            var dropdown = $('.product');
-                            dropdown.empty();
-                            dropdown.append(`<option selected>Select Item</option>`);
-                            $.each(data, function(key, value) {
-                            
-                                dropdown.append($('<option></option>').attr('value', key).text(value).val(value));
-                            });
-
-                        },
-                        error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                        }
-                    });
-                });
-  });});
-   // calculation---------------------------
-
-   $(document).on('change', '.product',function(){ 
-                
-                var n = $(this).attr("id").slice(7);
-                $.ajax({
-                url: "{% url 'itemdata' %}",
-                type : 'GET',
-                data:{
-                    id : $(this).val(),
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                
-                success: function(response) {
-                    data = response.hsn
-                    data2 = response.qty
-                    data3 = response.price
-                    data4 = response.gst
-                    data5 = response.sgst
-
-                    console.log(data)
-                    
-                    document.getElementById('hsn'+n).value = data;
-                    document.getElementById('qtyspan'+n).innerHTML = data2;
-                    document.getElementById('unit'+n).value = data3;
-
-                },
-                });
-                
-
-            });
-
-            $(document).on('click','.remove_row',function(){
-                var row_id = $(this).attr("id");
-                $('#addr0'+row_id+'').remove();
-                
-                calc();
-            });
-        
-
-            $(document).on('click','.clone_row',function(){
-                var roinc = $("#items-table-body tr").length;
-                var originalRow = $(this).closest('#items-table-body tr'); 
-                var clonedRow = originalRow.clone();
-
-                clonedRow.attr('id', 'addr0' +(roinc+1));
-
-                clonedRow.find('.nnum').text(roinc+1);
-
-                clonedRow.find('[id]').each(function() {
-                    var oldId = $(this).attr('id');
-                    var newId = oldId.replace(/\d+/, roinc+1);
-                    console.log(newId)
-                    $(this).attr('id', newId );
-                });
-
-                clonedRow.find('.product').each(function() {
-                    $(this).val(originalRow.find('.product').val());
-                });
-                clonedRow.find('.intra_tax').each(function() {
-                    $(this).val(originalRow.find('.intra_tax').val());
-                });
-                clonedRow.find('.inter_tax').each(function() {
-                    $(this).val(originalRow.find('.inter_tax').val());
-                });
-                originalRow.after(clonedRow);
-                
-                calc();
-                
-            });
-            $(document).ready(function(){
-
-            
-                $('#items-table-body').on('keyup change', function () {
-                    calc();
-                });
-
-                $('#tax').on('keyup change', function () {
-                    calc_total();
-                });
-            });
- 
-        function calc() {
-            $('#tab_logic tbody tr').each(function () {
-                var html = $(this).html();
-                if (html != '') {
-                    var qty = $(this).find('.qty').val();
-                    
-                    var price = $(this).find('.price').val();
-
-                    var dis = $(this).find('.disc').val();
-                    console.log(qty)
-                    console.log(typeof(qty))
-                    
-                    console.log(price)
-                    console.log(typeof(price))
-                    console.log(parseFloat(dis))
-                    console.log(typeof(parseFloat(dis)))
-                    var bc = $("#plosu").val();
-                    var compstate = $("#cmpstate").val();
-                    if(bc==compstate){
-                        tax = $(this).find('.intra_tax').val();
-                    }
-                    else{
-                        tax = $(this).find('.inter_tax').val();
-                    }
-                    console.log((parseFloat(qty) *parseFloat(price))-parseFloat(dis))
-                    $(this).find('.total').val((parseFloat(qty) *parseFloat(price))-parseFloat(dis));
-                    $(this).find('.taxamount').val(((qty * price)-dis) * (tax / 100));
-                    calc_total();
-                }
-            });
-        }
-
-        function calc_total() {
-             
-            total = 0;
-            $('.total').each(function () {
-                total += parseFloat($(this).val());
-            });
-            taxamount = 0;
-            $('.taxamount').each(function () {
-                taxamount += parseFloat($(this).val());
-            });
-            $('#sub_total').val(total.toFixed(2));
-            $('#tax_amount').val(taxamount.toFixed(2));
-            ship = parseFloat($("#ship").val());
-            // console.log( ship);
-            gtot = taxamount + total + ship;
-            $('#grandtotal').val(gtot.toFixed(2));
-            $('#baldue').val(gtot.toFixed(2));
-
-            test()
-        }
-
-        function test(){
-                     
-            var bc = $("#plosu").val();
-            var compstate = $("#cmpstate").val();
-            d=0
-            if (bc == compstate  ) {
-                gst = taxamount/2
-                $('#cgst').val(parseFloat(gst.toFixed(2)));
-                $('#sgst').val(parseFloat(gst.toFixed(2)));
-                $('#igst').val(parseFloat(d.toFixed(2)));
-            }
-                
-            if (bc != "{{ cmp1.state }}"  ) {
-                $('#igst').val(taxamount.toFixed(2));
-                $('#cgst').val(d.toFixed(2));
-                $('#sgst').val(d.toFixed(2));
-            }
-
-           
-        }
-        function showinnum(divId, element) {
-            if (element.value) {
-                document.getElementById(divId).innerHTML = "Debit Note " + element.value;
-            } else {
-                document.getElementById(divId).innerHTML = "Debit Note";
-            }
-        }
-
-        $(document).on('keyup',"#ship",function(){
-            var subtot = $('#sub_total').val();
-            var tax = $('#tax_amount').val();
-            var sh = $("#ship").val();
-            $('#grandtotal').val((parseFloat(subtot)+parseFloat(tax)+parseFloat(sh)).toFixed(2));
-            $('#baldue').val((parseFloat(subtot)+parseFloat(tax)+parseFloat(sh)).toFixed(2));
-        });
-
-        $(document).on("change", "#adj", function(){
-            var round = parseFloat($("#grandtotal").val()) + parseFloat($("#adj").val()) 
-            $("#grandtotal").val(round);
-            $('#baldue').val(round);
-        });
-
-  $(document).on('click','.remove_row',function(){
-  var row_id = $(this).attr("id");
-  $('#addr0'+row_id+'').remove();
-  });
-  
-
-
-  //   var place = document.getElementById('plosu').value;
-  // // $('#product').on('change', function() {
-  //   $(document).on('click','#product',function(){
-  //     select = $('#product').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response.price)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-  //                   document.getElementById('hsn1').value = data
-  //                   // document.getElementById('description').value = data1
-  //                   document.getElementById('qtyspan').innerHTML = data2;
-  //                   document.getElementById('unit1').value = data3
-                    
-
-                    
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta1').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta1').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta5').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta5').value=data5
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                  
-  //               }
-      
-      
-  //     });
-  //   });
-
-
-    
-  //   $(document).on('click','#product1',function(){
-  //     select = $('#product1').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                   
-  //                   document.getElementById('hsn11').value = data
-  //                   document.getElementById('description1').value = data1
-  //                   document.getElementById('qtyspan1').innerHTML = data2;
-  //                   document.getElementById('unit11').value = data3
-                    
-                  
-                    
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta11').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta11').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta51').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta51').value=data5
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan1').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-  //               }
-      
-      
-  //     });
-  //   });
-
-  //   $(document).on('click','#product2',function(){
-  //     select = $('#product2').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn12').value = data
-  //                   document.getElementById('description2').value = data1
-  //                   document.getElementById('qtyspan2').innerHTML = data2;
-  //                   document.getElementById('unit12').value = data3
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan2').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                  
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta12').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta12').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta52').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta52').value=data5
-  //               }
-      
-      
-  //     });
-  //   });
-  //   $(document).on('click','#product3',function(){
-  //     select = $('#product3').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn13').value = data
-  //                   document.getElementById('description3').value = data1
-  //                   document.getElementById('qtyspan3').innerHTML = data2;
-  //                   document.getElementById('unit13').value = data3
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan3').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                 
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta13').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta13').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta53').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta53').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product4',function(){
-  //     select = $('#product4').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn14').value = data
-  //                   document.getElementById('description4').value = data1
-  //                   document.getElementById('qtyspan4').innerHTML = data2;
-  //                   document.getElementById('unit14').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan4').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta14').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta14').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta54').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta54').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product5',function(){
-  //     select = $('#product5').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn15').value = data
-  //                   document.getElementById('description5').value = data1
-  //                   document.getElementById('qtyspan5').innerHTML = data2;
-  //                   document.getElementById('unit15').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan5').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta15').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta15').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta55').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta55').value=data5
-  //               }
-
-  //     });
-  //   });
-
-  //   $(document).on('click','#product6',function(){
-  //     select = $('#product6').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn16').value = data
-  //                   document.getElementById('description6').value = data1
-  //                   document.getElementById('qtyspan6').innerHTML = data2;
-  //                   document.getElementById('unit16').value = data3
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan6').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                   
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta16').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta16').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta56').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta56').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product7',function(){
-  //     select = $('#product7').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn17').value = data
-  //                   document.getElementById('description7').value = data1
-  //                   document.getElementById('qtyspan7').innerHTML = data2;
-  //                   document.getElementById('unit17').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan7').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                   
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta17').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta17').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta57').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta57').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product8',function(){
-  //     select = $('#product8').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn18').value = data
-  //                   document.getElementById('description8').value = data1
-  //                   document.getElementById('qtyspan8').innerHTML = data2;
-  //                   document.getElementById('unit18').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan8').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                    
-                   
-                    
-
-
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta18').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta18').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta58').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta58').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product9',function(){
-  //     select = $('#product9').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn19').value = data
-  //                   document.getElementById('description9').value = data1
-  //                   document.getElementById('qtyspan9').innerHTML = data2;
-  //                   document.getElementById('unit19').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan9').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                   
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta19').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta19').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta59').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta59').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product10',function(){
-  //     select = $('#product10').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn110').value = data
-  //                   document.getElementById('description10').value = data1
-  //                   document.getElementById('qtyspan10').innerHTML = data2;
-  //                   document.getElementById('unit110').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan10').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                 
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta110').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta110').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta510').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta510').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product11',function(){
-  //     select = $('#product11').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn111').value = data
-  //                   document.getElementById('description11').value = data1
-  //                   document.getElementById('qtyspan11').innerHTML = data2;
-  //                   document.getElementById('unit111').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan11').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                   
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta111').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta111').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta511').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta511').value=data5
-  //               }
-      
-      
-  //     });
-  //   });
-
-  //   $(document).on('click','#product12',function(){
-  //     select = $('#product12').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn112').value = data
-  //                   document.getElementById('description12').value = data1
-  //                   document.getElementById('qtyspan12').innerHTML = data2;
-  //                   document.getElementById('unit112').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan12').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-                    
-                  
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta112').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta112').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta512').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta512').value=data5
-  //               }
-      
-      
-  //     });
-  //   });
-  //   $(document).on('click','#product13',function(){
-  //     select = $('#product13').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn113').value = data
-  //                   document.getElementById('description13').value = data1
-  //                   document.getElementById('qtyspan13').innerHTML = data2;
-  //                   document.getElementById('unit113').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan13').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                    
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta113').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta113').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta513').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta513').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product14',function(){
-  //     select = $('#product14').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn114').value = data
-  //                   document.getElementById('description14').value = data1
-  //                   document.getElementById('qtyspan14').innerHTML = data2;
-  //                   document.getElementById('unit114').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan14').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta114').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta114').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta514').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta514').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product15',function(){
-  //     select = $('#product15').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn115').value = data
-  //                   document.getElementById('description15').value = data1
-  //                   document.getElementById('qtyspan15').innerHTML = data2;
-  //                   document.getElementById('unit115').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan15').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                 
-                  
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta115').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta115').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta515').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta515').value=data5
-  //               }
-
-  //     });
-  //   });
-
-  //   $(document).on('click','#product16',function(){
-  //     select = $('#product16').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn116').value = data
-  //                   document.getElementById('description16').value = data1
-  //                   document.getElementById('qtyspan16').innerHTML = data2;
-  //                   document.getElementById('unit116').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan16').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta116').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta116').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta516').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta516').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product17',function(){
-  //     select = $('#product17').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn117').value = data
-  //                   document.getElementById('description17').value = data1
-  //                   document.getElementById('qtyspan17').innerHTML = data2;
-  //                   document.getElementById('unit117').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan17').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                   
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta117').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta117').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta517').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta517').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product18',function(){
-  //     select = $('#product18').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn118').value = data
-  //                   document.getElementById('description18').value = data1
-  //                   document.getElementById('qtyspan18').innerHTML = data2;
-  //                   document.getElementById('unit118').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan18').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta118').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta118').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta518').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta518').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product19',function(){
-  //     select = $('#product19').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn119').value = data
-  //                   document.getElementById('description19').value = data1
-  //                   document.getElementById('qtyspan19').innerHTML = data2;
-  //                   document.getElementById('unit119').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan19').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                    
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta119').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta119').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta519').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta519').value=data5
-  //               }
-
-  //     });
-  //   });
-  //   $(document).on('click','#product120',function(){
-  //     select = $('#product120').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems2' %}",
-  //       data: {
-  //         id: select
-  //       },
-  //       success:function(response){
-  //                   console.log(response)
-  //                   data = response.hsn
-  //                   data1 = response.desp
-  //                   data2 = response.qty
-  //                   data3 = response.price
-  //                   data4 = response.gst
-  //                   data5 = response.sgst
-                    
-  //                   document.getElementById('hsn120').value = data
-  //                   document.getElementById('description20').value = data1
-  //                   document.getElementById('qtyspan20').innerHTML = data2;
-  //                   document.getElementById('unit120').value = data3
-
-  //                   if (data2<1)
-  //                   {
-                      
-                      
-  //                     document.getElementById('qtyspan20').style.color="red";
-  //                   }
-  //                   else{
-  //                     pass
-  //                   }
-
-                   
-                    
-                    
-  //                   if (place == '{{ cmp1.state }}')
-  //                   {
-  //                     document.getElementById('ta120').innerHTML = data4 + ' % GST';
-  //                     document.getElementById('ta120').value=data4
-
-  //                   } 
-                    
-  //                   document.getElementById('ta520').innerHTML  = data5 + ' % IGST';
-  //                   document.getElementById('ta520').value=data5
-  //               }
-
-  //     });
-  //   });
- 
-    
-   
- 
-
-
-
-
-
-
-  // });
-
- 
-  // function state(element) {
-      
-  //     if (element.value == 'Kerala' ) {
-  //         document.getElementById('CGST').style.display = 'block';
-  //         document.getElementById('SGST').style.display = 'block';
-  //         document.getElementById('IGST').style.display = 'none';
-          
-          
-  //     } else {
-  //         document.getElementById('CGST').style.display = 'none';
-  //         document.getElementById('SGST').style.display = 'none';
-  //         document.getElementById('IGST').style.display = 'block';
-  //     }
-  // }
- 
-  // function showinp(divId, element) {
-  //   if (element.value == 'Add New Term') {
-  //     document.getElementById(divId).style.display = 'block';
-  //   } else {
-  //     document.getElementById(divId).style.display = 'none';
-  //   }
-  // }
-
-  // function addtemopt(element) {
-  //   var opt = document.getElementById('trmopt');
-
-  //   if (element.value) {
-  //     opt.value = element.value;
-  //     opt.innerHTML = element.value;
-  //   } else {
-  //     pass
-  //   }
-  // }
-
-  // function qtychange1(element) {
-  //   var tx = parseInt(element.value);
-  //   document.getElementById('qty11').value = parseInt(document.getElementById('qty111').value) * tx;
-  //   document.getElementById('qty12').value = parseInt(document.getElementById('qty121').value) * tx;
-  //   document.getElementById('qty13').value = parseInt(document.getElementById('qty131').value) * tx;
-  //   document.getElementById('qty14').value = parseInt(document.getElementById('qty141').value) * tx;
-  // }
-
-  // function qtychange2(element) {
-  //   var tx = parseInt(element.value);
-  //   document.getElementById('qty21').value = parseInt(document.getElementById('qty211').value) * tx;
-  //   document.getElementById('qty22').value = parseInt(document.getElementById('qty221').value) * tx;
-  //   document.getElementById('qty23').value = parseInt(document.getElementById('qty231').value) * tx;
-  //   document.getElementById('qty24').value = parseInt(document.getElementById('qty241').value) * tx;
-  // }
-
-  // function qtychange3(element) {
-  //   var tx = parseInt(element.value);
-  //   document.getElementById('qty31').value = parseInt(document.getElementById('qty311').value) * tx;
-  //   document.getElementById('qty32').value = parseInt(document.getElementById('qty321').value) * tx;
-  //   document.getElementById('qty33').value = parseInt(document.getElementById('qty331').value) * tx;
-  //   document.getElementById('qty34').value = parseInt(document.getElementById('qty341').value) * tx;
-  // }
-
-  // function qtychange4(element) {
-  //   var tx = parseInt(element.value);
-  //   document.getElementById('qty41').value = parseInt(document.getElementById('qty411').value) * tx;
-  //   document.getElementById('qty42').value = parseInt(document.getElementById('qty421').value) * tx;
-  //   document.getElementById('qty43').value = parseInt(document.getElementById('qty431').value) * tx;
-  //   document.getElementById('qty44').value = parseInt(document.getElementById('qty441').value) * tx;
-  // }
- 
-  // $(document).ready(function() {
-  //   $('#select').on('change', function() {
-  //     select = $('#select').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getdata' %}",
-  //       data: {
-  //         id: select
-  //       }
-  //     }).done(function(response) {
-  //       var json_data = JSON.parse(response);
-  //       for (key in json_data) {
-  //         document.getElementById('email').value = json_data[key]['email']
-          
-  //         document.getElementById('bname').value = json_data[key]['firstname'] + ' ' + json_data[key]['lastname'] + '\n' + json_data[key]['company'] + '\n' + json_data[key]['street'] + '\n' + json_data[key]['city'] + '\n' + json_data[key]['state'] + '\n' + json_data[key]['pincode'] + '\n' + json_data[key]['country'];
-  //       }
-  //     })
-  //   });
-  //   $('#product').on('change', function() {
-  //     select = $('#product').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems' %}",
-  //       data: {
-  //         id: select
-  //       }
-  //     }).done(function(response) {
-  //       var json_data = JSON.parse(response);
-  //       for (key in json_data) {
-          
-  //         document.getElementById('hsn1').value = json_data[key]['hsn'];
-  //         document.getElementById('description').value = json_data[key]['description'];
-  //         document.getElementById('qty1').value = 0;
-  //         if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
-  //           document.getElementById('qtyspan').innerHTML = '';
-  //         } else {
-  //           document.getElementById('qtyspan').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
-  //         }
-  //         if (json_data[key]['item'] == 'bundle') {
-  //           document.getElementById('unit1').value = 0;
-  //           document.getElementById('unit1').style.display = 'none';
-  //           document.getElementById('tax1').style.display = 'none';
-  //           document.getElementById('total1').style.display = 'none';
-  //           if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
-  //             document.getElementById('bun1').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun1').style.display = 'table-row';
-  //             document.getElementById('product11').value = json_data[key]['product1'];
-  //             document.getElementById('hsn11').value = json_data[key]['hsn1'];
-  //             document.getElementById('description11').value = json_data[key]['description1'];
-  //             document.getElementById('qty11').value = json_data[key]['qty1'];
-  //             document.getElementById('qty111').value = json_data[key]['qty1'];
-  //             document.getElementById('unit11').value = json_data[key]['price1'];
-  //             document.getElementById('total11').value = json_data[key]['total1'];
-  //             document.getElementById('tax11').value = json_data[key]['tax1'];
-  //           }
-  //           if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
-  //             document.getElementById('bun2').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun2').style.display = 'table-row';
-  //             document.getElementById('product12').value = json_data[key]['product2'];
-  //             document.getElementById('hsn12').value = json_data[key]['hsn2'];
-  //             document.getElementById('description12').value = json_data[key]['description2'];
-  //             document.getElementById('qty12').value = json_data[key]['qty2'];
-  //             document.getElementById('qty121').value = json_data[key]['qty2'];
-  //             document.getElementById('unit12').value = json_data[key]['price2'];
-  //             document.getElementById('total12').value = json_data[key]['total2'];
-  //             document.getElementById('tax12').value = json_data[key]['tax2'];
-  //           }
-  //           if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
-  //             document.getElementById('bun3').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun3').style.display = 'table-row';
-  //             document.getElementById('product13').value = json_data[key]['product3'];
-  //             document.getElementById('hsn13').value = json_data[key]['hsn3'];
-  //             document.getElementById('description13').value = json_data[key]['description3'];
-  //             document.getElementById('qty13').value = json_data[key]['qty3'];
-  //             document.getElementById('qty131').value = json_data[key]['qty3'];
-  //             document.getElementById('unit13').value = json_data[key]['price3'];
-  //             document.getElementById('total13').value = json_data[key]['total3'];
-  //             document.getElementById('tax13').value = json_data[key]['tax3'];
-  //           }
-  //           if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
-  //             document.getElementById('bun4').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun4').style.display = 'table-row';
-  //             document.getElementById('product14').value = json_data[key]['product4'];
-  //             document.getElementById('hsn14').value = json_data[key]['hsn4'];
-  //             document.getElementById('description14').value = json_data[key]['description4'];
-  //             document.getElementById('qty14').value = json_data[key]['qty4'];
-  //             document.getElementById('qty141').value = json_data[key]['qty4'];
-  //             document.getElementById('unit14').value = json_data[key]['price4'];
-  //             document.getElementById('total14').value = json_data[key]['total4'];
-  //             document.getElementById('tax14').value = json_data[key]['tax4'];
-  //           }
-  //         } else {
-  //           document.getElementById('unit1').value = json_data[key]['salesprice'];
-  //           var place = document.getElementById('plosu').value;
-  //           if (place == '{{ cmp1.state }}') {
-  //             document.getElementById('unit1').style.display = 'block';
-  //             document.getElementById('tax1').style.display = 'block';
-  //             document.getElementById('total1').style.display = 'block';
-  //             document.getElementById('ta1').value = json_data[key]['tax'];
-  //             document.getElementById('ta1').innerHTML = json_data[key]['tax'] + ' % GST';
-  //           } else if (place != '{{ cmp1.state }}') {
-  //             document.getElementById('unit1').style.display = 'block';
-  //             document.getElementById('tax1').style.display = 'block';
-  //             document.getElementById('total1').style.display = 'block';
-  //             document.getElementById('ta5').value = json_data[key]['tax'];
-  //             document.getElementById('ta5').innerHTML = json_data[key]['tax'] + ' % IGST';
-  //           }
-
-  //           document.getElementById('bun1').style.display = 'none';
-  //           document.getElementById('product11').value = '';
-  //           document.getElementById('hsn11').value = '';
-  //           document.getElementById('description11').value = '';
-  //           document.getElementById('qty11').value = 0;
-  //           document.getElementById('qty111').value = 0;
-  //           document.getElementById('unit11').value = 0;
-  //           document.getElementById('total11').value = 0;
-  //           document.getElementById('tax11').value = 0;
-
-  //           document.getElementById('bun2').style.display = 'none';
-  //           document.getElementById('product12').value = '';
-  //           document.getElementById('hsn12').value = '';
-  //           document.getElementById('description12').value = '';
-  //           document.getElementById('qty12').value = 0;
-  //           document.getElementById('qty121').value = 0;
-  //           document.getElementById('unit12').value = 0;
-  //           document.getElementById('total12').value = 0;
-  //           document.getElementById('tax12').value = 0;
-
-  //           document.getElementById('bun3').style.display = 'none';
-  //           document.getElementById('product13').value = '';
-  //           document.getElementById('hsn13').value = '';
-  //           document.getElementById('description13').value = '';
-  //           document.getElementById('qty13').value = 0;
-  //           document.getElementById('qty131').value = 0;
-  //           document.getElementById('unit13').value = 0;
-  //           document.getElementById('total13').value = 0;
-  //           document.getElementById('tax13').value = 0;
-
-  //           document.getElementById('bun4').style.display = 'none';
-  //           document.getElementById('product14').value = '';
-  //           document.getElementById('hsn14').value = '';
-  //           document.getElementById('description14').value = '';
-  //           document.getElementById('qty14').value = 0;
-  //           document.getElementById('qty141').value = 0;
-  //           document.getElementById('unit14').value = 0;
-  //           document.getElementById('total14').value = 0;
-  //           document.getElementById('tax14').value = 0;
-  //         }
-  //       }
-  //     });
-  //   });
-  //   $('#product2').on('change', function() {
-  //     select = $('#product2').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems' %}",
-  //       data: {
-  //         id: select
-  //       }
-  //     }).done(function(response) {
-  //       var json_data = JSON.parse(response);
-  //       for (key in json_data) {
-  //         document.getElementById('hsn2').value = json_data[key]['hsn'];
-  //         document.getElementById('description2').value = json_data[key]['description'];
-  //         document.getElementById('qty2').value = 0;
-  //         if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
-  //           document.getElementById('qtyspan1').innerHTML = '';
-  //         } else {
-  //           document.getElementById('qtyspan1').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
-  //         }
-  //         if (json_data[key]['item'] == 'bundle') {
-  //           document.getElementById('unit2').value = 0;
-  //           document.getElementById('unit2').style.display = 'none';
-  //           document.getElementById('tax2').style.display = 'none';
-  //           document.getElementById('total2').style.display = 'none';
-  //           if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
-  //             document.getElementById('bun5').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun5').style.display = 'table-row';
-  //             document.getElementById('product21').value = json_data[key]['product1'];
-  //             document.getElementById('hsn21').value = json_data[key]['hsn1'];
-  //             document.getElementById('description21').value = json_data[key]['description1'];
-  //             document.getElementById('qty21').value = json_data[key]['qty1'];
-  //             document.getElementById('qty211').value = json_data[key]['qty1'];
-  //             document.getElementById('unit21').value = json_data[key]['price1'];
-  //             document.getElementById('total21').value = json_data[key]['total1'];
-  //             document.getElementById('tax21').value = json_data[key]['tax1'];
-  //           }
-  //           if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
-  //             document.getElementById('bun6').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun6').style.display = 'table-row';
-  //             document.getElementById('product22').value = json_data[key]['product2'];
-  //             document.getElementById('hsn22').value = json_data[key]['hsn2'];
-  //             document.getElementById('description22').value = json_data[key]['description2'];
-  //             document.getElementById('qty22').value = json_data[key]['qty2'];
-  //             document.getElementById('qty221').value = json_data[key]['qty2'];
-  //             document.getElementById('unit22').value = json_data[key]['price2'];
-  //             document.getElementById('total22').value = json_data[key]['total2'];
-  //             document.getElementById('tax22').value = json_data[key]['tax2'];
-  //           }
-  //           if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
-  //             document.getElementById('bun7').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun7').style.display = 'table-row';
-  //             document.getElementById('product23').value = json_data[key]['product3'];
-  //             document.getElementById('hsn23').value = json_data[key]['hsn3'];
-  //             document.getElementById('description23').value = json_data[key]['description3'];
-  //             document.getElementById('qty23').value = json_data[key]['qty3'];
-  //             document.getElementById('qty231').value = json_data[key]['qty3'];
-  //             document.getElementById('unit23').value = json_data[key]['price3'];
-  //             document.getElementById('total23').value = json_data[key]['total3'];
-  //             document.getElementById('tax23').value = json_data[key]['tax3'];
-  //           }
-  //           if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
-  //             document.getElementById('bun8').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun8').style.display = 'table-row';
-  //             document.getElementById('product24').value = json_data[key]['product4'];
-  //             document.getElementById('hsn24').value = json_data[key]['hsn4'];
-  //             document.getElementById('description24').value = json_data[key]['description4'];
-  //             document.getElementById('qty24').value = json_data[key]['qty4'];
-  //             document.getElementById('qty241').value = json_data[key]['qty4'];
-  //             document.getElementById('unit24').value = json_data[key]['price4'];
-  //             document.getElementById('total24').value = json_data[key]['total4'];
-  //             document.getElementById('tax24').value = json_data[key]['tax4'];
-  //           }
-  //         } else {
-  //           document.getElementById('unit2').value = json_data[key]['salesprice'];
-  //           var place = document.getElementById('plosu').value;
-  //           if (place == '{{ cmp1.state }}') {
-  //             document.getElementById('unit2').style.display = 'block';
-  //             document.getElementById('tax2').style.display = 'block';
-  //             document.getElementById('total2').style.display = 'block';
-  //             document.getElementById('ta2').value = json_data[key]['tax'];
-  //             document.getElementById('ta2').innerHTML = json_data[key]['tax'] + ' % GST';
-  //           } else if (place != '{{ cmp1.state }}') {
-  //             document.getElementById('unit2').style.display = 'block';
-  //             document.getElementById('tax2').style.display = 'block';
-  //             document.getElementById('total2').style.display = 'block';
-  //             document.getElementById('ta6').value = json_data[key]['tax'];
-  //             document.getElementById('ta6').innerHTML = json_data[key]['tax'] + ' % IGST';
-  //           }
-  //           document.getElementById('bun5').style.display = 'none';
-  //           document.getElementById('product21').value = '';
-  //           document.getElementById('hsn21').value = '';
-  //           document.getElementById('description21').value = '';
-  //           document.getElementById('qty21').value = 0;
-  //           document.getElementById('qty211').value = 0;
-  //           document.getElementById('unit21').value = 0;
-  //           document.getElementById('total21').value = 0;
-  //           document.getElementById('tax21').value = 0;
-
-  //           document.getElementById('bun6').style.display = 'none';
-  //           document.getElementById('product22').value = '';
-  //           document.getElementById('hsn22').value = '';
-  //           document.getElementById('description22').value = '';
-  //           document.getElementById('qty22').value = 0;
-  //           document.getElementById('qty221').value = 0;
-  //           document.getElementById('unit22').value = 0;
-  //           document.getElementById('total22').value = 0;
-  //           document.getElementById('tax22').value = 0;
-
-  //           document.getElementById('bun7').style.display = 'none';
-  //           document.getElementById('product23').value = '';
-  //           document.getElementById('hsn23').value = '';
-  //           document.getElementById('description23').value = '';
-  //           document.getElementById('qty23').value = 0;
-  //           document.getElementById('qty231').value = 0;
-  //           document.getElementById('unit23').value = 0;
-  //           document.getElementById('total23').value = 0;
-  //           document.getElementById('tax23').value = 0;
-
-  //           document.getElementById('bun8').style.display = 'none';
-  //           document.getElementById('product24').value = '';
-  //           document.getElementById('hsn24').value = '';
-  //           document.getElementById('description24').value = '';
-  //           document.getElementById('qty24').value = 0;
-  //           document.getElementById('qty241').value = 0;
-  //           document.getElementById('unit24').value = 0;
-  //           document.getElementById('total24').value = 0;
-  //           document.getElementById('tax24').value = 0;
-  //         }
-  //       }
-  //     });
-  //   });
-
-  //   $('#product3').on('change', function() {
-  //     select = $('#product3').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems' %}",
-  //       data: {
-  //         id: select
-  //       }
-  //     }).done(function(response) {
-  //       var json_data = JSON.parse(response);
-  //       for (key in json_data) {
-  //         document.getElementById('hsn3').value = json_data[key]['hsn'];
-  //         document.getElementById('description3').value = json_data[key]['description'];
-  //         document.getElementById('qty3').value = 0;
-  //         if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
-  //           document.getElementById('qtyspan2').innerHTML = '';
-  //         } else {
-  //           document.getElementById('qtyspan2').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
-  //         }
-  //         if (json_data[key]['item'] == 'bundle') {
-  //           document.getElementById('unit3').value = 0;
-  //           document.getElementById('unit3').style.display = 'none';
-  //           document.getElementById('tax3').style.display = 'none';
-  //           document.getElementById('total3').style.display = 'none';
-  //           if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
-  //             document.getElementById('bun9').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun9').style.display = 'table-row';
-  //             document.getElementById('product31').value = json_data[key]['product1'];
-  //             document.getElementById('hsn31').value = json_data[key]['hsn1'];
-  //             document.getElementById('description31').value = json_data[key]['description1'];
-  //             document.getElementById('qty31').value = json_data[key]['qty1'];
-  //             document.getElementById('qty311').value = json_data[key]['qty1'];
-  //             document.getElementById('unit31').value = json_data[key]['price1'];
-  //             document.getElementById('total31').value = json_data[key]['total1'];
-  //             document.getElementById('tax31').value = json_data[key]['tax1'];
-  //           }
-  //           if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
-  //             document.getElementById('bun10').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun10').style.display = 'table-row';
-  //             document.getElementById('product32').value = json_data[key]['product2'];
-  //             document.getElementById('hsn32').value = json_data[key]['hsn2'];
-  //             document.getElementById('description32').value = json_data[key]['description2'];
-  //             document.getElementById('qty32').value = json_data[key]['qty2'];
-  //             document.getElementById('qty321').value = json_data[key]['qty2'];
-  //             document.getElementById('unit32').value = json_data[key]['price2'];
-  //             document.getElementById('total32').value = json_data[key]['total2'];
-  //             document.getElementById('tax32').value = json_data[key]['tax2'];
-  //           }
-  //           if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
-  //             document.getElementById('bun11').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun11').style.display = 'table-row';
-  //             document.getElementById('product33').value = json_data[key]['product3'];
-  //             document.getElementById('hsn33').value = json_data[key]['hsn3'];
-  //             document.getElementById('description33').value = json_data[key]['description3'];
-  //             document.getElementById('qty33').value = json_data[key]['qty3'];
-  //             document.getElementById('qty331').value = json_data[key]['qty3'];
-  //             document.getElementById('unit33').value = json_data[key]['price3'];
-  //             document.getElementById('total33').value = json_data[key]['total3'];
-  //             document.getElementById('tax33').value = json_data[key]['tax3'];
-  //           }
-  //           if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
-  //             document.getElementById('bun12').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun12').style.display = 'table-row';
-  //             document.getElementById('product34').value = json_data[key]['product4'];
-  //             document.getElementById('hsn34').value = json_data[key]['hsn4'];
-  //             document.getElementById('description34').value = json_data[key]['description4'];
-  //             document.getElementById('qty34').value = json_data[key]['qty4'];
-  //             document.getElementById('qty341').value = json_data[key]['qty4'];
-  //             document.getElementById('unit34').value = json_data[key]['price4'];
-  //             document.getElementById('total34').value = json_data[key]['total4'];
-  //             document.getElementById('tax34').value = json_data[key]['tax4'];
-  //           }
-  //         } else {
-  //           document.getElementById('unit3').value = json_data[key]['salesprice'];
-  //           var place = document.getElementById('plosu').value;
-  //           if (place == '{{ cmp1.state }}') {
-  //             document.getElementById('unit3').style.display = 'block';
-  //             document.getElementById('tax3').style.display = 'block';
-  //             document.getElementById('total3').style.display = 'block';
-  //             document.getElementById('ta3').value = json_data[key]['tax'];
-  //             document.getElementById('ta3').innerHTML = json_data[key]['tax'] + ' % GST';
-  //           } else if (place != '{{ cmp1.state }}') {
-  //             document.getElementById('unit3').style.display = 'block';
-  //             document.getElementById('tax3').style.display = 'block';
-  //             document.getElementById('total3').style.display = 'block';
-  //             document.getElementById('ta7').value = json_data[key]['tax'];
-  //             document.getElementById('ta7').innerHTML = json_data[key]['tax'] + ' % IGST';
-  //           }
-
-  //           document.getElementById('bun9').style.display = 'none';
-  //           document.getElementById('product31').value = '';
-  //           document.getElementById('hsn31').value = '';
-  //           document.getElementById('description31').value = '';
-  //           document.getElementById('qty31').value = 0;
-  //           document.getElementById('qty311').value = 0;
-  //           document.getElementById('unit31').value = 0;
-  //           document.getElementById('total31').value = 0;
-  //           document.getElementById('tax31').value = 0;
-
-  //           document.getElementById('bun10').style.display = 'none';
-  //           document.getElementById('product32').value = '';
-  //           document.getElementById('hsn32').value = '';
-  //           document.getElementById('description32').value = '';
-  //           document.getElementById('qty32').value = 0;
-  //           document.getElementById('qty321').value = 0;
-  //           document.getElementById('unit32').value = 0;
-  //           document.getElementById('total32').value = 0;
-  //           document.getElementById('tax32').value = 0;
-
-  //           document.getElementById('bun11').style.display = 'none';
-  //           document.getElementById('product33').value = '';
-  //           document.getElementById('hsn33').value = '';
-  //           document.getElementById('description33').value = '';
-  //           document.getElementById('qty33').value = 0;
-  //           document.getElementById('qty331').value = 0;
-  //           document.getElementById('unit33').value = 0;
-  //           document.getElementById('total33').value = 0;
-  //           document.getElementById('tax33').value = 0;
-
-  //           document.getElementById('bun12').style.display = 'none';
-  //           document.getElementById('product34').value = '';
-  //           document.getElementById('hsn34').value = '';
-  //           document.getElementById('description34').value = '';
-  //           document.getElementById('qty34').value = 0;
-  //           document.getElementById('qty341').value = 0;
-  //           document.getElementById('unit34').value = 0;
-  //           document.getElementById('total34').value = 0;
-  //           document.getElementById('tax34').value = 0;
-  //         }
-  //       }
-  //     });
-  //   });
-  //   $('#product4').on('change', function() {
-  //     select = $('#product4').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getitems' %}",
-  //       data: {
-  //         id: select
-  //       }
-  //     }).done(function(response) {
-  //       var json_data = JSON.parse(response);
-  //       for (key in json_data) {
-  //         document.getElementById('hsn4').value = json_data[key]['hsn'];
-  //         document.getElementById('description4').value = json_data[key]['description'];
-  //         document.getElementById('qty4').value = 0;
-  //         if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
-  //           document.getElementById('qtyspan3').innerHTML = '';
-  //         } else {
-  //           document.getElementById('qtyspan3').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
-  //         }
-  //         if (json_data[key]['item'] == 'bundle') {
-  //           document.getElementById('unit4').value = 0;
-  //           document.getElementById('unit4').style.display = 'none';
-  //           document.getElementById('tax4').style.display = 'none';
-  //           document.getElementById('total4').style.display = 'none';
-  //           if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
-  //             document.getElementById('bun13').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun13').style.display = 'table-row';
-  //             document.getElementById('product41').value = json_data[key]['product1'];
-  //             document.getElementById('hsn41').value = json_data[key]['hsn1'];
-  //             document.getElementById('description41').value = json_data[key]['description1'];
-  //             document.getElementById('qty41').value = json_data[key]['qty1'];
-  //             document.getElementById('qty411').value = json_data[key]['qty1'];
-  //             document.getElementById('unit41').value = json_data[key]['price1'];
-  //             document.getElementById('total41').value = json_data[key]['total1'];
-  //             document.getElementById('tax41').value = json_data[key]['tax1'];
-  //           }
-  //           if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
-  //             document.getElementById('bun14').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun14').style.display = 'table-row';
-  //             document.getElementById('product42').value = json_data[key]['product2'];
-  //             document.getElementById('hsn42').value = json_data[key]['hsn2'];
-  //             document.getElementById('description42').value = json_data[key]['description2'];
-  //             document.getElementById('qty42').value = json_data[key]['qty2'];
-  //             document.getElementById('qty421').value = json_data[key]['qty2'];
-  //             document.getElementById('unit42').value = json_data[key]['price2'];
-  //             document.getElementById('total42').value = json_data[key]['total2'];
-  //             document.getElementById('tax42').value = json_data[key]['tax2'];
-  //           }
-  //           if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
-  //             document.getElementById('bun15').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun15').style.display = 'table-row';
-  //             document.getElementById('product43').value = json_data[key]['product3'];
-  //             document.getElementById('hsn43').value = json_data[key]['hsn3'];
-  //             document.getElementById('description43').value = json_data[key]['description3'];
-  //             document.getElementById('qty43').value = json_data[key]['qty3'];
-  //             document.getElementById('qty431').value = json_data[key]['qty3'];
-  //             document.getElementById('unit43').value = json_data[key]['price3'];
-  //             document.getElementById('total43').value = json_data[key]['total3'];
-  //             document.getElementById('tax43').value = json_data[key]['tax3'];
-  //           }
-  //           if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
-  //             document.getElementById('bun16').style.display = 'none';
-  //           } else {
-  //             document.getElementById('bun16').style.display = 'table-row';
-  //             document.getElementById('product44').value = json_data[key]['product4'];
-  //             document.getElementById('hsn44').value = json_data[key]['hsn4'];
-  //             document.getElementById('description44').value = json_data[key]['description4'];
-  //             document.getElementById('qty44').value = json_data[key]['qty4'];
-  //             document.getElementById('qty441').value = json_data[key]['qty4'];
-  //             document.getElementById('unit44').value = json_data[key]['price4'];
-  //             document.getElementById('total44').value = json_data[key]['total4'];
-  //             document.getElementById('tax44').value = json_data[key]['tax4'];
-  //           }
-  //         } else {
-  //           document.getElementById('unit4').value = json_data[key]['salesprice'];
-  //           var place = document.getElementById('plosu').value;
-  //           if (place == '{{ cmp1.state }}') {
-  //             document.getElementById('unit4').style.display = 'block';
-  //             document.getElementById('tax4').style.display = 'block';
-  //             document.getElementById('total4').style.display = 'block';
-  //             document.getElementById('ta4').value = json_data[key]['tax'];
-  //             document.getElementById('ta4').innerHTML = json_data[key]['tax'] + ' % GST';
-  //           } else if (place != '{{ cmp1.state }}') {
-  //             document.getElementById('unit4').style.display = 'block';
-  //             document.getElementById('tax4').style.display = 'block';
-  //             document.getElementById('total4').style.display = 'block';
-  //             document.getElementById('ta8').value = json_data[key]['tax'];
-  //             document.getElementById('ta8').innerHTML = json_data[key]['tax'] + ' % IGST';
-  //           }
-  //           document.getElementById('bun13').style.display = 'none';
-  //           document.getElementById('product41').value = '';
-  //           document.getElementById('hsn41').value = '';
-  //           document.getElementById('description41').value = '';
-  //           document.getElementById('qty41').value = 0;
-  //           document.getElementById('qty411').value = 0;
-  //           document.getElementById('unit41').value = 0;
-  //           document.getElementById('total41').value = 0;
-  //           document.getElementById('tax41').value = 0;
-
-  //           document.getElementById('bun14').style.display = 'none';
-  //           document.getElementById('product42').value = '';
-  //           document.getElementById('hsn42').value = '';
-  //           document.getElementById('description42').value = '';
-  //           document.getElementById('qty42').value = 0;
-  //           document.getElementById('qty421').value = 0;
-  //           document.getElementById('unit42').value = 0;
-  //           document.getElementById('total42').value = 0;
-  //           document.getElementById('tax42').value = 0;
-
-  //           document.getElementById('bun15').style.display = 'none';
-  //           document.getElementById('product43').value = '';
-  //           document.getElementById('hsn43').value = '';
-  //           document.getElementById('description43').value = '';
-  //           document.getElementById('qty43').value = 0;
-  //           document.getElementById('qty431').value = 0;
-  //           document.getElementById('unit43').value = 0;
-  //           document.getElementById('total43').value = 0;
-  //           document.getElementById('tax43').value = 0;
-
-  //           document.getElementById('bun16').style.display = 'none';
-  //           document.getElementById('product44').value = '';
-  //           document.getElementById('hsn44').value = '';
-  //           document.getElementById('description44').value = '';
-  //           document.getElementById('qty44').value = 0;
-  //           document.getElementById('qty441').value = 0;
-  //           document.getElementById('unit44').value = 0;
-  //           document.getElementById('total44').value = 0;
-  //           document.getElementById('tax44').value = 0;
-  //         }
-  //       }
-  //     });
-  //   });
-
-  //   $('#termadd').on('change', function() {
-  //     select = $('#termadd').val();
-  //     $.ajax({
-  //       type: "GET",
-  //       url: "{% url 'getterm' %}",
-  //       data: {
-  //         id: select
-  //       }
-  //     }).done(function(response) {
-  //       var json_data = JSON.parse(response);
-  //       for (key in json_data) {
-  //         document.getElementById('duedat').value = json_data[key]['newdate'];
-  //       }
-  //     }).fail(function() {
-
-  //     });
-  //   });
-  //   var $select1 = $('#plosu'),
-  //     $select2 = $('#tax1'),
-  //     $select3 = $('#tax2'),
-  //     $select4 = $('#tax3'),
-  //     $select5 = $('#tax4'),
-  //     $options = $select2.find('option'),
-  //     $options1 = $select3.find('option'),
-  //     $options2 = $select4.find('option'),
-  //     $options3 = $select5.find('option');
-  //   if ($options1.value == '{{ cmp1.state }}') {
-  //     $options1.text = "{{ cmp1.state }}"
-  //   }
-  //   $select1.on('change', function() {
-  //     if (this.value == "{{ cmp1.state }}") {
-  //       $select2.html($options.filter('[text="' + this.value + '"]'));
-  //       $select3.html($options1.filter('[text="' + this.value + '"]'));
-  //       $select4.html($options2.filter('[text="' + this.value + '"]'));
-  //       $select5.html($options3.filter('[text="' + this.value + '"]'));
-  //     } else {
-  //       $select2.html($options.filter('[text="' + " " + '"]'));
-  //       $select3.html($options1.filter('[text="' + " " + '"]'));
-  //       $select4.html($options2.filter('[text="' + " " + '"]'));
-  //       $select5.html($options3.filter('[text="' + " " + '"]'));
-
-  //     }
-
-  //   }).trigger('change');
-  // });
-
-
- 
-        function poppins() {
-            var chkbtn = document.getElementById('okay');
-            if (chkbtn.checked == true) {
-                document.getElementById('shipstreet').value = document.getElementById('street').value;
-                document.getElementById('shipcity').value = document.getElementById('city').value;
-                document.getElementById('shippincode').value = document.getElementById('pincode').value;
-                document.getElementById('shipcountry').value = document.getElementById('country').value;
-                document.getElementById('shipstate').value = document.getElementById('state').value;
-                document.getElementById('shipst').innerHTML = document.getElementById('state').value;
-            } else {
-                document.getElementById('shipstreet').value = '';
-                document.getElementById('shipcity').value = '';
-                document.getElementById('shipstate').value = '';
-                document.getElementById('shippincode').value = '';
-                document.getElementById('shipcountry').value = '';
-            }
-        }
-  
-        function hidinput(divId, element) {
-            if (element.value == 'GST-registered-Regular') {
-                document.getElementById(divId).style.display = 'block';
-            } else {
-                document.getElementById(divId).style.display = 'none';
-            }
-        }
-
-        
-        function showMessage(input) {
-            const gstin = input.value;
-
-            if (gstin.length === 15) {
-                // document.getElementById("message").textContent = "Please wait, validating GSTIN format...";
-                setTimeout(() => checkgst(input), 500);  // Wait for a second and then validate GSTIN
-            } else {
-                document.getElementById("message").textContent = "";
-            }
-        }
-
-
-        function checkgst(element) {
-            var gstinput = element.value;
-            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
-            if (gstinput.match(gstregexp)) {
-                document.getElementById('warngst').innerHTML = '';
-            } else {
-                document.getElementById('warngst').innerHTML = 'Please provide a valid GST Number';
-                alert('Please provide a valid GST Number');
-            }
-        }
-
-        function checkpan(element) {
-            var paninput = element.value;
-            var panregexp = ["[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}"]
-            if (paninput.match(panregexp)) {
-                document.getElementById('warnpan').innerHTML = '';
-            } else {
-                document.getElementById('warnpan').innerHTML = 'Please provide a valid PAN Number';
-                alert('Please provide a valid PAN Number')
-            }
-        }
-
-        function checkweb(element) {
-            var webinput = element.value;
-            var webregexp = "www."
-            if (webinput.startsWith(webregexp)) {
-                document.getElementById('warnweb').innerHTML = '';
-            } else {
-                document.getElementById('warnweb').innerHTML = 'Please provide a valid Website Address';
-                alert('Please provide a valid Website Address')
-            }
-        }
-
-        function checkphone(element) {
-            var phoneinput = element.value;
-            var phoneregexp = "[0-9]{10}";
-            if (phoneinput.match(phoneregexp)) {
-                document.getElementById('warnphone').innerHTML = '';
-            } else {
-                document.getElementById('warnphone').innerHTML = 'Please provide a valid Phone Number';
-                alert('Please provide a valid Phone Number')
-            }
-        }
-            function insertValue() {
-                var select = document.getElementById("customer"),
-                    txtVal = document.getElementById("val").value,
-                    newOption = document.createElement("OPTION"),
-                    newOptionval = document.createTextNode(txtVal);
-
-                newOption.appendChild(newOptionval);
-                select.insertBefore(newOption, select.lastChild);
-            }
-        </script>
-        <script>
-            $('.datepicker').pickadate({
-                selectMonths: true,
-                selectYears: true
-            }),
-                $('.timepicker').pickatime()
-        </script>
-        <script>
-            $(function () {
-                $('#date-time').bootstrapMaterialDatePicker({
-                    format: 'YYYY-MM-DD HH:mm'
-                });
-                $('#date').bootstrapMaterialDatePicker({
-                    time: false
-                });
-                $('#time').bootstrapMaterialDatePicker({
-                    date: false,
-                    format: 'HH:mm'
-                });
-            });
-        </script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-
-                var current_fs, next_fs, previous_fs; //fieldsets
-                var opacity;
-
-                $(".next").click(function () {
-
-                    current_fs = $(this).parent();
-                    next_fs = $(this).parent().next();
-
-//Add Class Active
-                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
-
-//show the next fieldset
-                    next_fs.show();
-//hide the current fieldset with style
-                    current_fs.animate({opacity: 0}, {
-                        step: function (now) {
-// for making fielset appear animation
-                            opacity = 1 - now;
-
-                            current_fs.css({
-                                'display': 'none',
-                                'position': 'relative'
-                            });
-                            next_fs.css({'opacity': opacity});
-                        },
-                        duration: 600
-                    });
-                });
-
-                $(".previous").click(function () {
-
-                    current_fs = $(this).parent();
-                    previous_fs = $(this).parent().prev();
-
-//Remove class active
-                    $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-
-//show the previous fieldset
-                    previous_fs.show();
-
-//hide the current fieldset with style
-                    current_fs.animate({opacity: 0}, {
-                        step: function (now) {
-// for making fielset appear animation
-                            opacity = 1 - now;
-
-                            current_fs.css({
-                                'display': 'none',
-                                'position': 'relative'
-                            });
-                            previous_fs.css({'opacity': opacity});
-                        },
-                        duration: 600
-                    });
-                });
-
-                $('.radio-group .radio').click(function () {
-                    $(this).parent().find('.radio').removeClass('selected');
-                    $(this).addClass('selected');
-                });
-
-                
-
-            });
-           
-        </script>
-        <script type="text/javascript">
-            function ShowHideDiv(track) {
-                var inventorytrack = document.getElementById("inventorytrack");
-    
-                inventorytrack.style.display = track.checked ? "flex" : "none";
-    
-            }
-      
-            function validateForm() {
-                let x = document.forms["myForm"]["fname"].value;
-                if (x == "") {
-                  alert("Name must be filled out");
-                  return false;
-                }
-              }
-
-
-
-
-                 // create customer--------------------------
-
-        $(document).on("click", "#customerSave", function(){
-            
+            var row = $(dropdown).closest('.items-table-body'); // Assuming each row has a class 'item-row'
             $.ajax({
-    
-                type : 'POST',
-                url:"{% url 'customers21' %}",
-
-                data:{
-                    
-                    title : $('#title').val(),
-                    first_name : $('#firstname').val(),
-                    last_name : $('#lastname').val(),
-                    company_name : $("#company").val(),
-                    location : $("#location").val(),
-                    openbalance : $("#openbalance").val(),
-                    email : $("#email").val(),
-                    website :$("#website").val(),
-                    mobile :$("#mobile").val(),
-                    street : $("#street").val(),
-                    city : $("#city").val(),
-                    state : $("#state").val(),
-                    country : $("#country").val(),
-                    pincode : $("#pincode").val(),
-                    shipstreet : $("#shipstreet").val(),
-                    shipcity : $("#shipcity").val(),
-                    shipstate : $("#shipstate").val(),
-                    shipcountry : $("#shipcountry").val(),
-                    shippincode : $("#shippincode").val(),
-                    gsttype :$("#gsttype").val(),
-                    gstin :$("#gstin").val(),
-                    panno :$("#panno").val(),
-
-                  
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    
-                },
-                
-                success: function(response) {
-                    console.log("success")
-                    document.getElementById("modalCustomer").reset();
-                    reloadCustomer();
-                },
-            });        
-        });
-
-
-        function reloadCustomer() {
-
-            $.ajax({
-                url: "{% url 'cust_dropdown' %}",
+                url: "{% url 'item_dropdown' %}",
                 type: "GET",
                 dataType: "json",
-                data: $(this).serialize(),
+                data: row.find('select').serialize(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
 
                 success: function(data) {
-                    var dropdown = $('#customer');
-                    dropdown.empty();
-                dropdown.append(`<option selected>Select Customer</option>`);
-                    $.each(data, function(key, value) {
-                        console.log(value)
-                        dropdown.append($('<option></option>').attr('value', key).text(value[1] + " " +value[2] + " "+ value[3]).val(value[0] + " " +value[2] + " "+ value[3]));
-                    });
-                },
+                        var dropdown = $('.product');
+                        dropdown.empty();
+                        dropdown.append(`<option selected>Select Item</option>`);
+                        $.each(data, function(key, value) {
+                        
+                            dropdown.append($('<option></option>').attr('value', key).text(value).val(value));
+                        });
+
+                    },
                 error: function(xhr, status, error) {
-                console.error(xhr.responseText);
+                    console.error(xhr.responseText);
                 }
+                
             });
+        });
+    });
+   // calculation---------------------------
+
+    $(document).on('change', '.product',function(){ 
+        var n = $(this).attr("id").slice(7);
+        $.ajax({
+            url: "{% url 'itemdata' %}",
+            type : 'GET',
+            data:{
+                id : $(this).val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+            
+            success: function(response) {
+                data = response.hsn;
+                data2 = response.qty;
+                data3 = response.sales;
+                data4 = response.gst;
+                data5 = response.sgst;
+                inter = response.inter_tax;
+                intra = response.intra_tax;
+
+                console.log(inter);
+                console.log(intra);
+                
+                document.getElementById('hsn'+n).value = data;
+                document.getElementById('qtyspan'+n).innerHTML = data2;
+                document.getElementById('unit'+n).value = data3;
+
+                $(".seltax").removeClass('d-flex');
+                $(".seltax").addClass('d-none');
+
+                console.log($("#plosu").val());
+                console.log($("#cmpstate").val());
+
+                if($("#plosu").val() == $("#cmpstate").val()){
+                    $(".inter_tax").removeClass('d-flex');
+                    $(".inter_tax").addClass('d-none');
+
+                    $(".intra_tax").removeClass('d-none');
+                    $(".intra_tax").addClass('d-flex');
+                    document.getElementById('tax1'+n).value = intra;
+                    document.getElementById('select_tax').value = intra;
+                }
+                else{
+
+                    $(".intra_tax").removeClass('d-flex');
+                    $(".intra_tax").addClass('d-none');
+
+                    $(".inter_tax").removeClass('d-none');
+                    $(".inter_tax").addClass('d-flex');
+                    document.getElementById('tax2'+n).value = inter;
+                    document.getElementById('select_tax').value = inter;
+                }
+                calc();
+            },
+        });
+                
+    });
+
+    $(document).on('click','.remove_row',function(){
+        var row_id = $(this).attr("id");
+        $('#addr0'+row_id+'').remove();
+        
+        calc();
+    });
+        
+
+    $(document).on('click','.clone_row',function(){
+        var roinc = $("#items-table-body tr").length;
+        var originalRow = $(this).closest('#items-table-body tr'); 
+        var clonedRow = originalRow.clone();
+
+        clonedRow.attr('id', 'addr0' +(roinc+1));
+
+        clonedRow.find('.nnum').text(roinc+1);
+
+        clonedRow.find('[id]').each(function() {
+            var oldId = $(this).attr('id');
+            var newId = oldId.replace(/\d+/, roinc+1);
+            console.log(newId)
+            $(this).attr('id', newId );
+        });
+
+        clonedRow.find('.product').each(function() {
+            $(this).val(originalRow.find('.product').val());
+        });
+        clonedRow.find('.intra_tax').each(function() {
+            $(this).val(originalRow.find('.intra_tax').val());
+        });
+        clonedRow.find('.inter_tax').each(function() {
+            $(this).val(originalRow.find('.inter_tax').val());
+        });
+        originalRow.after(clonedRow);
+        
+        calc();
+        
+    });
+    $(document).ready(function(){
+
+    
+        $('#items-table-body').on('keyup change', function () {
+            calc();
+        });
+
+        $('#tax').on('keyup change', function () {
+            calc_total();
+        });
+    });
+
+    function calc() {
+        $('#tab_logic tbody tr').each(function () {
+            var html = $(this).html();
+            if (html != '') {
+                var qty = $(this).find('.qty').val();
+                
+                var price = $(this).find('.price').val();
+
+                var dis = $(this).find('.disc').val();
+
+                var bc = $("#plosu").val();
+                var compstate = $("#cmpstate").val();
+                if(bc==compstate){
+                    tax = $(this).find('.intra_tax').val();
+                }
+                else{
+                    tax = $(this).find('.inter_tax').val();
+                }
+                 $(this).find('.total').val((parseFloat(qty) *parseFloat(price))-parseFloat(dis));
+                $(this).find('.taxamount').val(((qty * price)-dis) * (tax / 100));
+                calc_total();
+            }
+        });
+    }
+
+    function calc_total() {
+            
+        total = 0;
+        $('.total').each(function () {
+            total += parseFloat($(this).val());
+        });
+        taxamount = 0;
+        $('.taxamount').each(function () {
+            taxamount += parseFloat($(this).val());
+        });
+        $('#sub_total').val(total.toFixed(2));
+        $('#tax_amount').val(taxamount.toFixed(2));
+        ship = parseFloat($("#ship").val());
+        // console.log( ship);
+        gtot = taxamount + total + ship;
+        $('#grandtotal').val(gtot.toFixed(2));
+        $('#baldue').val(gtot.toFixed(2));
+
+        test()
+    }
+
+    function test(){
+                    
+        var bc = $("#plosu").val();
+        var compstate = $("#cmpstate").val();
+        d=0
+        if (bc == compstate  ) {
+            gst = taxamount/2
+            $('#cgst').val(parseFloat(gst.toFixed(2)));
+            $('#sgst').val(parseFloat(gst.toFixed(2)));
+            $('#igst').val(parseFloat(d.toFixed(2)));
         }
+            
+        if (bc != "{{ cmp1.state }}"  ) {
+            $('#igst').val(taxamount.toFixed(2));
+            $('#cgst').val(d.toFixed(2));
+            $('#sgst').val(d.toFixed(2));
+        }
+
+        
+    }
+    function showinnum(divId, element) {
+        if (element.value) {
+            document.getElementById(divId).innerHTML = "Debit Note " + element.value;
+        } else {
+            document.getElementById(divId).innerHTML = "Debit Note";
+        }
+    }
+
+    $(document).on('keyup',"#ship",function(){
+        var subtot = $('#sub_total').val();
+        var tax = $('#tax_amount').val();
+        var sh = $("#ship").val();
+        $('#grandtotal').val((parseFloat(subtot)+parseFloat(tax)+parseFloat(sh)).toFixed(2));
+        $('#baldue').val((parseFloat(subtot)+parseFloat(tax)+parseFloat(sh)).toFixed(2));
+    });
+
+    $(document).on("change", "#adj", function(){
+        var round = parseFloat($("#grandtotal").val()) + parseFloat($("#adj").val()) 
+        $("#grandtotal").val(round);
+        $('#baldue').val(round);
+    });
+
+    $(document).on('click','.remove_row',function(){
+        var row_id = $(this).attr("id");
+        $('#addr0'+row_id+'').remove();
+    });
+  
+    function poppins() {
+        var chkbtn = document.getElementById('okay');
+        if (chkbtn.checked == true) {
+            document.getElementById('shipstreet').value = document.getElementById('street').value;
+            document.getElementById('shipcity').value = document.getElementById('city').value;
+            document.getElementById('shippincode').value = document.getElementById('pincode').value;
+            document.getElementById('shipcountry').value = document.getElementById('country').value;
+            document.getElementById('shipstate').value = document.getElementById('state').value;
+            document.getElementById('shipst').innerHTML = document.getElementById('state').value;
+        } else {
+            document.getElementById('shipstreet').value = '';
+            document.getElementById('shipcity').value = '';
+            document.getElementById('shipstate').value = '';
+            document.getElementById('shippincode').value = '';
+            document.getElementById('shipcountry').value = '';
+        }
+    }
+
+    function hidinput(divId, element) {
+        if (element.value == 'GST-registered-Regular') {
+            document.getElementById(divId).style.display = 'block';
+        } else {
+            document.getElementById(divId).style.display = 'none';
+        }
+    }
+
+    
+    function showMessage(input) {
+        const gstin = input.value;
+
+        if (gstin.length === 15) {
+            // document.getElementById("message").textContent = "Please wait, validating GSTIN format...";
+            setTimeout(() => checkgst(input), 500);  // Wait for a second and then validate GSTIN
+        } else {
+            document.getElementById("message").textContent = "";
+        }
+    }
+
+
+    function checkgst(element) {
+        var gstinput = element.value;
+        var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+        if (gstinput.match(gstregexp)) {
+            document.getElementById('warngst').innerHTML = '';
+        } else {
+            document.getElementById('warngst').innerHTML = 'Please provide a valid GST Number';
+            alert('Please provide a valid GST Number');
+        }
+    }
+
+    function checkpan(element) {
+        var paninput = element.value;
+        var panregexp = ["[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}"]
+        if (paninput.match(panregexp)) {
+            document.getElementById('warnpan').innerHTML = '';
+        } else {
+            document.getElementById('warnpan').innerHTML = 'Please provide a valid PAN Number';
+            alert('Please provide a valid PAN Number')
+        }
+    }
+
+    function checkweb(element) {
+        var webinput = element.value;
+        var webregexp = "www."
+        if (webinput.startsWith(webregexp)) {
+            document.getElementById('warnweb').innerHTML = '';
+        } else {
+            document.getElementById('warnweb').innerHTML = 'Please provide a valid Website Address';
+            alert('Please provide a valid Website Address')
+        }
+    }
+
+    function checkphone(element) {
+        var phoneinput = element.value;
+        var phoneregexp = "[0-9]{10}";
+        if (phoneinput.match(phoneregexp)) {
+            document.getElementById('warnphone').innerHTML = '';
+        } else {
+            document.getElementById('warnphone').innerHTML = 'Please provide a valid Phone Number';
+            alert('Please provide a valid Phone Number')
+        }
+    }
+    function insertValue() {
+        var select = document.getElementById("customer"),
+            txtVal = document.getElementById("val").value,
+            newOption = document.createElement("OPTION"),
+            newOptionval = document.createTextNode(txtVal);
+
+        newOption.appendChild(newOptionval);
+        select.insertBefore(newOption, select.lastChild);
+    }
+    $('.datepicker').pickadate({
+        selectMonths: true,
+        selectYears: true
+    }),
+    $('.timepicker').pickatime()
+    $(function () {
+        $('#date-time').bootstrapMaterialDatePicker({
+            format: 'YYYY-MM-DD HH:mm'
+        });
+        $('#date').bootstrapMaterialDatePicker({
+            time: false
+        });
+        $('#time').bootstrapMaterialDatePicker({
+            date: false,
+            format: 'HH:mm'
+        });
+    });
+
+    $(document).ready(function () {
+
+        var current_fs, next_fs, previous_fs; 
+        var opacity;
+
+        $(".next").click(function () {
+
+            current_fs = $(this).parent();
+            next_fs = $(this).parent().next();
+
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+            next_fs.show();
+            current_fs.animate({opacity: 0}, {
+                step: function (now) {
+                    opacity = 1 - now;
+
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    next_fs.css({'opacity': opacity});
+                },
+                duration: 600
+            });
+        });
+
+        $(".previous").click(function () {
+
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+            previous_fs.show();
+
+            current_fs.animate({opacity: 0}, {
+                step: function (now) {
+                    opacity = 1 - now;
+
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    previous_fs.css({'opacity': opacity});
+                },
+                duration: 600
+            });
+        });
+
+        $('.radio-group .radio').click(function () {
+            $(this).parent().find('.radio').removeClass('selected');
+            $(this).addClass('selected');
+        });
+    });
+                
+    function ShowHideDiv(track) {
+        var inventorytrack = document.getElementById("inventorytrack");
+
+        inventorytrack.style.display = track.checked ? "flex" : "none";
+
+    }
+
+    function validateForm() {
+        let x = document.forms["myForm"]["fname"].value;
+        if (x == "") {
+            alert("Name must be filled out");
+            return false;
+        }
+    }
+
+</script>
+<script>
+    // create customer--------------------------
+
+    $(document).on("click", "#customerSave", function(){
+        
+        $.ajax({
+
+            type : 'POST',
+            url:"{% url 'customers21' %}",
+
+            data:{
+                
+                title : $('#title').val(),
+                first_name : $('#firstname').val(),
+                last_name : $('#lastname').val(),
+                company_name : $("#company").val(),
+                location : $("#location").val(),
+                openbalance : $("#openbalance").val(),
+                email : $("#email").val(),
+                website :$("#website").val(),
+                mobile :$("#mobile").val(),
+                street : $("#street").val(),
+                city : $("#city").val(),
+                state : $("#state").val(),
+                country : $("#country").val(),
+                pincode : $("#pincode").val(),
+                shipstreet : $("#shipstreet").val(),
+                shipcity : $("#shipcity").val(),
+                shipstate : $("#shipstate").val(),
+                shipcountry : $("#shipcountry").val(),
+                shippincode : $("#shippincode").val(),
+                gsttype :$("#gsttype").val(),
+                gstin :$("#gstin").val(),
+                panno :$("#panno").val(),
+
+                
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                
+            },
+            
+            success: function(response) {
+                console.log("success")
+                document.getElementById("modalCustomer").reset();
+                reloadCustomer();
+            },
+        });        
+    });
+
+
+    function reloadCustomer() {
+
+        $.ajax({
+            url: "{% url 'cust_dropdown' %}",
+            type: "GET",
+            dataType: "json",
+            data: $(this).serialize(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+
+            success: function(data) {
+                var dropdown = $('#customer');
+                dropdown.empty();
+            dropdown.append(`<option selected>Select Customer</option>`);
+                $.each(data, function(key, value) {
+                    console.log(value)
+                    dropdown.append($('<option></option>').attr('value', key).text(value[1] + " " +value[2] + " "+ value[3]).val(value[0] + " " +value[2] + " "+ value[3]));
+                });
+            },
+            error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            }
+        });
+    }
 
         // item modal
 
-        $(document).on("click","#itemSave",function(){
-            var taxref,status1;
- 
-            if ($('#inclusive').checked) {
-                tax= $('#inclusive').val();
-             } 
-             else if($('#check').val()){
-                tax = $('#check').val();
-             }
-             else 
-            {
-             console.log("Checkbox is not checked.");
-            }
+    $(document).on("click","#itemSave",function(){
+        var taxref,status1;
 
-            console.log(tax);
-            if ($('input[name="status"]:checked').val() == 'Active'){
-
-                status1 = $('#flexRadioDefault1').val();
+        if ($('#inclusive').checked) {
+            tax= $('#inclusive').val();
+            } 
+            else if($('#check').val()){
+            tax = $('#check').val();
             }
-            else{
-                status1 = $('#flexRadioDefault2').val();
-            }
+            else 
+        {
+            console.log("Checkbox is not checked.");
+        }
 
-            $.ajax({
-            
+        console.log(tax);
+        if ($('input[name="status"]:checked').val() == 'Active'){
+
+            status1 = $('#flexRadioDefault1').val();
+        }
+        else{
+            status1 = $('#flexRadioDefault2').val();
+        }
+
+        $.ajax({
+        
             type : 'POST',
             url:"{% url 'credit_item' %}",
             
@@ -3384,19 +1761,19 @@
                 status : status1,
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 
-                },
-            
-                success: function(response) {
-                    console.log(response)
-                    document.getElementById("modalItem").reset();
-                    reloadItem();
-                },
-            });        
-            });
+            },
+        
+            success: function(response) {
+                console.log(response)
+                document.getElementById("modalItem").reset();
+                reloadItem();
+            },
+        });        
+    });
 
 
-        function reloadItem() {
-            $.ajax({
+    function reloadItem() {
+        $.ajax({
             url: "{% url 'item_dropdown' %}",
             type: "GET",
             dataType: "json",
@@ -3417,87 +1794,112 @@
             error: function(xhr, status, error) {
             console.error(xhr.responseText);
             }
-            });
-            }
-</script>
-<script>
+        });
+    }
 
 
-            $(document).ready(function () {
-                $('#customer').on('change', function() {
-                    console.log($('#customer').val())
-                    $.ajax({
-                        type : 'POST',
-                        
-                        url: "{% url 'cust_details' %}",
-                        data: {
-                            id: $('#customer').val(),
-                            csrfmiddlewaretoken: '{{ csrf_token }}',
-                        },
-                        
-                        success: function(data){
-                            console.log(data.email);
-                            document.getElementById('est_email').value = data.email;
-                            document.getElementById('bname').value = data.street + '\n' + data.city + '\n' + data.state + '\n' + data.country  + '\n' + data.pincode ;
-                        }
-                    });
-                });
-            });
-
-        </script>
-        <script>
-
-            $(document).on("click",".seltax",function(){
+    $(document).ready(function () {
+        $('#customer').on('change', function() {
+            $.ajax({
+                type : 'POST',
                 
-                $(".seltax").removeClass('d-flex');
-                $(".seltax").addClass('d-none');
-
-                console.log($("#plosu").val());
-                console.log($("#cmpstate").val());
-
-                if($("#plosu").val() == $("#cmpstate").val()){
-                    console.log("yes");
-                    $(".inter_tax").removeClass('d-flex');
-                    $(".inter_tax").addClass('d-none');
-
-                    $(".intra_tax").removeClass('d-none');
-                    $(".intra_tax").addClass('d-flex');
-                    
-                }
-                else{
-                    console.log("no");
+                url: "{% url 'cust_details' %}",
+                data: {
+                    id: $('#customer').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                
+                success: function(data){
+                    console.log(data.email);
+                    document.getElementById('est_email').value = data.email;
+                    document.getElementById('bname').value = data.street + '\n' + data.city + '\n' + data.state + '\n' + data.country  + '\n' + data.pincode ;
+                    document.getElementById('gsttype').value = data.gsttype;
+                    document.getElementById('plosu').value = data.shipstate;
+                    // if (element.value == 'Unregistered Business'  || element.value == 'Consumer' || element.value == 'Overseas'){
+                    //     document.getElementById('gstnum').style.display = 'none';
+                    // }
+                    // else{
+                    //     document.getElementById('gstnum').style.display = 'block';
+                    // }
+                    var bc = data.shipstate;
+                    $(".seltax").removeClass('d-flex');
+                    $(".seltax").addClass('d-none');
                     $(".intra_tax").removeClass('d-flex');
                     $(".intra_tax").addClass('d-none');
+                    $(".inter_tax").removeClass('d-flex');
+                    $(".inter_tax").addClass('d-none');
+                    var compstate = document.getElementById("cmpstate").value;
+                    if (bc == compstate ) {
+                        document.getElementById('cgst1').style.display = 'flex';
+                        document.getElementById('sgst1').style.display = 'flex';
+                        document.getElementById('igst1').style.display = 'none'; 
 
-                    $(".inter_tax").removeClass('d-none');
-                    $(".inter_tax").addClass('d-flex');
+                    } else {
+                        document.getElementById('cgst1').style.display = 'none';
+                        document.getElementById('sgst1').style.display = 'none';
+                        document.getElementById('igst1').style.display = 'flex';
+
+                    }
                 }
-
             });
+        });
+    });
 
-            $(document).on('change','#plosu',function()   {
-                $(".seltax").removeClass('d-none');
-                $(".seltax").addClass('d-flex');
-                $(".intra_tax").removeClass('d-flex');
-                $(".intra_tax").addClass('d-none');
-                $(".inter_tax").removeClass('d-flex');
-                $(".inter_tax").addClass('d-none');
-                var bc = document.getElementById("plosu").value;
-                var compstate = document.getElementById("cmpstate").value;
-                if (bc == compstate ) {
-                    document.getElementById('cgst1').style.display = 'flex';
-                    document.getElementById('sgst1').style.display = 'flex';
-                    document.getElementById('igst1').style.display = 'none'; 
 
-                } else {
-                    document.getElementById('cgst1').style.display = 'none';
-                    document.getElementById('sgst1').style.display = 'none';
-                    document.getElementById('igst1').style.display = 'flex';
+    $(document).on("click",".seltax",function(){
+        
+        $(".seltax").removeClass('d-flex');
+        $(".seltax").addClass('d-none');
 
-                }
-                    
-            });
-            </script>
+        console.log($("#plosu").val());
+        console.log($("#cmpstate").val());
+
+        if($("#plosu").val() == $("#cmpstate").val()){
+            console.log("yes");
+            $(".inter_tax").removeClass('d-flex');
+            $(".inter_tax").addClass('d-none');
+
+            $(".intra_tax").removeClass('d-none');
+            $(".intra_tax").addClass('d-flex');
+            
+        }
+        else{
+            console.log("no");
+            $(".intra_tax").removeClass('d-flex');
+            $(".intra_tax").addClass('d-none');
+
+            $(".inter_tax").removeClass('d-none');
+            $(".inter_tax").addClass('d-flex');
+        }
+
+    });
+
+    $(document).on('change','#plosu',function()   {
+        $(".seltax").removeClass('d-none');
+        $(".seltax").addClass('d-flex');
+        $(".intra_tax").removeClass('d-flex');
+        $(".intra_tax").addClass('d-none');
+        $(".inter_tax").removeClass('d-flex');
+        $(".inter_tax").addClass('d-none');
+        var bc = document.getElementById("plosu").value;
+        var compstate = document.getElementById("cmpstate").value;
+        if (bc == compstate ) {
+            document.getElementById('cgst1').style.display = 'flex';
+            document.getElementById('sgst1').style.display = 'flex';
+            document.getElementById('igst1').style.display = 'none'; 
+
+        } else {
+            document.getElementById('cgst1').style.display = 'none';
+            document.getElementById('sgst1').style.display = 'none';
+            document.getElementById('igst1').style.display = 'flex';
+
+        }
+            
+    });
+
+   
+
+</script>
 
        
 {% endblock %}

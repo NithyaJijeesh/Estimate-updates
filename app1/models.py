@@ -72,22 +72,11 @@ class customer(models.Model):
     opening_balance_due = models.FloatField(null=True)
     date = models.DateField(null=True)
     opnbalance_status = models.CharField(max_length=100,default='Default')
-    
-
-    customer_status = (
-        ('Active','Active'),
-        ('Inactive','Inactive'),
-       
-
-    )
-    
+    credit_limit = models.FloatField(null=True)
+    customer_status = (('Active','Active'), ('Inactive','Inactive'))
     status =models.CharField(max_length=150,choices=customer_status,default='Active')
-
     receivables  = models.FloatField(null=True)
-
     file = models.FileField(upload_to='Customer',default="default.jpg")
-
-
 
     class meta:
         db_table = "customer"
@@ -1057,8 +1046,6 @@ class estimate(models.Model):
     customer = models.CharField(max_length=100,null=True)
     email = models.EmailField(max_length=100,null=True)
     billingaddress = models.CharField(max_length=100,null=True)
-    gst_treatment = models.CharField(max_length=100,null=True)
-    gst_number = models.CharField(max_length=100,null=True)
     estimatedate = models.DateField(null=True)
     expirationdate = models.DateField(null=True)
     estimateno = models.CharField(max_length=100,null=True)
@@ -1079,15 +1066,22 @@ class estimate(models.Model):
 
     estimate_status = (
         ('Draft','Draft'),
-        ('Save','Save'),
+        ('Saved','Saved'),
     )
-    
     status =models.CharField(max_length=150,choices=estimate_status,default='Draft')
-
-
 
     def __str__(self):
         return self.customer
+    
+    # changes done by Nithya----
+    gst_treatment = models.CharField(max_length=100,null=True)
+    gst_number = models.CharField(max_length=100,null=True)
+    credit_term = models.CharField(max_length=100,null=True)
+    payment_term  = models.CharField(max_length=100,null=True)
+    paid = models.CharField(max_length=100,null=True)
+    balance = models.CharField(max_length=100,null=True)
+    conversion = models.CharField(max_length=100,null=True)
+
 
 class estimate_item(models.Model):
     estimate = models.ForeignKey(estimate, on_delete=models.CASCADE,null=True)
@@ -1169,6 +1163,13 @@ class payment(models.Model):
     referno = models.CharField(max_length=255, )
     balance= models.FloatField(default='0')
     
+    #added -shemeem
+    py_status = (
+        ('Draft','Draft'),
+        ('Saved','Saved')
+    )
+    
+    status =models.CharField(max_length=150,choices=py_status,default='Draft',null=True)
   
     class meta:
         db_table = "payment"
@@ -1779,12 +1780,13 @@ class challan(models.Model):
     
     invoice_status = (
         ('Draft','Draft'),
-        
+        ('Saved','Saved'), #changed - Shemeem
         ('Invoiced','Invoiced'),
 
     )
     
-    status =models.CharField(max_length=150,choices=invoice_status,default='Draft')
+    status =models.CharField(max_length=150,choices=invoice_status, default='Draft')
+    is_converted = models.BooleanField(default=False, null=True)
     ref=models.TextField(max_length=100)
     shipping=models.IntegerField()
     adjustment=models.FloatField(default=0)

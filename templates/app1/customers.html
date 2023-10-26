@@ -66,7 +66,7 @@ body{
                 <center><h2 class="mb-0">CUSTOMERS</h2></center>
                 <hr>
                 <div class="btn-group col-md-2" style="float: right;">
-                    <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')">Export To Excel</a>
+                    <a class="btn btn-outline-info text-grey" onclick="ExportToExcel()">Export To Excel</a>
                 </div>
             </div>
         </div>
@@ -80,18 +80,18 @@ body{
                 </div>
                 <div class="col-md-2" style="width: 40%; margin-top: 8px;">
                     <div class="dropdown">
-                        <button type="button" class="btn btn-outline-info  text-grey fas fa-sort"
+                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey fas fa-filter"
                                 data-toggle="dropdown"> Sort by
                         </button>
                         <div class="dropdown-menu" style="background-color: black;">
-                            <a class="dropdown-item " href="{% url 'gocustomers' %}"
+                            <a class="dropdown-item" href="{% url 'gocustomers' %}"
                                 style="height: 40px; font-size: 15px; color: white; text-align: center;" >All</a>
-                            <a class="dropdown-item " href="{% url 'gocustomers_asc' %}"
-                                style="height: 40px; font-size: 15px; color: white; text-align: center;" >Customer </a>
+                            <a class="dropdown-item" onclick="sortTableName()"
+                                style="height: 40px; font-size: 15px; color: white; text-align: center;" >Customer</a>
+                            <a class="dropdown-item" onclick="sortTableAmount()"
+                                style="height: 40px; font-size: 15px; color: white; text-align: center;" >Amount</a>
                             <!-- <a class="dropdown-item" href="{% url 'gocustomers_desc' %}"
                                 style="height: 40px; font-size: 15px; color: white; text-align: center;" >Customer <icon class=" fas fa-arrow-up"></icon></a> -->
-                            
-                                
                         </div> 
                     </div>
                 </div>
@@ -115,33 +115,32 @@ body{
                 <div class="btn-group col-md-2">
                     <a href="{% url 'goaddcust' %}" id="myBtn" class="btn btn-outline-info text-grey fas fa-plus" style="width: 40%; margin-top: 8px;" role="button"> Add Customer</a>
                 </div>
-
             </div>
             <div class="container-fluid">
-                <table class="table table-responsive-md mt-4 table-hover" id="tbl_exporttable_to_xls">
+                <table class="table table-responsive-md mt-4 table-hover text-center" id="tbl_exporttable_to_xls">
                     <thead>
                         <tr>
                             <th>CUSTOMER</th>
                             <th>GST TYPE</th>
                             <th>GSTIN</th>
-                            <th>PAN NO</th>
                             <th>EMAIL ID</th>
-                            <th>MOBILE NO</th>
-                            <th style="text-transform: uppercase;">receivables</th>
+                            <th>OPENING BALANCE</th>
+                            <th>STATUS</th>
+                            <th>BALANCE</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="cust_table_body">
                         {% for customer in customers %}
                             {% if customer.cid_id == cmp1.cid %}
-                                <tr  class="table-row ">
-                                    <td><a class="idsr" style="list-style: none;"  href="{% url 'customer_profile' customer.customerid %} "> {{ customer.firstname }} {{ customer.lastname }}</a></td>
-                                    <td><a class="idsr" style="list-style: none;"  href="{% url 'customer_profile' customer.customerid %} "> {{ customer.gsttype }}</a></td>
-                                    <td><a class="idsr" style="list-style: none;"  href="{% url 'customer_profile' customer.customerid %} "> {{ customer.gstin }} </a></td>
-                                    <td><a class="idsr" style="list-style: none;"  href="{% url 'customer_profile' customer.customerid %} "> {{ customer.panno }}</a></td>
-                                    <td><a class="idsr" style="list-style: none;"  href="{% url 'customer_profile' customer.customerid %} "> {{ customer.email }}</a></td>
-                                    <td><a class="idsr" style="list-style: none;"  href="{% url 'customer_profile' customer.customerid %} "> {{ customer.mobile }}</a></td>
-                                    <td><a class="idsr" style="list-style: none;"  href="{% url 'customer_profile' customer.customerid %} "> {{customer.receivables}}</a></td>
-                                            
+                                <tr  class="table-row clickable-row text-center" data-href="customer_profile/{{ customer.customerid }}">
+                                    <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+                                    <td>{{ customer.gsttype }}</td>
+                                    <td>{{ customer.gstin }}</td>
+                                    <td>{{ customer.email }}</td>
+                                    <td>{{customer.opening_balance}}</td>
+                                    <td>{{customer.status}}</td>
+                                    <td></td>
+                                    <td style="display: none;">{{ customer.customerid }}</td>
                                 </tr>
                             {% endif %}
                         {% endfor %}
@@ -152,6 +151,26 @@ body{
     </div>
 </div>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
+<script>
+    item_table_rows = document.getElementById('cust_table_body').querySelectorAll('tr')
+    for(let i= 0; i<item_table_rows.length;i++){
+        name = item_table_rows[i].getElementsByTagName("td")[0].innerText
+        id = item_table_rows[i].getElementsByTagName("td")[7].innerText
+        $.ajax({
+            type: "GET",
+            url: "{% url 'balancedata' %}",
+            data: {
+                id: id,
+                name:name
+            },
+            success: function (response) {
+                final_bal=response.final_bal
+                item_table_rows[i].getElementsByTagName("td")[6].innerText = final_bal
+            }
+        });
+    }
+</script>
 
 <script>
 
@@ -195,14 +214,70 @@ body{
     //     }
     // }
 
-    function ExportToExcel(type, fn, dl) {
-        var elt = document.getElementById('tbl_exporttable_to_xls');
-        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
-        return dl ?
-            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
-            XLSX.writeFile(wb, fn || ('Customers_' + (type || 'xlsx')));
+    function ExportToExcel() {
+        // Assuming you have data in a table format, you can export it to Excel using SheetJS
+        const table = document.querySelector('#tbl_exporttable_to_xls');
+        const ws = XLSX.utils.table_to_sheet(table);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'Customers.xlsx');
     }
 </script>
- 
-    {% endif %}
+
+<script>
+    function sortTableName() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("tbl_exporttable_to_xls");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < rows.length - 1; i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("td")[0];
+                y = rows[i + 1].getElementsByTagName("td")[0];
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+
+      function sortTableAmount() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("tbl_exporttable_to_xls");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < rows.length - 1; i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("td")[4];
+                y = rows[i + 1].getElementsByTagName("td")[4];
+                if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML)) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+        });
+    });
+</script>
+{% endif %}
 {% endblock %}

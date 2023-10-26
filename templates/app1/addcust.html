@@ -31,15 +31,15 @@
                                 <div class="valid-feedback">Looks good!</div>
                             </div>
                             <div class="col-md-4 mt-3">
-                                <label for="validationCustom02">First name</label>
+                                <label for="validationCustom02">First Name</label>
                                 <input type="text" class="form-control" id="validationCustom02" name="firstname"
-                                       required style="background-color: #2f516f;color: white;">
+                                       required style="background-color: #43596c;color: white;">
                                 <div class="valid-feedback">Looks good!</div>
                             </div>
                             <div class="col-md-4 mt-3">
-                                <label for="validationCustom02">Last name</label>
+                                <label for="validationCustom02">Last Name</label>
                                 <input type="text" class="form-control" id="validationCustom02" name="lastname"
-                                       required style="background-color: #2f516f;color: white;">
+                                       required style="background-color: #43596c;color: white;">
                                 <div class="valid-feedback">Looks good!</div>
                             </div>
                         </div>
@@ -47,24 +47,24 @@
                             <div class="col-md-4 mt-3">
                                 <label for="validationCustom03">Company</label>
                                 <input type="text" class="form-control" id="validationCustom03" name="company"
-                                        style="background-color: #2f516f;color: white;">
+                                        style="background-color: #43596c;color: white;">
                                 <div class="valid-feedback">Looks good!</div>
                             </div>
                             <div class="col-md-4 mt-3">
                                 <label for="validationCustom03">Location</label>
                                 <input type="text" class="form-control" id="validationCustom03" name="location"
-                                        style="background-color: #2f516f;color: white;">
+                                        style="background-color: #43596c;color: white;">
                                 <div class="valid-feedback">Looks good!</div>
                             </div>
                             <div class="col-md-4 mt-3"></div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 mt-3">
-                                <label for="validationCustom04">GST type</label>
+                                <label for="validationCustom04">GST Type</label>
                                 <select class="custom-select" id="gsttype" name="gsttype"
-                                        onclick="hidinput('hello', this),disinput('hai', this) ,disinput2('hai1', this)"
-                                        style="background-color: #243e54; color: white;" required>
-                                    <option selected disabled value="">Select GST Type</option>
+                                        onclick="hidinput('hello', this)"
+                                        style="background-color: #43596c; color: white;" required>
+                                    <option selected value="" hidden >Select GST Type</option>
                                     <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
                                     <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
                                     <option value="unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
@@ -88,11 +88,11 @@
                             </div>
 
                             <div class="col-md-4 mt-3 gstrow" id="hello" style="display: none;">
-                                <div >
+                                <div>
                                     <label for="validationCustom05">GSTIN</label>
                                     <input type="text" class="form-control" onchange="showMessage(this)"
                                            id="validationCustom05" name="gstin"
-                                           style="background-color: #2f516f;color: white;"
+                                           style="background-color: #43596c;color: white;"
                                            value=""
                                            placeholder="29APPCK7465F1Z1"  >
                                            <a data-toggle="modal" href="#exampleModal"
@@ -107,7 +107,7 @@
                                     <label for="validationCustom05">BUSINESS LEGAL NAME</label>
                                     <input type="text" class="form-control" 
                                            
-                                           style="background-color: #2f516f;color: white;"
+                                           style="background-color: #43596c;color: white;"
                                            >
                                     <div class="text-danger m-2" id="warngst"></div>
                                 </div>
@@ -118,7 +118,7 @@
                                     <label for="validationCustom05">BUSINESS TRADE NAME</label>
                                     <input type="text" class="form-control" 
                                            
-                                           style="background-color: #2f516f;color: white;"
+                                           style="background-color: #43596c;color: white;"
                                            >
                                     <div class="text-danger m-2" id="warngst"></div>
                                 </div>
@@ -129,20 +129,29 @@
                             <div class="col-md-4 mt-3">
                                 <label for="validationCustom03">PAN No.</label>
                                 <input type="text" class="form-control" id="validationCustom03" name="panno"
-                                        style="background-color: #2f516f;color: white;"
-                                       onchange="checkpan(this)" placeholder="APPCK7465F">
+                                    style="background-color: #43596c;color: white;"
+                                    onchange="checkpan(this)" placeholder="APPCK7465F">
                                 <div class="text-danger m-2" id="warnpan"></div>
                             </div>
 
                             <div class="col-md-4 mt-3" >
-                                <div >
-                                    <label for="validationCustom05">Opening Balance</label>
-                                    <input type="text" class="form-control" value=""  name="openbalance"
-                                           
-                                           style="background-color: #2f516f;color: white;"
-                                           >
+                                <label for="validationCustom05">Opening Balance</label>
+                                <div class="d-flex">
+                                    <select name="bal" id="bal" class="form-select text-white pl-1" style="background-color: #243e54; width: 25%; border-radius: 5px;">
+                                        <option value="credit">Credit</option>
+                                        <option value="debit">Debit</option>
+                                    </select>
+                                    <input type="text" class="form-control" name="openbalance" id="openbalance"
+                                        style="background-color: #43596c;color: white;">
                                     <div class="text-danger m-2" ></div>
                                 </div>
+                            </div>
+
+                            <div class="col-md-4 mt-3" >
+                                <label for="validationCustom05">Credit Limit</label>
+                                <input type="text" class="form-control" name="crd_lmt"
+                                    style="background-color: #43596c;color: white;" id="crd_lmt">
+                                <div class="text-danger m-2" ></div>
                             </div>
 
                             <!-- <div class="col-md-4 mt-3" id="hai1">
@@ -150,7 +159,7 @@
                                     <label for="validationCustom05">PLACE OF SUPPLY</label>
                                     <input type="text" class="form-control" 
                                            
-                                           style="background-color: #2f516f;color: white;"
+                                           style="background-color: #43596c;color: white;"
                                            >
                                     <div class="text-danger m-2" id="warngst"></div>
                                 </div>
@@ -161,7 +170,7 @@
                                     <label for="validationCustom05">TAX PERFERENCE</label>
                                     <input type="text" class="form-control" 
                                            
-                                           style="background-color: #2f516f;color: white;">
+                                           style="background-color: #43596c;color: white;">
                                     <div class="text-danger m-2" id="warngst"></div>
                                 </div>
                             </div>
@@ -170,9 +179,9 @@
                                     <label for="validationCustom05">TAX RETURNS</label><br>
                                     <input type="radio" name="Returns" 
                                            
-                                           style="background-color: #2f516f;color: white;"> Taxable
+                                           style="background-color: #43596c;color: white;"> Taxable
                                            <input type="radio" name="Returns"  
-                                           style="background-color: #2f516f;color: white;"> Non Taxable
+                                           style="background-color: #43596c;color: white;"> Non Taxable
                                     <div class="text-danger m-2" id="warngst"></div>
                                 </div>
                             </div> -->
@@ -186,7 +195,7 @@
                             <div class="col-md-4 mt-3">
                                 <label for="validationCustom03">Email</label>
                                 <input type="email" class="form-control" id="validationCustom03" name="email"
-                                        style="background-color: #2f516f;color: white;"
+                                        style="background-color: #43596c;color: white;"
                                        placeholder="finsys@mail.com">
                                 <div class="invalid-feedback">Please provide a valid Email</div>
                             </div>
@@ -194,14 +203,14 @@
                                 <label for="validationCustom03">Website</label>
                                 <input type="text" class="form-control" id="validationCustom03"
                                        placeholder="www.finsys.com" onchange="checkweb(this)" name="website"
-                                       style="background-color: #2f516f;color: white;">
+                                       style="background-color: #43596c;color: white;">
                                 <div id="warnweb" class="text-danger"></div>
                             </div>
                             <div class="col-md-4 mt-3">
                                 <label for="validationCustom01">Mobile</label>
                                 <input type="text" class="form-control" id="validationCustom01"
                                        onchange="checkphone(this)" name="mobile"
-                                    style="background-color: #2f516f;color: white;">
+                                    style="background-color: #43596c;color: white;">
                                 <div class="text-danger m-2" id="warnphone"></div>
                             </div>
                         </div>
@@ -218,8 +227,7 @@
                                         <div class="form-row">
                                             <label for="street">Street</label>
                                             <textarea class="form-control street" id="street" name="street"
-                                                      
-                                                      style="background-color: #2f516f;color: white;"></textarea>
+                                                      style="background-color: #43596c;color: white;"></textarea>
                                             <div class="invalid-feedback">Please provide a valid Street</div>
                                         </div>
                                     </div>
@@ -231,7 +239,7 @@
                                             <input type="text" class="form-control" id="city"
                                                    name="city"
                                                    
-                                                   style="background-color: #2f516f;color: white;" placeholder="City">
+                                                   style="background-color: #43596c;color: white;" placeholder="City">
                                             <div class="invalid-feedback">Please provide a valid City</div>
                                         </div>
                                     </div>
@@ -239,10 +247,9 @@
                                         <div class="form-row">
                                             <label for="state">State</label>
                                             <select type="text" class="form-control" id="state"     name="state" required
-                                                    style="background-color: #2f516f; color: white;">
-                                                <option value="" disabled selected>Choose</option>
-                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
-                                                </option>
+                                                    style="background-color: #43596c; color: white;">
+                                                <option value="" selected hidden>Choose</option>
+                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islands</option>
                                                 <option value="Andhra Predhesh">Andhra Predhesh</option>
                                                 <option value="Arunachal Predesh">Arunachal Predesh</option>
                                                 <option value="Assam">Assam</option>
@@ -291,7 +298,7 @@
                                             <label for="pinco">Pin Code</label>
                                             <input type="text" class="form-control" id="pinco"
                                                    name="pincode"
-                                                    style="background-color: #2f516f;color: white;"
+                                                    style="background-color: #43596c;color: white;"
                                                    placeholder="PIN code">
                                             <div class="invalid-feedback">Please provide a valid Pin Code</div>
                                         </div>
@@ -301,7 +308,7 @@
                                             <label for="country">Country</label>
                                             <input type="text" class="form-control" id="country"
                                                    name="country"
-                                                    style="background-color: #2f516f;color: white;"
+                                                    style="background-color: #43596c;color: white;"
                                                    placeholder="Country">
                                             <div class="invalid-feedback">Please provide a valid Country</div>
                                         </div>
@@ -312,7 +319,7 @@
                                 <div class="row">
                                     <div class="col-md-12 d-flex">
                                         <h5>Shipping Address</h5>
-                                        <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                        <input class="ml-4 ml-5" type="checkbox" onclick="poppins()" id="okay"
                                                name="okay">
                                         <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
                                     </div>
@@ -324,7 +331,7 @@
                                             <textarea class="form-control" id="shipstreet"
                                                       name="shipstreet"
                                                       
-                                                      style="background-color: #2f516f;color: white;"></textarea>
+                                                      style="background-color: #43596c;color: white;"></textarea>
                                             <div class="invalid-feedback">Please provide a valid Street</div>
                                         </div>
                                     </div>
@@ -336,7 +343,7 @@
                                             <input type="text" class="form-control" id="shipcity"
                                                    name="shipcity"
                                                    
-                                                   style="background-color: #2f516f;color: white;" placeholder="City">
+                                                   style="background-color: #43596c;color: white;" placeholder="City">
                                             <div class="invalid-feedback">Please provide a valid City</div>
                                         </div>
                                     </div>
@@ -344,10 +351,9 @@
                                         <div class="form-row">
                                             <label for="shipstate">State</label>
                                             <select type="text" class="form-control" id="plosu" name="shipstate" required
-                                                    style="background-color: #2f516f; color: white;">
-                                                <option id="shipst" selected>Choose</option>
-                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
-                                                </option>
+                                                    style="background-color: #43596c; color: white;">
+                                                <option id="shipst" selected hidden>Choose</option>
+                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islands</option>
                                                 <option value="Andhra Predhesh">Andhra Predhesh</option>
                                                 <option value="Arunachal Predesh">Arunachal Predesh</option>
                                                 <option value="Assam">Assam</option>
@@ -396,7 +402,7 @@
                                             <label for="shippinco">Pin Code</label>
                                             <input type="text" class="form-control" id="shippinco"
                                                    name="shippincode"
-                                                    style="background-color: #2f516f;color: white;"
+                                                    style="background-color: #43596c;color: white;"
                                                    placeholder="PIN code">
                                             <div class="invalid-feedback">Please provide a valid Pin Code</div>
                                         </div>
@@ -406,7 +412,7 @@
                                             <label for="shipcountry">Country</label>
                                             <input type="text" class="form-control" id="shipcountry"
                                                    name="shipcountry"
-                                                    style="background-color: #2f516f;color: white;"
+                                                    style="background-color: #43596c;color: white;"
                                                    placeholder="Country">
                                             <div class="invalid-feedback">Please provide a valid Country</div>
                                         </div>
@@ -418,7 +424,7 @@
                             <div class="col">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required
-                                           style="background-color: #2f516f;">
+                                           style="background-color: #43596c;">
                                     <label>Agree to Terms and Conditions</label>
                                     <div class="invalid-feedback">You must agree before submitting.</div>
                                 </div>
@@ -488,22 +494,7 @@
                 document.getElementById(divId).style.display = 'block';
             } else {
                 document.getElementById(divId).style.display = 'none';
-            }
-        }
-
-        function disinput(divId, element) {
-            if (element.value == 'GST-registered-Regular') {
-                document.getElementById(divId).style.display = 'block';
-            } else {
-                document.getElementById(divId).style.display = 'none';
-            }
-        }
-
-        function disinput2(divId, element) {
-            if (element.value == 'GST-registered-Regular' ) {
-                document.getElementById(divId).style.display = 'block';
-            } else {
-                document.getElementById(divId).style.display = 'none';
+                document.getElementById("validationCustom05").value = '';
             }
         }
 
@@ -538,8 +529,7 @@
             const gstin = input.value;
 
             if (gstin.length === 15) {
-                // document.getElementById("message").textContent = "Please wait, validating GSTIN format...";
-                setTimeout(() => checkgst(input), 1000);  // Wait for a second and then validate GSTIN
+                setTimeout(() => checkgst(input), 1000);  
             } else {
                 document.getElementById("message").textContent = "";
             }
@@ -618,4 +608,33 @@
             }, false);
         })();
     </script>
+
+    <script>
+        $(document).on('change', '#openbalance',function () {
+            openbal = $("#openbalance").val()
+            if($('#bal').val()=='credit'){
+                if(openbal.slice(0,1) != '-'){
+                    document.getElementById("openbalance").value = "-"+openbal
+                }else{
+                    document.getElementById("openbalance").value = openbal
+                }
+            }else{
+                document.getElementById("openbalance").value = openbal
+            }
+        });
+
+        $(document).on('change', '#bal',function () {
+            openbal = $("#openbalance").val()
+            if(openbal != ""){
+                if($('#bal').val()=='credit'){
+                    openbal = $("#openbalance").val()
+                    document.getElementById("openbalance").value = "-"+openbal
+                }else{
+                    openbal = $("#openbalance").val()
+                    document.getElementById("openbalance").value = openbal.slice(1,)
+                }
+            }
+        });
+    </script>
+
 {% endblock %}

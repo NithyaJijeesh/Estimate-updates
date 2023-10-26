@@ -5,7 +5,7 @@
     {% load static %}
     {% if user.is_authenticated %}
 
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
       <style>
         @import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
@@ -72,6 +72,9 @@ body{
                     <div class="card-title">
                         <center><h2 class="mb-0" style="text-transform: uppercase;">payment received</h2></center>
                         <hr>
+                        <div class="btn-group col-md-2" style="float: right;">
+                            <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')">Export To Excel</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -82,10 +85,10 @@ body{
                         
                         
                         
-                        <div class="col-md-4">
-                            <div class="wrap" style="width: 60%; margin-top: 8px;">
+                        <!-- <div class="col-md-4">
+                            <div class="wrap" style="width: 60%; margin-top: 8px;"> -->
                                 <!-- <form action="search_estimate" method="POST">{% csrf_token %} -->
-                                <div class="search">
+                                <!-- <div class="search">
                                     
                                    <input type="text" id="searchfild" class="searchTerm" name="search">
                                    <button type="submit" class="searchButton">
@@ -96,24 +99,35 @@ body{
                               
                              </div>
                              
-                        </div>
+                        </div> -->
+
                         <div class="col-md-3">
-                          
-                            <!-- <select class="form-control btn btn-outline-info dropdown-toggle text-grey" aria-label=".form-select-lg example" style="width: 40%; margin-top: 8px;" name="type">
+                            <div class="d-flex">
+                                <input type="text" id="search" placeholder="Search..." class="form-control" autocomplete="off" 
+                            style="margin-top: 8px; background-color: #2f516f;color: white;">
+                            </div>    
+                        </div>
+                        <div class="col-md-2" style="width: 40%; margin-top: 9px;">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-outline-info dropdown-toggle fa fa-sort text-grey"
+                                        data-toggle="dropdown"> Sort by
+                                </button>
+                                <div class="dropdown-menu " style="background-color: black;">
+                                    <a class="dropdown-item	" href="{% url 'gopayment_received' %}"
+                                    style="height: 40px; font-size: 15px; color: white; text-align: center;" > All
+                               </a>
+                                <a class="dropdown-item	" href="{% url 'payment_received_sort_cname' %}"
+                                    style="height: 40px; font-size: 15px; color: white; text-align: center;" > Customer Name 
+                               </a>
+                                 
+                                <a class="dropdown-item " href="{% url 'payment_received_sort_pnum' %}"
+                                    style="height: 40px; font-size: 15px; color: white; text-align: center; " >Payment Number</a>
                                 
-                                <option value="1" selected>All</option>
-                                <option value="2" >Coustomer Name</option>
-                                <option value="3" >Estimate No</option>
-                                
-                                
-                                
-                              </select> -->
-
-                              
-
-
-                            <!-- </form> -->
+                                        
+                                </div> 
                             </div>
+                        </div>
+
                             <!-- <div class="col-md-5" style="width: 40%; margin-top: 8px;">
 
                                 <div class="dropdown">
@@ -140,36 +154,47 @@ body{
                        
 
                         <div class="col-md-5" >
-                            <a href="{% url 'payment_received' %}" >
+                            <!-- <a href="{% url 'payment_received' %}" >
                                 <button id="myBtn" class="btn btn-outline-info text-grey" style="margin-top: 8px;">New </button>
+                            </a> -->
+                        </div>
+                        <div class="btn-group col-md-2 d-flex align-items-center">
+                            <a class="btn btn-outline-info text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                role="button">Filter By
                             </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'gopayment_received' %}">All</a>
+                                <a class="dropdown-item" href="{% url 'gopayment_received_draft' %}">Draft</a>
+                                <a class="dropdown-item" href="{% url 'gopayment_received_saved' %}">Saved</a>
+                            </div>
+                            <a href="{% url 'payment_received' %}" class="btn btn-outline-info fa fa-plus text-white" role="button"> &nbsp;New</a>
                         </div>
 
                     </div>
                     <div class="container-fluid ">
                        <div class="app_table">
-                        <table class="table table-responsive-md mt-4 table-hover">
+                        <table class="table table-responsive-md mt-4 table-hover" id="payment_table">
                             <thead>
                             <tr>
                                 <th style="text-align: center;">Date</th>
                                 <th style="text-align: center;">Payment No</th>
-                                <th style="text-align: center;">Reference Number</th>
-                                <th style="text-align: center;">Coustomer Name</th>
-                                <th style="text-align: center;">Applied Amount</th>
+                                <th style="text-align: center;">Customer Name</th>
+                                <th style="text-align: center;">Mail Id</th>
                                 <th style="text-align: center;">Amount</th>
+                                <th style="text-align: center;">Balance</th>
                                 <!-- <th style="text-align: center;">ACTION</th> -->
                             </tr>
                             </thead>
                             <tbody>
                                 {% for i in pay %}
                                 {% if i.cid_id == cmp1.cid %}
-                                    <tr  class="table-row " data-href="{% url 'payment_view' i.paymentid %}" >
+                                    <tr  class="table-row " onclick="window.location.href=`{% url 'payment_view' i.paymentid %}`" >
                                         <th style="text-align: center;">{{ i.paymdate  | date:'d-m-Y' }}</th>
                                         <td style="text-align: center;">{{ i.refno }}</td>
-                                        <td style="text-align: center;"> {{ i.referno }}</td>
-                                        <td style="text-align: center;">{{ i.customer }}</td>
+                                        <td style="text-align: center;"> {{ i.customer }}</td>
+                                        <td style="text-align: center;">{{ i.email }}</td>
                                         <td style="text-align: center;"> {{ i.amtapply }}</td>
-                                        <td style="text-align: center;">{{ i.amtcredit }}</td>
+                                        <td style="text-align: center;">{{ i.balance }}</td>
                                         
                                     </tr>
                                 {% endif %}
@@ -300,8 +325,30 @@ body{
                     modal.style.display = "none";
                 }
             }
-        </script>
 
+            function ExportToExcel(type, fn, dl) {
+                var elt = document.getElementById('payment_table');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                return dl ?
+                    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                    XLSX.writeFile(wb, fn || ('Payment_received.' + (type || 'xlsx')));
+            }
+        </script>
+        <script>
+            $(document).ready(function() {
+                var $rows = $('.table tbody tr');
+                $('#search').keyup(function() {
+                    var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+                    $rows.show().filter(function() {
+                        console.log($rows.show())
+        
+                        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                        console.log(text)
+                        return !~text.indexOf(val);
+                    }).hide();
+                });
+            });
+        </script>
 
 
 
