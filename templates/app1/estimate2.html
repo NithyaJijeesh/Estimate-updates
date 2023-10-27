@@ -235,30 +235,30 @@
                                 <td><input type="number" name='price[]' id="unit1" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white; width: 100px;" /></td>
                                 <td>
                                     
-                                    <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex" style="width: 130px;">
-                                    <select name='tax1[]' id="tax11" class="form-control tax intra_tax d-none" style="width: 130px;">
-                                        <!-- <option selected disabled >Select GST</option> -->
-                                        <option value=28 >28% GST</option>
-                                        <option value=18 >18% GST</option>
-                                        <option value=12  >12% GST</option>
-                                            <option value=5  >5% GST</option>
-                                        <option value=3  >3% GST</option>
-                                            <option value=0  >0% GST</option>
+                                    <!-- <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex" style="width: 130px;"> -->
+                                    <select name='tax1[]' id="tax11" class="form-control tax intra_tax" style="width: 130px;">
+                                        <option selected disabled >Select GST</option>
+                                        <option value=28>28% GST</option>
+                                        <option value=18>18% GST</option>
+                                        <option value=12>12% GST</option>
+                                        <option value=5>5% GST</option>
+                                        <option value=3>3% GST</option>
+                                        <option value=0>0% GST</option>
                                     </select>
                                     <select name='tax2[]' id="tax21" class="form-control tax inter_tax d-none" style="width: 130px;">
-                                        <!-- <option selected disabled >Select IGST</option> -->
-                                        <option value=28 >28% IGST</option>
-                                        <option value=18 >18% IGST</option>
-                                        <option value=12  >12% IGST</option>
-                                            <option value=5  >5% IGST</option>
-                                        <option value=3  >3% IGST</option>
-                                            <option value=0  >0% IGST</option>
+                                        <option selected disabled >Select IGST</option>
+                                        <option value=28>28% IGST</option>
+                                        <option value=18>18% IGST</option>
+                                        <option value=12>12% IGST</option>
+                                        <option value=5>5% IGST</option>
+                                        <option value=3>3% IGST</option>
+                                        <option value=0>0% IGST</option>
                                     </select>
                                           
                                 </td>
                                 <td><input type="number" name='discount[]'  placeholder='Enter Discount' id="disc1" value=0 class="form-control disc" step=0 min=0 style="background-color: #2f516f;  color: white; width: 100px;"  /></td>
 
-                                <td><input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
+                                <td><input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;"/></td>
                                 <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>
 
                                 <td>
@@ -1172,9 +1172,9 @@
                 `
                 <tr id='addr0${roinc}'>
                     <td class = 'nnum'>${roinc}</td>
-                    <td style="width: 20%;">
+                    <td style="width: 18%;">
                     <div class="d-flex">
-                        <select name='product[]' id="product${roinc}" class="form-control product" style="background-color: #2f516f; color: white;">
+                        <select name='product[]' id="product${roinc}" class="form-control product" style="background-color: #2f516f; color: white; width: 150px;">
                         <option value=" " selected>Select Item</option>
                             {% for i in item %}
                             {% if i.cid_id == cmp1.cid %}
@@ -1189,38 +1189,37 @@
                         </a>
                     </div>
                     </td>
-                    <td><input type="text" name='hsn[]' id="hsn${roinc}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="text" name='hsn[]' id="hsn${roinc}" placeholder='Enter HSN' class="form-control" style="background-color: #2f516f; color: white; width: 80px;" /></td>
                     <td><input type="number" name='qty[]'  placeholder='Enter Qty' id="qty${roinc}" class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;margin-top: 21px;" />
                         <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class=''></span></div>
                     </td>
-                    <td><input type="number" name='price[]' id="unit${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="number" name='price[]' id="unit${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white; width: 100px;" /></td>
                     <td>
-                    <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex">
 
-                    <select name='tax1[]' id="tax1${roinc}" class="form-control tax intra_tax d-none">
-                        <option selected disabled > Select GST</option>
-                        <option value=28 >28.0% GST(28%)</option>
-                        <option value=18 >18.0% GST(18%)</option>
-                        <option value=12  >12.0% GST(12%)</option>
-                            <option value=5  >05.0% GST(05%)</option>
-                        <option value=3  >03.0% GST(03%)</option>
-                            <option value=0  >0.0% GST(0%)</option>
+                    <select name='tax1[]' id="tax1${roinc}" class="form-control tax intra_tax" style="width: 130px;">
+                        <option disabled> Select GST</option>
+                        <option value=28>28% GST</option>
+                        <option value=18>18% GST</option>
+                        <option value=12>12% GST</option>
+                        <option value=5>5% GST</option>
+                        <option value=3>3% GST</option>
+                        <option value=0>0% GST</option>
                     </select>
-                    <select name='tax2[]' id="tax2${roinc}" class="form-control tax inter_tax d-none">
-                        <option selected disabled  >Select IGST</option>
-                        <option value=28 >28.0% IGST(28%)</option>
-                        <option value=18 >18.0% IGST(18%)</option>
-                        <option value=12  >12.0% IGST(12%)</option>
-                            <option value=5  >05.0% IGST(05%)</option>
-                        <option value=3  >03.0% IGST(03%)</option>
-                            <option value=0  >0.0% IGST(0%)</option>
+                    <select name='tax2[]' id="tax2${roinc}" class="form-control tax inter_tax d-none" style="width: 130px;">
+                        <option disabled  >Select IGST</option>
+                        <option value=28 28% IGST</option>
+                        <option value=18>18% IGST</option>
+                        <option value=12>12% IGST</option>
+                        <option value=5>5% IGST</option>
+                        <option value=3>3% IGST</option>
+                        <option value=0>0% IGST</option>
                     </select>
                     
                     </td>  
                     <td style="display: none;"><input type="number" step="any" name='taxamount${roinc}' id="taxamount${roinc}" class="form-control taxamount" /></td>
 
                     <td>
-                        <input type="number" name='discount[]' placeholder='Enter Discount' value=0 id="disc${roinc}" class="form-control disc" step=0 min=0>
+                        <input type="number" name='discount[]' placeholder='Enter Discount' value=0 id="disc${roinc}" class="form-control disc" step=0 min=0 style="background-color: #2f516f;  color: white; width: 100px;">
                     </td>
                     <td><input type="number" name='total[]' id="total${roinc}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                     <td>
@@ -1231,7 +1230,7 @@
             );
         });
         $('.product').each(function(index, dropdown) {
-            var row = $(dropdown).closest('.items-table-body'); // Assuming each row has a class 'item-row'
+            var row = $(dropdown).closest('.items-table-body'); 
             $.ajax({
                 url: "{% url 'item_dropdown' %}",
                 type: "GET",
@@ -1276,16 +1275,16 @@
                 data5 = response.sgst;
                 inter = response.inter_tax;
                 intra = response.intra_tax;
-
-                console.log(inter);
-                console.log(intra);
                 
                 document.getElementById('hsn'+n).value = data;
                 document.getElementById('qtyspan'+n).innerHTML = data2;
                 document.getElementById('unit'+n).value = data3;
 
-                $(".seltax").removeClass('d-flex');
-                $(".seltax").addClass('d-none');
+                document.getElementById('tax1'+n).value = intra;
+                document.getElementById('tax1'+n).html = intra+"% GST";
+
+                document.getElementById('tax2'+n).value = inter;
+                document.getElementById('tax2'+n).html = inter+"% IGST";
 
                 console.log($("#plosu").val());
                 console.log($("#cmpstate").val());
@@ -1296,8 +1295,7 @@
 
                     $(".intra_tax").removeClass('d-none');
                     $(".intra_tax").addClass('d-flex');
-                    document.getElementById('tax1'+n).value = intra;
-                    document.getElementById('select_tax').value = intra;
+                    
                 }
                 else{
 
@@ -1306,8 +1304,7 @@
 
                     $(".inter_tax").removeClass('d-none');
                     $(".inter_tax").addClass('d-flex');
-                    document.getElementById('tax2'+n).value = inter;
-                    document.getElementById('select_tax').value = inter;
+
                 }
                 calc();
             },
@@ -1815,89 +1812,121 @@
                     document.getElementById('bname').value = data.street + '\n' + data.city + '\n' + data.state + '\n' + data.country  + '\n' + data.pincode ;
                     document.getElementById('gsttype').value = data.gsttype;
                     document.getElementById('plosu').value = data.shipstate;
-                    // if (element.value == 'Unregistered Business'  || element.value == 'Consumer' || element.value == 'Overseas'){
-                    //     document.getElementById('gstnum').style.display = 'none';
-                    // }
-                    // else{
-                    //     document.getElementById('gstnum').style.display = 'block';
-                    // }
+
+
+                    if (data.gsttype == 'Unregistered Business'  || data.gsttype == 'Consumer' || data.gsttype == 'Overseas'){
+                        $('#gst_number').removeClass('d-flex');
+                        $('#gst_number').addClass('d-none');
+                    }
+                    else{
+                        $('#gst_number').removeClass('d-none');
+                        $('#gst_number').addClass('d-flex');
+                        $("#est_gstnum").val(data.gstno)
+                    }
+
+
+                    // $(".seltax").removeClass('d-none');
+                    // $(".seltax").addClass('d-flex');
+                    // $(".intra_tax").removeClass('d-flex');
+                    // $(".intra_tax").addClass('d-none');
+                    // $(".inter_tax").removeClass('d-flex');
+                    // $(".inter_tax").addClass('d-none');
+
                     var bc = data.shipstate;
-                    $(".seltax").removeClass('d-flex');
-                    $(".seltax").addClass('d-none');
-                    $(".intra_tax").removeClass('d-flex');
-                    $(".intra_tax").addClass('d-none');
-                    $(".inter_tax").removeClass('d-flex');
-                    $(".inter_tax").addClass('d-none');
                     var compstate = document.getElementById("cmpstate").value;
                     if (bc == compstate ) {
+
+                        $(".inter_tax").removeClass('d-flex');
+                        $(".inter_tax").addClass('d-none');
+
+                        $(".intra_tax").removeClass('d-none');
+                        $(".intra_tax").addClass('d-flex');
+
                         document.getElementById('cgst1').style.display = 'flex';
                         document.getElementById('sgst1').style.display = 'flex';
                         document.getElementById('igst1').style.display = 'none'; 
 
                     } else {
+                        $(".intra_tax").removeClass('d-flex');
+                        $(".intra_tax").addClass('d-none');
+
+                        $(".inter_tax").removeClass('d-none');
+                        $(".inter_tax").addClass('d-flex');
+
                         document.getElementById('cgst1').style.display = 'none';
                         document.getElementById('sgst1').style.display = 'none';
                         document.getElementById('igst1').style.display = 'flex';
 
                     }
+
+                    calc();
                 }
             });
         });
     });
 
 
-    $(document).on("click",".seltax",function(){
+    // $(document).on("click",".seltax",function(){
         
-        $(".seltax").removeClass('d-flex');
-        $(".seltax").addClass('d-none');
+    //     $(".seltax").removeClass('d-flex');
+    //     $(".seltax").addClass('d-none');
 
-        console.log($("#plosu").val());
-        console.log($("#cmpstate").val());
+    //     if($("#plosu").val() == $("#cmpstate").val()){
 
-        if($("#plosu").val() == $("#cmpstate").val()){
-            console.log("yes");
+    //         $(".inter_tax").removeClass('d-flex');
+    //         $(".inter_tax").addClass('d-none');
+
+    //         $(".intra_tax").removeClass('d-none');
+    //         $(".intra_tax").addClass('d-flex');
+            
+    //     }
+    //     else{
+
+    //         $(".intra_tax").removeClass('d-flex');
+    //         $(".intra_tax").addClass('d-none');
+
+    //         $(".inter_tax").removeClass('d-none');
+    //         $(".inter_tax").addClass('d-flex');
+    //     }
+
+    // });
+
+    $(document).on('change','#plosu',function()   {
+        // $(".seltax").removeClass('d-none');
+        // $(".seltax").addClass('d-flex');
+        // $(".intra_tax").removeClass('d-flex');
+        // $(".intra_tax").addClass('d-none');
+        // $(".inter_tax").removeClass('d-flex');
+        // $(".inter_tax").addClass('d-none');
+
+        var bc = document.getElementById("plosu").value;
+        var compstate = document.getElementById("cmpstate").value;
+
+        if (bc == compstate ) {
             $(".inter_tax").removeClass('d-flex');
             $(".inter_tax").addClass('d-none');
 
             $(".intra_tax").removeClass('d-none');
             $(".intra_tax").addClass('d-flex');
             
-        }
-        else{
-            console.log("no");
-            $(".intra_tax").removeClass('d-flex');
-            $(".intra_tax").addClass('d-none');
-
-            $(".inter_tax").removeClass('d-none');
-            $(".inter_tax").addClass('d-flex');
-        }
-
-    });
-
-    $(document).on('change','#plosu',function()   {
-        $(".seltax").removeClass('d-none');
-        $(".seltax").addClass('d-flex');
-        $(".intra_tax").removeClass('d-flex');
-        $(".intra_tax").addClass('d-none');
-        $(".inter_tax").removeClass('d-flex');
-        $(".inter_tax").addClass('d-none');
-        var bc = document.getElementById("plosu").value;
-        var compstate = document.getElementById("cmpstate").value;
-        if (bc == compstate ) {
             document.getElementById('cgst1').style.display = 'flex';
             document.getElementById('sgst1').style.display = 'flex';
             document.getElementById('igst1').style.display = 'none'; 
 
         } else {
+
+            $(".intra_tax").removeClass('d-flex');
+            $(".intra_tax").addClass('d-none');
+
+            $(".inter_tax").removeClass('d-none');
+            $(".inter_tax").addClass('d-flex');
+
             document.getElementById('cgst1').style.display = 'none';
             document.getElementById('sgst1').style.display = 'none';
             document.getElementById('igst1').style.display = 'flex';
-
         }
-            
+        calc();
     });
-
-   
 
 </script>
 

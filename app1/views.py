@@ -33949,8 +33949,13 @@ def itemdata(request):
         sgst = item.inter_st
         places=cmp1.state
         sale_price = item.sales_cost
-        inter_tax = item.inter_st
-        intra_tax = item.intra_st
+        if item.tax_reference == 'non taxable':
+            inter_tax = 0
+            intra_tax = 0
+        else:
+            inter_tax = item.inter_st
+            intra_tax = item.intra_st
+            
         return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'places':places,'price':price,'sales' : sale_price,'gst':gst,'sgst':sgst,'inter_tax': inter_tax, 'intra_tax' : intra_tax,})
     return redirect('/')
 
