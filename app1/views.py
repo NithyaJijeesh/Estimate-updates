@@ -26945,7 +26945,6 @@ def estindex2(request):
 
 
 @login_required(login_url='regcomp')
-@login_required(login_url='regcomp')
 def estcreate2(request):
     if request.method == 'POST':
         cmp1 = company.objects.get(id=request.session["uid"])
@@ -33949,14 +33948,15 @@ def itemdata(request):
         sgst = item.inter_st
         places=cmp1.state
         sale_price = item.sales_cost
-        if item.tax_reference == 'non taxable':
+        tax_ref = item.tax_reference
+        if  tax_ref == 'non taxable':
             inter_tax = 0
             intra_tax = 0
         else:
             inter_tax = item.inter_st
             intra_tax = item.intra_st
             
-        return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'places':places,'price':price,'sales' : sale_price,'gst':gst,'sgst':sgst,'inter_tax': inter_tax, 'intra_tax' : intra_tax,})
+        return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'places':places,'price':price,'sales' : sale_price,'gst':gst,'sgst':sgst,'inter_tax': inter_tax, 'intra_tax' : intra_tax, 'tax_ref': tax_ref,})
     return redirect('/')
 
 def getperiod(request):
@@ -38259,7 +38259,31 @@ def customers21(request):
         if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
             return redirect('gocustomers')
         else:
-             
+            print(request.POST.get('title'))
+            print(firstname)
+            print(lastname)
+            print(request.POST.get('company_name'))
+            print(request.POST.get('location'))
+            print(request.POST.get('gsttype'))
+            print(request.POST.get('gstin')) 
+            print(request.POST.get('panno'))
+            print(request.POST.get('email'))
+            print(request.POST.get('website'))
+            print(request.POST.get('mobile'))
+            print(request.POST.get('street'))
+            print(request.POST.get('city'))
+            print(request.POST.get('state'))
+            print(request.POST.get('city'))
+            print(request.POST.get('state'))
+            print(request.POST.get('pincode'))
+            print(request.POST.get('country'))
+            print(request.POST.get('shipstreet'))
+            print(request.POST.get('shipcity'))
+            print(request.POST.get('shipstate'))
+            print(request.POST.get('shippincode'))
+            print(request.POST.get('shipcountry'))
+            print(request.POST.get('credit_limit'))
+
             cust = customer(title=request.POST.get('title'), firstname=firstname,
                             lastname=lastname, company=request.POST.get('company_name'),
                             location=request.POST.get('location'), gsttype=request.POST.get('gsttype'),
@@ -38270,7 +38294,7 @@ def customers21(request):
                             pincode=request.POST.get('pincode'), country=request.POST.get('country'),
                             shipstreet=request.POST.get('shipstreet'), shipcity=request.POST.get('shipcity'),
                             shipstate=request.POST.get('shipstate'),shippincode=request.POST.get('shippincode'), 
-                            shipcountry=request.POST.get('shipcountry'),cid=cmp1)
+                            shipcountry=request.POST.get('shipcountry'),cid=cmp1, credit_limit = request.POST.get('credit_limit'))
             cust.save()
             
             customer1 = customer.objects.get(customerid = cust.customerid,cid=cmp1)
@@ -40665,7 +40689,8 @@ def credit_item(request):
                                 intra_st=request.POST.get('intra_st'),inter_st=request.POST.get('inter_st'), 
                                 inventry=None if request.POST.get('invacc') is None else request.POST.get('invacc'),
                                 stock=0 if request.POST.get('stock') == ' ' else request.POST.get('stock'),
-                                status=request.POST.get('status'),
+                                stock_rate=0 if request.POST.get('stock_rate') == ' ' else request.POST.get('stock_rate'),
+                                status=request.POST.get('status'), itmdate = date.today(),
                                 cid=cmp1)
             item.save()
             return redirect('addpurchasecredit')
@@ -40695,7 +40720,6 @@ def cust_details(request):
             return redirect('/')
         comp = company.objects.get(id=request.session['uid'])
         cust_id = request.POST.get('id').split(" ")[0]
-        print(cust_id)
         cust = customer.objects.get(customerid=cust_id, cid = comp)
         email = cust.email
         street = cust.street
@@ -40750,7 +40774,7 @@ def cust_dropdown(request):
     options = {}
     option_objects =customer.objects.filter(cid=cmp1)
     for option in option_objects:
-        options[option.id] = [option.name]
+        options[option.customerid] = [option.customerid, option.title, option.firstname, option.lastname]
 
     return JsonResponse(options)
 
@@ -47690,3 +47714,32 @@ def get_bankacc_num(request):
         return redirect(payment_received)
 
 #-------------------------------------------------------------------------------------
+
+
+#------------estimate item unit creations----Nithya-----------------
+
+@login_required(login_url='regcomp')
+def est_unit(request):
+    try:
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            usymbol = request.POST.get('unit_symbol')
+            uname = request.POST.get('unit_name')
+            unit = unittable(unit_symbol=usymbol,name=uname,cid=cmp1)
+            unit.save()
+            return JsonResponse({"message": "success"})
+        return JsonResponse({"message": "invlalid"}) 
+    except:
+        return JsonResponse({"message": "invalid"})
+
+
+@login_required(login_url='regcomp')
+def unit_dropdown(request):
+
+    company1 = company.objects.get(id=request.session["uid"])
+    options = {}
+    option_objects = unittable.objects.filter(cid=company1)
+    for option in option_objects:
+        options[option.id] = [option.unit_symbol, option.name]
+
+    return JsonResponse(options)

@@ -2320,3 +2320,10 @@ class repeatevry(models.Model):
 class recterm(models.Model):
     term_name = models.CharField(max_length=100)
     cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
+
+# payment terms ----added by Nithya
+
+class payment_terms(models.Model):
+    company = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
+    term = models.CharField(max_length=100,null=True,blank=True)
+    days = models.IntegerField(max_length=100,null=True,blank=True)

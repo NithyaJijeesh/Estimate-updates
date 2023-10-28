@@ -1280,6 +1280,11 @@ urlpatterns = [
     path('check_dc_number_cont',views.checkDCNumberConti, name='checkDCNumberConti'),
     path('dc_draft_to_save/<int:id>',views.challan_draftToSave, name='challan_draftToSave'),
 
+
+    #-------------estimate updation---Nithya--------------
+
+    path('est_unit',views.est_unit, name='est_unit'),
+    path('unit_dropdown',views.unit_dropdown, name='unit_dropdown'),
  
      
      
