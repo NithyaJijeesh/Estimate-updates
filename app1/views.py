@@ -26915,9 +26915,21 @@ def goestimate(request):
     }
     return render(request,'app1/goestimate.html',context)
 
+from django.db import connection
+import re
+from django.db.models import Max
+
 @login_required(login_url='regcomp')
 def estindex2(request):
-    try:
+    # try:
+        # changed by Nithya----- to get estimate number in the create page----
+        model_meta = estimate._meta
+        pk_name = model_meta.pk.name
+        table_name = model_meta.db_table
+        with connection.cursor() as cursor:
+            cursor.execute(f"SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_NAME = %s", [table_name])
+            next_id = cursor.fetchone()[0]
+
         cmp1 = company.objects.get(id=request.session["uid"])
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
@@ -26933,15 +26945,34 @@ def estindex2(request):
         acc  = accounts1.objects.filter(acctype='Cost of Goods Sold',cid=cmp1)
         acc1  = accounts1.objects.filter(acctype='Sales',cid=cmp1)
 
+        # -----changes-------
+        payment_term = payment_terms.objects.filter(company=cmp1)
+        banks = bankings_G.objects.filter(cid = cmp1)
+        est_count = estimate.objects.filter(cid = cmp1).count()
+        est_last = estimate.objects.filter(cid = cmp1).last().estimateno
+
+        last_digit_index = len(est_last)
+        for i in range(len(est_last) - 1, -1, -1):
+            if not est_last[i].isdigit():
+                last_digit_index = i + 1
+                break
+
+        prefix = est_last[:last_digit_index]
+        number = int(est_last[last_digit_index:])
+
+        number += 1
+
+        next_estimate_number = f"{prefix}{number}"
+        print(next_estimate_number)
 
 
         context = {'est': est1, 'customers': customers, 'cmp1': cmp1, 'inv': inv, 'bun': bun, 'noninv': noninv,'item':item,
-                   'ser': ser, 'tod': tod,
-                   'unit':unit,'acc':acc,'acc1':acc1,
-                   }
+                    'ser': ser, 'tod': tod, 'terms':payment_term, 'number': next_id+1000 , 'next_estimate': next_estimate_number,
+                    'unit':unit,'acc':acc,'acc1':acc1, 'est_count' : est_count, 'last_est' : est_last, 'banks' : banks,
+                    }
         return render(request, 'app1/estimate2.html', context)
-    except:
-        return redirect('goestimate')
+    # except:
+    #     return redirect('goestimate')
 
 
 @login_required(login_url='regcomp')
@@ -26954,9 +26985,9 @@ def estcreate2(request):
                         estimatedate=request.POST.get('estimatedate'), 
                         expirationdate=request.POST.get('expirationdate'),
                         placeofsupply=request.POST.get('placosupply'),
-                        estimateno='1000',
+                        reference_number='1000',
                         cid=cmp1,
-                        reference_number = request.POST.get('Ref_No'),
+                        estimateno = request.POST.get('est_no'),
                         note = request.POST.get('Note'),
                         subtotal=request.POST.get('subtotal'),
                         IGST =request.POST.get('igst'),
@@ -26971,7 +27002,7 @@ def estcreate2(request):
         if len(request.FILES) != 0:
             est2.file=request.FILES.get('file')
         est2.save()
-        est2.estimateno = int(est2.estimateno) + est2.estimateid
+        est2.reference_number = int(est2.reference_number) + est2.estimateid
         est2.save()
 
         items = request.POST.getlist("product[]")
@@ -27223,7 +27254,6 @@ def updateestimate2(request, id):
                     
                     if int(len(items))>int(count):
                         if ele[7] == 0:
-                            print('added')
 
                             itemAdd= estimate_item.objects.create(item = ele[0],hsn=ele[1],
                             quantity=ele[2],rate=ele[3],tax=ele[4],discount = ele[5],total=ele[6] ,estimate_id=id,cid=cmp1)
@@ -27290,10 +27320,10 @@ def new_customers4(request,id):
 def deleteestimate(request, id):
     try:
         cmp1 = company.objects.get(id=request.session['uid'])
+
         upd = estimate.objects.get(estimateid=id, cid=cmp1)
-        
+        # os.remove(upd.estimate.path)
         upd.delete()
-        os.remove(upd.estimate.path)
         return redirect('goestimate')
     except:
         return redirect('goestimate')
@@ -47741,5 +47771,29 @@ def unit_dropdown(request):
     option_objects = unittable.objects.filter(cid=company1)
     for option in option_objects:
         options[option.id] = [option.unit_symbol, option.name]
+
+    return JsonResponse(options)
+
+@login_required(login_url='regcomp')
+def add_payment_term(request):
+    try:
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            term = payment_terms(days=request.POST.get('days'),company=cmp1)
+            term.save()
+            return JsonResponse({"message": "success"})
+        return JsonResponse({"message": "invlalid"}) 
+    except:
+        return JsonResponse({"message": "invalid"})
+
+
+@login_required(login_url='regcomp')
+def term_dropdown(request):
+
+    company1 = company.objects.get(id=request.session["uid"])
+    options = {}
+    option_objects = payment_terms.objects.filter(company=company1)
+    for option in option_objects:
+        options[option.id] = [option.days]
 
     return JsonResponse(options)

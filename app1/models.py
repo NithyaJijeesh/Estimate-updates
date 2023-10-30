@@ -1039,6 +1039,7 @@ class customize(models.Model):
     selected = models.CharField(max_length=255, default='', blank=True)
 
 
+
 # Ananthakrishnan
 class estimate(models.Model):
     estimateid = models.AutoField(('ESTIMATEID'), primary_key=True)
@@ -1074,13 +1075,13 @@ class estimate(models.Model):
         return self.customer
     
     # changes done by Nithya----
-    gst_treatment = models.CharField(max_length=100,null=True)
-    gst_number = models.CharField(max_length=100,null=True)
-    credit_term = models.CharField(max_length=100,null=True)
-    payment_term  = models.CharField(max_length=100,null=True)
-    paid = models.CharField(max_length=100,null=True)
-    balance = models.CharField(max_length=100,null=True)
-    conversion = models.CharField(max_length=100,null=True)
+    gst_treatment = models.CharField(max_length=100,null=True,blank=True)
+    gst_number = models.CharField(max_length=100,null=True,blank=True)
+    payment_method = models.CharField(max_length=100,null=True,blank=True)
+    payment_term  = models.IntegerField(blank=True,null=True)
+    paid = models.CharField(max_length=100,null=True,blank=True)
+    balance = models.CharField(max_length=100,null=True,blank=True)
+    conversion = models.CharField(max_length=100,null=True,blank=True)
 
 
 class estimate_item(models.Model):
@@ -2325,5 +2326,4 @@ class recterm(models.Model):
 
 class payment_terms(models.Model):
     company = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
-    term = models.CharField(max_length=100,null=True,blank=True)
     days = models.IntegerField(max_length=100,null=True,blank=True)

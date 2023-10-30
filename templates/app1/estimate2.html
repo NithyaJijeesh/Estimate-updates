@@ -12,7 +12,12 @@
   }
   .modal{
     z-index: 9999;
+
   }
+  .form-control::placeholder{
+    color: gray;
+  }
+  
 </style>
 <form action="estcreate2" method="post" class="needs-validation" enctype="multipart/form-data"  novalidate >{% csrf_token %}
     <div class="page-content">
@@ -58,7 +63,7 @@
                             <div class="col-md-6">
                                 <label class="col-form-label">GST Treatment</label>
                                 <select class="custom-select" id="gsttype" name="gsttype" style="background-color: #43596c; color: white;" required>
-                                    <option value=""></option>
+                                    <option value="" disabled selected>Select GST Treatment</option>
                                     <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
                                     <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
                                     <option value="Unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
@@ -74,8 +79,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="col-form-label">Palce of Supply</label>
-                                <select type="text" class="form-control" id="plosu" name="placosupply" style="background-color: #2f516f; color: white;">
-                                    <option value=""> </option>
+                                <select type="text" class="form-control" id="plosu" name="placosupply">
+                                    <option value="" disabled selected>Select State</option>
                                     <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
                                     <option value="Andhra Predhesh">Andhra Predhesh</option>
                                     <option value="Arunachal Predesh">Arunachal Predesh</option>
@@ -127,24 +132,24 @@
                     <div class="col-md-4">
                       <label class="col-form-label">Billing Address</label>
                       <label for="billingaddress"></label>
-                      <textarea class="form-control" rows="7" id="bname" name="billingaddress"></textarea>
+                      <textarea class="form-control" rows="7" id="bname" name="billingaddress" placeholder="Address"></textarea>
                     </div>
                 </div>
                 
                 <hr>
                 <div class="row mt-3">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="col-form-label">Estimate Date</label>
-                        <input type="date" class="form-control" value="{{ tod }}" name="estimatedate"><br>
+                        <input type="date" class="form-control" value="{{ tod }}" name="estimatedate" id="estimatedate"><br>
                     </div>
 
-                    <div class="col-md-3  ">
-                        <label for="unit" style="color: white;">Payment Terms </label>
+                    <div class="col-md-4  ">
+                        <label for="unit" style="color: white;" class="col-form-label">Payment Terms </label>
                         <div class="d-flex">
-                            <select class="form-control" name="term" id="term" style="background-color: #2f516f; color: white;">
-                                <option selected disabled value="">Choose...</option>
+                            <select class="form-control" name="term" id="term">
+                                <option selected disabled value="">Select Payment Term</option>
                                 {% for term in terms %}
-                                <option value="{{term.days}}">{{term.term}} </option>
+                                <option value="{{term.days}}">NET {{term.days}} </option>
                                 {% endfor %}
                                 <option value= 30>NET 30</option>
                                 <option value= 60>NET 60</option>
@@ -156,32 +161,63 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="col-form-label">Expiration Date</label>
-                        <input type="date" class="form-control" value="{{ tod }}" name="expirationdate" required><br>
+                        <input type="date" class="form-control" value="{{ tod }}" name="expirationdate" id="expirationdate" required><br>
                     </div>
-                    <div class="col-md-3">
+                </div>
+                <div class="row mt-3">
+                    {% if est_count == 0 %}
+                    <div class="col-md-4">
+                        <label class="col-form-label">Estimate Number</label>
+                        <input type="text" class="form-control" name="est_no" placeholder="{{next_estimate}}" ><br>
+                    </div>
+                    {% else %}
+                    <div class="col-md-4">
+                        <label class="col-form-label">Estimate Number</label>
+                        <input type="text" class="form-control" name="est_no" id="est_number" placeholder="{{next_estimate}}"><br>
+                        <input type="hidden" value="{{last_est}}" id="last_estimateno">
+                        <span id="estimate-error-message"></span>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-4">
                         <label class="col-form-label">Reference Number</label>
-                        <input type="text" class="form-control" name="Ref_No"><br>
+                        <input type="text" class="form-control" name="ref_no" value="{{number}}"><br>
                     </div>
-                    <div class="col-md-3  ">
-                        <div class="col-md-6 mt-3">
-                            <label for="unit" style="color: white;">Payment Terms </label>
-                            <div class="d-flex">
-                                <select class="custom-select" name="unit" id="unit" required style="background-color: #2a4964; color: white;">
-                                    <option selected disabled value="">Choose...</option>
-                                    {% for term in terms %}
-                                    <option value="{{term.days}}">{{term.term}} </option>
-                                    {% endfor %}
-                                    <option value= 30>NET 30</option>
-                                    <option value= 60>NET 60</option>
-                                    <option value= 0>Due on Receipt</option>
-                                </select>
-                                <a href="#">
-                                    <button type="button" class="btn btn-outline-secondary ml-1" data-target="#addterm" data-toggle="modal">+</button>
-                                </a>
-                            </div>
-                        </div>
+                    <div class="col-md-4">
+                        
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <label for="pay_method" style="color: white;" class="col-form-label">Payment Method</label>
+                        <select class="form-control" name="pay_method" id="pay_method">
+                            <option value= 'Cash' data-status=1>Cash</option>
+                            <option value= 'Cheque' data-status=2>Cheque</option>
+                            <option value= 'UPI' data-status=3>UPI</option>
+                            <option value= '' disabled>Bank</option>
+                            {% for bank in banks %}
+                            <option value="{{bank.bankname}}" data-status=4 data-account-number="{{bank.account_number}}" aria-placeholder="123456789123456"> {{bank.bankname}} </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-none " id="bank_acc" >
+                        <label class="col-form-label">Bank Account</label>
+                        <input type="text" class="form-control" name="bank_account" id="bank_account" style="background-color: #43596c; color: white;" readonly>
+                    </div>
+                    <div class="col-md-4 d-none " id="cheque_num" >
+                        <label class="col-form-label">Cheque Number</label>
+                        <input type="text" class="form-control" name="cheque_number" id="cheque_number" placeholder="123456">
+                        <span id="cheque-validation-message"></span>
+                    </div>
+                    <div class="col-md-4 d-none " id="upi" >
+                        <label class="col-form-label">UPI ID</label>
+                        <input type="text" class="form-control" name="upi_id" id="upi_id" placeholder="abc123@xyz">
+                        <span id="upi-validation-message"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        
                     </div>
                 </div>
           
@@ -206,7 +242,7 @@
                                 <td style="width: 18%;">
 
                                     <div class="d-flex">
-                                        <select name='product[]' id="product1" class="form-control product" style="background-color: #2f516f; color: white; width: 150px;">
+                                        <select name='product[]' id="product1" class="form-control product" style="width: 150px;">
                                             <option value=" " selected>Select Item</option>
                                 
                                             {% for i in item %}
@@ -222,11 +258,11 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td><input type="text" name='hsn[]' id="hsn1" placeholder='Enter HSN ' class="form-control" style="background-color: #2f516f; color: white; width: 80px;" /></td>
-                                <td><input type="number" name='qty[]'  placeholder='Enter Qty' id="qty1"  class="form-control qty" step=0 min=0 style="background-color: #2f516f;margin-top: 21px; color: white;" />
+                                <td><input type="text" name='hsn[]' id="hsn1" placeholder='HSN Code' class="form-control" style="width: 80px;" /></td>
+                                <td><input type="number" name='qty[]'  placeholder='Quantity' id="qty1"  class="form-control qty" step=0 min=0 style="margin-top: 21px; color: white;" />
                                     <div class="d-flex"><span>Available Qty :</span> <span id="qtyspan1" class=''></span></div>
                                 </td>
-                                <td><input type="number" name='price[]' id="unit1" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white; width: 100px;" /></td>
+                                <td><input type="number" name='price[]' id="unit1" placeholder='Unit Price' class="form-control price" step="0.00" min="0" style="width: 100px;" /></td>
                                 <td>
                                     
                                     <!-- <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex" style="width: 130px;"> -->
@@ -250,9 +286,9 @@
                                     </select>
                                           
                                 </td>
-                                <td><input type="number" name='discount[]'  placeholder='Enter Discount' id="disc1" value=0 class="form-control disc" step=0 min=0 style="background-color: #2f516f;  color: white; width: 100px;"  /></td>
+                                <td><input type="number" name='discount[]'  placeholder='Discount' id="disc1" value=0 class="form-control disc" step=0 min=0 style=" width: 100px;"  /></td>
 
-                                <td><input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;"/></td>
+                                <td><input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly /></td>
                                 <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>
 
                                 <td>
@@ -796,7 +832,7 @@
                                                                 <label for="unit" style="color: white;">Unit </label>
                                                                 <div class="d-flex">
                                                                     <select class="custom-select" name="unit" id="unit" required style="background-color: #2a4964; color: white;">
-                                                                        <option selected disabled value="">Choose...</option>
+                                                                        <option selected disabled value="">Select Unit</option>
                                                                         {% for a in unit %}
                                                                         <option style="text-transform:Uppercase;">{{ a.unit_symbol}}-{{ a.name }}</option>
                                                                         {% endfor %}
@@ -852,7 +888,8 @@
                                                             </div>
                                                             <div class="col-md-6 mt-3">
                                                                 <label for="hsn" style="color: white;">HSN Code</label>
-                                                                <input type="text" name="hsn" class="form-control" id="hsn" style="background-color: #2a4964; color: white;" placeholder="Enter a valid HSN code" required>
+                                                                <input type="text" name="hsn" class="form-control" id="hsn" style="background-color: #2a4964; color: white;" placeholder="123456" required onchange="validateInput()">
+                                                                <p id="error" style="color: red;"></p>
                                                             </div>
                                                         </div>
                                                         <div class="row"> 
@@ -880,7 +917,7 @@
                                                                     <div class="col-md-6 mt-3">
                                                                         <label for="validationCustom01" style="color: white;">Intra State Tax Rate</label>
                                                                         <select name="intra_st" class="form-control"  style="background-color: #2a4964; color: white;" id="intra_st" >
-                                                                            <option >Choose...</option>
+                                                                            <option >Select Tax Rate</option>
                                                                             <option value=0>GST 0%</option>
                                                                             <option value=5>GST 5%</option>
                                                                             <option value=12>GST 12%</option>
@@ -892,7 +929,7 @@
                                                                     <div class="col-md-6 mt-3">
                                                                         <label for="inter_st" style="color: white;">Inter State Tax Rate</label>
                                                                         <select name="inter_st" class="form-control"  style="background-color: #2a4964; color: white;"  id="inter_st" >
-                                                                            <option >Choose...</option>
+                                                                            <option >Select Tax Rate</option>
                                                                             <option value=0>IGST 0%</option>
                                                                             <option value=5>IGST 5% </option>
                                                                             <option value=12>IGST 12%</option>
@@ -1100,6 +1137,69 @@
 </div>
 <!-- end of unit modal -->
 
+<!-- payment term modal -->
+<div class="modal fade" id="addterm" style="width: 500px; margin-left: 35%;">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background-color: #213b52;">
+            <div class="modal-header">
+                <h3 class="m-3">Add Payment Term</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card p-3 m-3">
+                    <form action="" method="post"  autocomplete="off" id="modalTerm">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12 mx-0">
+                                        <div class="row">
+                                            <div class="col-md-12 mt-3">
+                                                <label for="days" style="color: white; margin-left: 20%;">Enter Days</label>
+                                                <input type="text" name="days" class="form-control" id="days" style="background-color: #2a4964; color: white; width: 250px; margin-left: 20%;" autocomplete="off" required>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="row mt-5 mb-5">
+                                            <div class="col-md-4">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button class="btn btn-outline-info rounded-pill w-100 text-light" data-dismiss="modal" type="submit" id="termSave">SUBMIT</button>
+                                            </div>
+                                            <div class="col-md-4">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+<!-- end of payment modal -->
+
+
+<!-- error modal -->
+<div id="error-modal" class="modal" style="width: 500px; height: 500px; margin: 0 auto; padding: 50px; text-align: center;">
+    <div class="modal-dialog modal-xl" style=" background-color: #213b52;">
+        <div class="modal-content" style="background-color: #343a40;padding: 50px;">
+            <p id="modal-message"></p>
+            <div class="modal-buttons">
+                <button id="modal-continue" onclick="onModalClick()">Continue</button>
+                <button id="modal-cancel" onclick="onModalClick()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end of error modal -->
+
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -1186,11 +1286,11 @@ $(document).ready(function() {
                         </a>
                     </div>
                     </td>
-                    <td><input type="text" name='hsn[]' id="hsn${roinc}" placeholder='Enter HSN' class="form-control" style="background-color: #2f516f; color: white; width: 80px;" /></td>
-                    <td><input type="number" name='qty[]'  placeholder='Enter Qty' id="qty${roinc}" class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;margin-top: 21px;" />
+                    <td><input type="text" name='hsn[]' id="hsn${roinc}" placeholder='HSN Code' class="form-control" style="background-color: #2f516f; color: white; width: 80px;" /></td>
+                    <td><input type="number" name='qty[]'  placeholder='Quantity' id="qty${roinc}" class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;margin-top: 21px;" />
                         <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class=''></span></div>
                     </td>
-                    <td><input type="number" name='price[]' id="unit${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white; width: 100px;" /></td>
+                    <td><input type="number" name='price[]' id="unit${roinc}" placeholder='Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white; width: 100px;" /></td>
                     <td>
 
                     <select name='tax1[]' id="tax1${roinc}" class="form-control tax intra_tax" style="width: 130px;">
@@ -1216,7 +1316,7 @@ $(document).ready(function() {
                     <td style="display: none;"><input type="number" step="any" name='taxamount${roinc}' id="taxamount${roinc}" class="form-control taxamount" /></td>
 
                     <td>
-                        <input type="number" name='discount[]' placeholder='Enter Discount' value=0 id="disc${roinc}" class="form-control disc" step=0 min=0 style="background-color: #2f516f;  color: white; width: 100px;">
+                        <input type="number" name='discount[]' placeholder='Discount' value=0 id="disc${roinc}" class="form-control disc" step=0 min=0 style="background-color: #2f516f;  color: white; width: 100px;">
                     </td>
                     <td><input type="number" name='total[]' id="total${roinc}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                     <td>
@@ -1973,7 +2073,219 @@ $(document).ready(function() {
     //     $('#newitem').modal('show');
     // });
 
+// payment term modal
+
+    $(document).on("click", "#termSave", function(){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'add_payment_term' %}",
+
+            data:{
+                days : $('#days').val(),
+                
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            
+            success: function(response) {
+                // console.log("success")
+                document.getElementById("modalTerm").reset();
+                reloadTerm();
+            },
+        });        
+    });
+
+    function reloadTerm() {
+
+        $.ajax({
+            url: "{% url 'term_dropdown' %}",
+            type: "GET",
+            dataType: "json",
+            data: $(this).serialize(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+
+            success: function(data) {
+                var dropdown = $('#term');
+                dropdown.empty();
+                dropdown.append(`<option disabled selected>Select Payment Term</option>`);
+                $.each(data, function(key, value) {
+                    dropdown.append($('<option></option>').attr('value', key).text("NET " +value[0]).val(value[0]));
+                });
+                dropdown.append(
+                                    `   <option value = 30 >NET 30</option>
+                                        <option value = 60>NET 60</option>
+                                        <option value = 0>BDL-BUNDLES</option>
+                                    `
+                                );
+            },
+            error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            }
+        });
+    }
+
+
+    $(document).on('change', "#term", function(){
+        var days =  parseInt($("#term").val());
+        var est_date = $("#estimatedate").val();
+        console.log(days);
+        console.log(est_date);
+
+        if (!isNaN(days) && est_date) {
+            // Calculate the expiration date by adding the selected payment term (in days) to the estimate date
+            const expirationDate = new Date(est_date);
+            expirationDate.setDate(expirationDate.getDate() + days);
+            const formattedExpirationDate = expirationDate.toISOString().slice(0, 10); // Format as YYYY-MM-DD
+            $("#expirationdate").val(formattedExpirationDate);
+        } else {
+            $("#expirationdate").val(" ");
+        }
+    
+    });
+
+    function validateInput() {
+        const inputField = $("#hsn").val();
+        const error = $("#error");
+
+        if (/^\d{6}$/.test(inputField)) {
+            error.text("");
+        } else {
+            error.text("Please enter exactly 6 digits.");
+            error.css('color', 'red');
+        }
+    }
+
+    $(document).on('change', '#pay_method', function(){
+
+        var selectedOption = $("#pay_method option:selected");
+        var status1 =  selectedOption.data("status");
+        var bank_account = selectedOption.data('account-number');
+
+        if(status1 == 2 ){
+            $("#cheque_num").removeClass('d-none');
+            $("#cheque_num").addClass('d-block');
+
+            $("#bank_acc").removeClass('d-block');
+            $("#bank_acc").addClass('d-none');
+            $("#upi").removeClass('d-block');
+            $("#upi").addClass('d-none');
+
+        }
+
+        else if(status1 == 3 ){
+            $("#upi").removeClass('d-none');
+            $("#upi").addClass('d-block');
+
+            $("#cheque_num").removeClass('d-block');
+            $("#cheque_num").addClass('d-none');
+            $("#bank_acc").removeClass('d-block');
+            $("#bank_acc").addClass('d-none');
+
+        }
+
+        else if(status1 == 4 ){
+            $("#bank_acc").removeClass('d-none');
+            $("#bank_acc").addClass('d-block');
+
+            $('#bank_account').val(bank_account);
+
+            $("#cheque_num").removeClass('d-block');
+            $("#cheque_num").addClass('d-none');
+            $("#upi").removeClass('d-block');
+            $("#upi").addClass('d-none');
+        }
+        else{
+            $("#cheque_num").removeClass('d-block');
+            $("#bank_acc").removeClass('d-block');
+            $("#upi").removeClass('d-block');
+
+            $("#cheque_num").addClass('d-none');
+            $("#bank_acc").addClass('d-none');
+            $("#upi").addClass('d-none');
+        }
+
+
+    });
+
+    $(document).ready(function () {
+        $('#upi_id').change(function () {
+            
+            const inputUPI = $("#upi_id").val();
+            const error = $("#upi-validation-message");
+
+            if (inputUPI.match(/[a-zA-Z0-9_]{3,}@[a-zA-Z]{3,}/)) {
+                error.text("UPI ID is valid.");
+                error.css('color', 'green');
+            } else {
+                error.text("Please enter a valid UPI ID.");
+                error.css('color', 'red');
+            }
+        });
+    });
+
+
+    $(document).on('change', '#cheque_number', function(){
+        var chequeNumber = $("#cheque_number").val();
+        const error = $("#cheque-validation-message");
+        if (!/^\d{6,}$/.test(chequeNumber)) {
+            error.text("Minimum 6 digits needed.");
+            error.css('color', 'red');
+        }
+        else{
+            error.text(" ");
+        }
+    });
+
+    
+
+    $(document).on('change', '#est_number', function(){
+        var estNoValue = this.value;
+        var lastEstValue = document.getElementById('last_estimateno').value;
+        var lastEstPattern = lastEstValue.replace(/\d+/g, '');
+        var lastEstNum = lastEstValue.match(/\d+/);
+
+        if (estNoValue.startsWith(lastEstPattern)) {
+            var estNum = estNoValue.match(/\d+/);
+            if (estNum && lastEstNum) {
+                if (parseInt(estNum[0]) === parseInt(lastEstNum[0]) + 1) {
+                    document.getElementById('estimate-error-message').textContent = '';
+                    closeModal();
+                } else {
+                    showModal1('Estimate numbers should be continuous.  Are you sure you want to continue?');
+                }
+            }
+        } else {
+            showModal2('Estimate number does not match the pattern. Are you sure you want to continue?');
+        }
+    });
+
+    function showModal1(message) {
+        var modal = document.getElementById('error-modal');
+        var modalMessage = document.getElementById('modal-message');
+        modalMessage.textContent = message;
+        modalMessage.style.color = '#E3A366'
+        modalMessage.style.fontSize = '15px';
+        modal.style.display = 'block';
+    }
+    function showModal2(message) {
+        var modal = document.getElementById('error-modal');
+        var modalMessage = document.getElementById('modal-message');
+        modalMessage.textContent = message;
+        modalMessage.style.color = 'red';
+        modalMessage.style.fontSize = '15px';
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        var modal = document.getElementById('error-modal');
+        modal.style.display = 'none';
+    }
+
+    function onModalClick() {
+        closeModal();
+    }
+
 </script>
+
 
 
 

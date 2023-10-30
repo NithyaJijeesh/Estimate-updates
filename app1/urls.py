@@ -1285,6 +1285,8 @@ urlpatterns = [
 
     path('est_unit',views.est_unit, name='est_unit'),
     path('unit_dropdown',views.unit_dropdown, name='unit_dropdown'),
+    path('add_payment_term',views.add_payment_term, name='add_payment_term'),
+    path('term_dropdown',views.term_dropdown, name='term_dropdown'),
  
      
      
