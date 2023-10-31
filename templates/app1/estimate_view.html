@@ -5,10 +5,8 @@
     {% load static %}
     {% if user.is_authenticated %}
 
-    <!-- <link rel="stylesheet" type="text/css" href="{% static 'assets/css/estimate.css' %}"> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
-   
+
     <style>
 
         #div1{
@@ -294,106 +292,72 @@ footer p {
 
         .print-only table {
         border-collapse: collapse;
-        border: none; /* You can adjust the border color and width */
-        width: 100%; /* Set the width to 100% of the printed page */
-        margin: 0; /* Remove margins to maximize the width */
+        border: none;  
+        width: 100%;  
+        margin: 0;  
     }
 
     .print-only th,
     .print-only td {
-        border:none; /* Apply border to table cells */
-        padding: 8px; /* Add padding for better readability */
-        text-align: center; /* Center-align text in cells */
+        border:none; 
+        padding: 8px; 
+        text-align: center; 
     }
 
     }
 
-
-    </style>
-
-
-
-
-<script>
-
-function uplodfile(){
-
-    async function generatePDF() {
-        // document.getElementById("downloadButton").innerHTML = "Currently downloading, please wait";
-
-        //Downloading
-        var downloading = document.getElementById("whatToPrint");
-        var doc = new jsPDF('l', 'pt');
-
-        await html2canvas(downloading, {
-            //allowTaint: true,
-            //useCORS: true,
-            // width: 600
-            
-        }).then((canvas) => {
-            //Canvas (convert to PNG)
-            doc.addImage(canvas.toDataURL("image/png"), 'PNG', 15, 10, 700, 850);
-        })
-
-        
-
-        data=doc.save("Document.pdf");
-
-
-        //End of downloading
-
-        // document.getElementById("downloadButton").innerHTML = "Click to download";
+    .tab:hover{
+        background-color: #154b74;
     }
 
-    $.ajax({
-        method: "POST",
-        url : "/estimate_pdf/",
-        processData :false,
-        contentType :false,
-        data : data,
-        success:function(res){
-            console.log(res)
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .slip h5{
+            font-family: serif;
         }
-
-
-    })
-}
-
-
-   
-</script>
-	
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    
-    <!-- modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add File</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="{% url 'estimate_add_file' estimate.estimateid %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
-        <div class="modal-body">
-          <input type="file" class="form-control" name="file">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-    </form>
-      </div>
-    </div>
-  </div>
+        p {
+            font-size: 1.2em;
+        }
+        .receipt-item {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .address{
+            display: flex;
+            flex-direction: column;
+        }
+        .address p,.footer p{
+            font-size: 1rem;
+            margin: 0;
+        }
+        .slip-container{
+            width: 80mm;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .divider{
+            margin: 1rem 0;
+            border-bottom: 3px dotted black;
+        }
+        .trns-id p,.datetime p{
+            font-size: 0.85rem;
+            margin: 0;
+        }
+       
+    </style>
 
     <div class="page-content" >
 
         <div class="card radius-15">
             <div class="card-body">
                 <div class="card-title">
-                    <center><h2 class="mb-0">ESTIMATE VIEW</h2> <h4></h4></center>
+                    <center><h2 class="mb-0">ESTIMATE  - &nbsp;{{estimate.estimateno }}</h2> <h4></h4></center>
                     <hr>
                 </div>
                 <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgba(0,0,0,.01);">
@@ -401,37 +365,48 @@ function uplodfile(){
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarScroll">
+                        <ul class="navbar-nav  mt-2 mt-lg-0 justify-content-left">
+                            <li class="nav-item tab mx-1 btn px-1">
+                                <a href="#" onclick="openTab('whatToPrint1')" aria-hidden="true" active class="text-grey"> Overview </a>
+                                
+                            </li>
+                            <li class="nav-item tab mx-0 btn px-1">
+                                <a href="#" onclick="openTab('whatToPrint2')" aria-hidden="true" class="text-grey"> Templates </a>
+                                
+                            </li>
+                            <li class="nav-item tab mx-0 btn px-3">
+                                <a href="#" onclick="openTab('whatToPrint3')" aria-hidden="true" class="text-grey"> Slip </a>
+                                
+                            </li>
+                            
+                        </ul>
                         <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                           <li class="nav-item mx-1">
-                            <a href="{% url 'editestimate' estimate.estimateid %}" role="button" class=" btn btn-outline-info rounded-pill text-grey p-1"> &nbsp;&nbsp;Edit&nbsp;&nbsp;</a>
+                            <a href="{% url 'editestimate' estimate.estimateid %}" role="button" aria-hidden="true" class=" btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-edit"> Edit </a>
 
                           </li>
                           <li class="nav-item mx-1">
-                            <a  href="{% url 'deleteestimate' estimate.estimateid %}" role="button"id="deleteButton" class=" btn btn-outline-info rounded-pill text-grey p-1">&nbsp;&nbsp;Delete&nbsp;&nbsp; 
-                            </a>
+                            <a  href="{% url 'deleteestimate' estimate.estimateid %}" role="button"id="deleteButton" aria-hidden="true" class=" btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-trash"> Delete </a>
                           </li>
                             <li class="nav-item active mx-1" >
-                            <a class="nav-link text-light  btn btn-outline-info rounded-pill text-grey p-1" role="button" onclick="window.print()">&nbsp;&nbsp;Print&nbsp;&nbsp;<span class="sr-only">(current)</span></a>
+                            <a class="nav-link text-light  btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-print" aria-hidden="true" role="button" onclick="window.print()"> Print <span class="sr-only">(current)</span></a>
                             </li>
       
                             <li class="nav-item mx-1">
-                              <a class="btn btn-outline-info rounded-pill text-grey p-1" role="button" href="{% url 'render_pdfestimate_view' estimate.estimateid %}" id="downloadButton" >&nbsp;&nbsp;PDF&nbsp;&nbsp;</a>
+                              <a class="btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-file-pdf-o" aria-hidden="true" role="button" href="{% url 'render_pdfestimate_view' estimate.estimateid %}" id="downloadButton" > PDF </a>
                             </li>
-
-                            <div class="dropdown p-0 nav-item mx-1 " style="margin-top: 10px;">
-                              <li  class="btn btn-outline-info rounded-pill text-grey p-1  dropdown-toggle  "data-toggle="dropdown"> &nbsp;&nbsp;Convert&nbsp;&nbsp;</li>
+                            <input type="hidden" id="status" value="{{estimate.status}}">
+                            <div class="dropdown p-0 nav-item mx-1 d-none" style="margin-top: 10px;" id="convert">
+                              <li  class="btn btn-outline-info rounded-pill text-grey py-1 px-2  dropdown-toggle  fa fa-exchange"data-toggle="dropdown" aria-hidden="true"> Convert </li>
                                 <ul class="dropdown-menu" style="background-color: black;">
-                                    <a class="dropdown-item " href="{% url 'convert1' estimate.estimateid %}"> &nbsp;Approved </a>
-                                    {% if estimate.status != 'Sales' %}
-                                    <a class="dropdown-item " href="{% url 'convert2' estimate.estimateid %}"> &nbsp;Sales</a>
-                                    {% endif %}
+                                    <a class="dropdown-item " href="{% url 'convert1' estimate.estimateid %}"> &nbsp;to Saved </a>
                                 </ul>
                               
                             </div>
                             
 
                             <div class="dropdown p-0 nav-item mx-1 "  style="margin-top: 10px;" onclick="uplodfile()">
-                              <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey p-1"data-toggle="dropdown"> &nbsp;&nbsp;Share&nbsp;&nbsp;</li>
+                              <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-share" aria-hidden="true" data-toggle="dropdown"> Share </li>
                               <ul class="dropdown-menu" style="background-color: black;">
       
                                   <li style="margin-left: 50px;"  ></i>{% post_to_facebook object_or_url "Facebook!" %}</li>
@@ -442,7 +417,7 @@ function uplodfile(){
                             </div>
   
                             <div class="dropdown p-0 nav-item mx-1 "  style="margin-top: 10px;">
-                                <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey p-1"data-toggle="dropdown">&nbsp;&nbsp;Attach file&nbsp;&nbsp;</li>
+                                <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-paperclip" aria-hidden="true" data-toggle="dropdown"> Attach file </li>
                                 <ul class="dropdown-menu" style="background-color: black;">
                                     <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
                                     {% if estimate.file != "default.jpg" %}
@@ -453,14 +428,243 @@ function uplodfile(){
                         </ul>
                     </div>
                 </nav>
-            
-                
             </div>
         </div>
-        
+        <div class="card radius-15">
+            <div class="card-body">
+            <div class="tab-content" id="whatToPrint1" >
+                <!-- <h3 class="mb-0 mx-5 text-light text-capitalize" >{{ cmp1.cname }}</h3> -->
+                <div class="row g-0">
+                    <div class="col-md-6">
+                        From,
+                        <div>
+                            
+                            <div class="d-flex justify-content-between align-items-center m-5">
+                                <b><p class="text-capitalize">{{cmp1.cname}}</p></b>
+                                <p>{{cmp1.caddress}}</p>
+                                <p>{{cmp1.city}}</p>
+                                <p>{{cmp1.state}}</p>
+                                <p>{{cmp1.pincode}}</p>
+                            </div>
 
+                            <p class="text-grey">Bill No:</p>
+                            <div class="d-flex justify-content-between align-items-center mb-5">
+                                <b>
+                                    <span style=" color: #434141;">
+                                        <input type="text" value="{{ recur_bill.bill_no }}"
+                                            class="amnt text-dark" style="font-size: 18px; color: #434141;">
+                                    </span>
+                                </b>
+                            </div>
+                            <hr class="my-4">
+
+
+
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey ">Profile Name </h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0 " style="font-size: 18px; color: #434141;">{{ recur_bill.profile_name }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey " >Repeat Every </h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.repeat_every }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey">Start Date </h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.start_date |date:'d-m-Y' }}</p>
+                                </div>
+
+                            </div>
+
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey">End Date</h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.end_date |date:'d-m-Y' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey">Payment Terms</h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0" style="font-size: 18px; color: #434141;"> NET {{ recur_bill.payment_terms }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey">Payment Method</h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.payment_method }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey">Tax </h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <span style="font-size: 18px; color: #434141;">{{ gst_or_igst }} - </span>
+                                    {% for bi in tax %}
+                                        <input type="text" value="{{ bi|floatformat:2 }}" style="font-size: 18px; color: #434141; width: 55px;" class="tax 1 tx">
+                                    <span class="text-muted">%</span><br><span style="margin-left: 55px;"></span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey">Source of Supply</h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0 text-capitalize" style="font-size: 18px; color: #434141;">{{ recur_bill.source_supply }}</p>
+                                </div>
+
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-6 mt-3">
+                                    <h6 class="mb-0 text-grey">Note</h6>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <p class="mb-0 text-capitalize" style="font-size: 18px; color: #434141;">{{ recur_bill.note }}</p>
+                                </div>
+
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-5  " style="background-color:#243344; border-radius: 5px;" >
+                        <div style="padding-left: 20px;">
+                            <div class="d-block justify-content-between mb-5">
+                                <div class="col-md-12 mt-3">
+                                    <h5 style="color: #ccc;">Vendor</h5>
+                                </div><br>
+                                <div class="col-md-12 my-0 mx-5">
+                                    <h6 class="text-capitalize" style="color: azure;">{{ vendor_name }}</h6>
+                                </div>
+                            </div>
+                            <div class="d-block justify-content-between mb-5">
+                                <div class="col-md-12 mt-3">
+                                    <h5 style="color: #ccc;">Customer</h5>
+                                </div><br>
+                                <div class="col-md-12 my-0 mx-5">
+                                    <h6 class="text-capitalize " style="color: azure;">{{ customer_name }}
+                                    </h6>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between mb-5">
+                                <div class="col-md-5 mt-3">
+                                    <h6 style="color: #ccc;">Subtotal</h5><br>
+                                </div>
+                                <div class="col-md-7 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.sub_total|floatformat:2 }} INR" class="amnt"
+                                        style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+                            <div class="justify-content-between mb-5 d-none" id="igst">
+                                <div class="col-md-4 mt-3">
+                                    <h6 style="color: #ccc;">IGST</h5><br>
+                                </div>
+                                <div class="col-md-8 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.igst|floatformat:2 }} INR" class="amnt"
+                                        style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+                            <div class=" justify-content-between mb-5 d-none" id="cgst">
+                                <div class="col-md-4 mt-3">
+                                    <h6 style="color: #ccc;">CGST</h5><br>
+                                </div>
+                                <div class="col-md-8 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.cgst|floatformat:2 }} INR" class="amnt"
+                                        style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+                            <div class=" justify-content-between mb-5  d-none" id="sgst">
+                                <div class="col-md-4 mt-3">
+                                    <h6 style="color: #ccc;">SGST</h5><br>
+                                </div>
+                                <div class="col-md-8 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.sgst|floatformat:2 }} INR" class="amnt"
+                                        style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mb-5">
+                                <div class="col-md-8 mt-3">
+                                    <h6 style="color: #ccc;">Shipping Charge</h5><br>
+                                </div>
+                                <div class="col-md-4 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.shipping_charge }} INR" class="amnt"
+                                        style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-5">
+                                <div class="col-md-6 mt-3">
+                                    <h6 style="color: #ccc;">Adjustment</h5><br>
+                                </div>
+                                <div class="col-md-6 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.adjustment|floatformat:2 }} INR"
+                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-5">
+                                <div class="col-md-6 mt-3">
+                                    <h6 style="color: #ccc;">Grand Total</h5><br>
+                                </div>
+                                <div class="col-md-6 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.grand_total|floatformat:2 }} INR"
+                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-5">
+                                <div class="col-md-6 mt-3">
+                                    <h6 style="color: #ccc;">Amount Paid</h5><br>
+                                </div>
+                                <div class="col-md-6 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.amt_paid|floatformat:2 }} INR"
+                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-5">
+                                <div class="col-md-6 mt-3">
+                                    <h6 style="color: #ccc;">Balance</h5><br>
+                                </div>
+                                <div class="col-md-6 mt-3 mx-3">
+                                    <input type="text" value="{{ recur_bill.balance|floatformat:2 }} INR"
+                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    
         
-        <div  id="whatToPrint" class="print-only">
+        <div  id="whatToPrint2" class="print-only tab-content">
             
                 <div class="my-5 page" size="A4" >
                     <div class="p-5">
@@ -515,10 +719,10 @@ function uplodfile(){
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <td>Item</td>
+                                        <td>Product/Services</td>
                                         <td>HSN</td>
-                                        <td>Price</td>
                                         <td>Quantity</td>
+                                        <td>Price</td>
                                         <td>Tax</td>
                                         <td>Discount</td>
                                         <td>Total</td>
@@ -531,8 +735,8 @@ function uplodfile(){
                                         
                                         <td style="color:black">{{j.item}}</td>
                                         <td style="color:black">{{j.hsn}}</td>
-                                        <td style="color:black">{{j.rate}}</td>
                                         <td style="color:black">{{j.quantity}}</td>
+                                        <td style="color:black">{{j.rate}}</td>
                                         <td style="color:black">{{j.tax}} %</td>
                                         <td style="color:black">{{j.discount}} </td>
                                         <td style="color:black">{{j.total}}</td>
@@ -569,6 +773,9 @@ function uplodfile(){
                                             <td id="shipchrg">
                                                 {{estimate.shipping_charge}}
                                             </td>
+                                            <td id="adj">
+                                                {{estimate.adjustment}}
+                                            </td>
                                         </tr>
                                         <tr id="igstrow" style="display:none;">
                                             <td style="color:black;font-weight:bold">IGST</td>
@@ -591,6 +798,10 @@ function uplodfile(){
                                         <tr id="shipchrgrow" style="display: none;">
                                             <td style="color:black; font-weight:bold">Shipping Charge</td>
                                             <td style="color:black; font-weight:bold">{{estimate.shipping_charge}}</td>
+                                        </tr>
+                                        <tr id="adjrow" style="display: none;">
+                                            <td style="color:black; font-weight:bold">Adjustment</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.adjustment}}</td>
                                         </tr>
                                         <tfoot>
                                             <tr>
@@ -644,12 +855,124 @@ function uplodfile(){
         
             </div>
 
+            <div class="tab-content" id="whatToPrint3">
+                <div class="container-fluid py-5 bg-secondary">
+                    <div class="slip-container bg-light" id="slip_container">
+                        <div class="slip">
+                            <h5 class="fw-bold">BUSINESS NAME</h5>
+                            <div class="address">
+                                <p>1234 Main street</p>
+                                <p>Suite 567</p>
+                                <p>City Nane, State 54321</p>
+                                <p>123-456-7890</p>
+                            </div>
+                            <div class="divider">
+                            </div>
+                            <div class="receipt-item">
+                                <span>Lorem ipsum</span>
+                                <span style="float: right;">$10.00</span>
+                            </div>
+                            <div class="receipt-item">
+                                <span>Dolor sit amet</span>
+                                <span style="float: right;">$15.99</span>
+                            </div>
+                            <div class="receipt-item">
+                                <span>Consectetur</span>
+                                <span style="float: right;">$8.50</span>
+                            </div>
+                            <div class="receipt-item">
+                                <span>Adipisicing elit</span>
+                                <span style="float: right;">$48.50</span>
+                            </div>
+                            <div class="receipt-item">
+                                <span>Corrupti voluptatem</span>
+                                <span style="float: right;">$25.50</span>
+                            </div>
+                            <div class="receipt-item">
+                                <span>Blanditiis ipsum</span>
+                                <span style="float: right;">$26.50</span>
+                            </div>
+                            <div class="receipt-item">
+                                <span>Repellendus sequi</span>
+                                <span style="float: right;">$34.50</span>
+                            </div>
+            
+            
+            
+                            <div class="subtot mt-5">
+                                <div class="subtot-item d-flex justify-content-between">
+                                    <span>Subtotal</span>
+                                    <span>$33.50</span>
+                                </div>
+                                <div class="subtot-item d-flex justify-content-between">
+                                    <span>Sales Tax</span>
+                                    <span>$5.35</span>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="grandtot fw-bold d-flex justify-content-between">
+                                <span><strong>TOTAL</strong></span>
+                                <span><strong>$35.85</strong></span>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="paid-by mb-4 d-flex justify-content-between">
+                                <span>Paid By:</span>
+                                <span>Credit</span>
+                            </div>
+                            <div class="datetime d-flex justify-content-start">
+                                <p class="">{% now "d/m/Y g:i A" %}</p>
+                            </div>
+                            <div class="trns-id d-flex flex-column">
+                                <div>
+                                    <p class="float-start">
+                                        <span>Transaction ID:</span>
+                                        <span>234-567890</span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="float-start">
+                                        <span>Vendor ID:</span>
+                                        <span>987654-321</span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+              </div>
 
+                <!-- modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{% url 'estimate_add_file' estimate.estimateid %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <div class="modal-body">
+          <input type="file" class="form-control" name="file">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
+
+            <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
             <script>
 
         $(document).ready(function(){
+            openTab('whatToPrint1');
             pstate = $("#sply").html().trim();
             cmpstate = $("#cmp").html().trim();
             // console.log(pstate == cmpstate);
@@ -679,6 +1002,12 @@ function uplodfile(){
             else{
                 $('#shipchrgrow').show();
             }
+            if($("#adj").html().trim() == 0 ){
+                $('#adjrow').hide();
+            }
+            else{
+                $('#adjrow').show();
+            }
         });
         
         $('.delete').click(function(event) {
@@ -706,6 +1035,19 @@ function uplodfile(){
                     }
             });
         });
+
+        function openTab(tabName) {
+            console.log(tabName);
+            const tabContents = document.querySelectorAll(".tab-content");
+            tabContents.forEach((tabContent) => {
+                tabContent.classList.remove("active");
+            });
+
+            const selectedTab = document.getElementById(tabName);
+            selectedTab.classList.add("active");
+            }
+
+            
         
         function printDiv() { 
         //   var divContents = document.getElementById("panel").innerHTML; 
@@ -717,15 +1059,72 @@ function uplodfile(){
         //   a.document.close(); 
         //   a.print(); 
 
-        var printContents = document.getElementById("whatToPrint").innerHTML;
+        var printContents = document.getElementById("whatToPrint2").innerHTML;
         var originalContents = document.body.innerHTML;
         document.body.innerHTML = printContents;
         window.print();
         document.body.innerHTML = originalContents;
       } 
-    
-      
-            </script> 
+
+
+      $(document).ready(function(){
+        const st = $("#status").val();
+
+        if(st == 'Draft'){
+            $("#convert").removeClass('d-none');
+            $("#convert").addClass('d-flex');
+        }
+        else{
+            $("#convert").removeClass('d-flex');
+            $("#convert").addClass('d-none');
+        }
+      });
+
+
+function uplodfile(){
+
+    async function generatePDF() {
+        // document.getElementById("downloadButton").innerHTML = "Currently downloading, please wait";
+
+        //Downloading
+        var downloading = document.getElementById("whatToPrint2");
+        var doc = new jsPDF('l', 'pt');
+
+        await html2canvas(downloading, {
+            //allowTaint: true,
+            //useCORS: true,
+            // width: 600
+            
+        }).then((canvas) => {
+            //Canvas (convert to PNG)
+            doc.addImage(canvas.toDataURL("image/png"), 'PNG', 15, 10, 700, 850);
+        })
+
+        
+
+        data=doc.save("Document.pdf");
+
+
+    }
+
+    $.ajax({
+        method: "POST",
+        url : "/estimate_pdf/",
+        processData :false,
+        contentType :false,
+        data : data,
+        success:function(res){
+            console.log(res)
+        }
+
+
+    })
+}
+
+
+   
+</script>
+	
 
 
 

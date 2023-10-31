@@ -26921,7 +26921,7 @@ from django.db.models import Max
 
 @login_required(login_url='regcomp')
 def estindex2(request):
-    # try:
+    try:
         # changed by Nithya----- to get estimate number in the create page----
         model_meta = estimate._meta
         pk_name = model_meta.pk.name
@@ -26971,39 +26971,67 @@ def estindex2(request):
                     'unit':unit,'acc':acc,'acc1':acc1, 'est_count' : est_count, 'last_est' : est_last, 'banks' : banks,
                     }
         return render(request, 'app1/estimate2.html', context)
-    # except:
-    #     return redirect('goestimate')
+    except:
+        return redirect('goestimate')
 
 
 @login_required(login_url='regcomp')
 def estcreate2(request):
     if request.method == 'POST':
         cmp1 = company.objects.get(id=request.session["uid"])
-        est2 = estimate(customer=request.POST.get('customer'), 
-                        email=request.POST.get('email'), 
-                        billingaddress=request.POST.get('billingaddress'), 
-                        estimatedate=request.POST.get('estimatedate'), 
-                        expirationdate=request.POST.get('expirationdate'),
-                        placeofsupply=request.POST.get('placosupply'),
-                        reference_number='1000',
-                        cid=cmp1,
-                        estimateno = request.POST.get('est_no'),
-                        note = request.POST.get('Note'),
-                        subtotal=request.POST.get('subtotal'),
-                        IGST =request.POST.get('igst'),
-                        CGST  = request.POST.get('cgst'),
-                        SGST = request.POST.get('sgst'),
-                        taxamount = request.POST.get('taxamount'),
-                        shipping_charge = request.POST.get('ship'),
-                        estimatetotal=request.POST.get('grandtotal'),
-                    )
-                        
-                            
-        if len(request.FILES) != 0:
-            est2.file=request.FILES.get('file')
-        est2.save()
-        est2.reference_number = int(est2.reference_number) + est2.estimateid
-        est2.save()
+
+        if 'save_button' in request.POST:
+            est2 = estimate(customer=request.POST.get('customer'), 
+                email=request.POST.get('email'), 
+                billingaddress=request.POST.get('billingaddress'), 
+                estimatedate=request.POST.get('estimatedate'), 
+                expirationdate=request.POST.get('expirationdate'),
+                placeofsupply=request.POST.get('placosupply'),
+                reference_number='1000',
+                cid=cmp1,
+                estimateno = request.POST.get('est_no').upper(),
+                note = request.POST.get('Note'),
+                subtotal=request.POST.get('subtotal'),
+                IGST =request.POST.get('igst'),
+                CGST  = request.POST.get('cgst'),
+                SGST = request.POST.get('sgst'),
+                taxamount = request.POST.get('taxamount'),
+                shipping_charge = request.POST.get('ship'),
+                estimatetotal=request.POST.get('grandtotal'),
+                status = 'Saved',
+            )
+            if len(request.FILES) != 0:
+                est2.file=request.FILES.get('file')
+            est2.save()
+            est2.reference_number = int(est2.reference_number) + est2.estimateid
+            est2.save()
+
+
+        elif 'draft_button' in request.POST:
+            est2 = estimate(customer=request.POST.get('customer'), 
+                email=request.POST.get('email'), 
+                billingaddress=request.POST.get('billingaddress'), 
+                estimatedate=request.POST.get('estimatedate'), 
+                expirationdate=request.POST.get('expirationdate'),
+                placeofsupply=request.POST.get('placosupply'),
+                reference_number='1000',
+                cid=cmp1,
+                estimateno = request.POST.get('est_no').upper(),
+                note = request.POST.get('Note'),
+                subtotal=request.POST.get('subtotal'),
+                IGST =request.POST.get('igst'),
+                CGST  = request.POST.get('cgst'),
+                SGST = request.POST.get('sgst'),
+                taxamount = request.POST.get('taxamount'),
+                shipping_charge = request.POST.get('ship'),
+                estimatetotal=request.POST.get('grandtotal'),
+                status = 'Draft'
+            )
+            if len(request.FILES) != 0:
+                est2.file=request.FILES.get('file')
+            est2.save()
+            est2.reference_number = int(est2.reference_number) + est2.estimateid
+            est2.save()
 
         items = request.POST.getlist("product[]")
         hsn = request.POST.getlist("hsn[]")
@@ -27369,7 +27397,6 @@ def estimate_view(request,id):
     upd = estimate.objects.get(estimateid=id, cid=cmp1)
     cust = customer.objects.get(customerid = upd.customer.split(" ")[0])
     estitem = estimate_item.objects.filter(estimate=id)
-
     context ={
         'estimate':upd,
         'cmp1':cmp1,
@@ -27434,15 +27461,21 @@ def render_pdfestimate_view(request,id):
 
 
 def convert1(request,id):
-    cmp1 = company.objects.get(id=request.session['uid'])
-    upd = estimate.objects.get(estimateid=id, cid=cmp1)
-
-    upd.status = 'Approved'
-    upd.save()
-
-
-
-    return redirect(estimate_view,id)
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        try:
+            cmp1 = company.objects.get(id=request.session['uid'])
+            upd = estimate.objects.get(estimateid=id, cid=cmp1)
+            upd.status = 'Saved'
+            upd.save()
+            return redirect(estimate_view,id)
+        except Exception as e:
+            print(e)
+            return redirect(estimate_view,id)
+    
 
 def convert2(request,id):
     

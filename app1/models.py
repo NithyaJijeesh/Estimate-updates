@@ -1060,6 +1060,7 @@ class estimate(models.Model):
     SGST =  models.CharField(max_length=100,null=True)
     TCS =  models.CharField(max_length=100,null=True)
     shipping_charge = models.CharField(max_length=100,null=True,default=0)
+    adjustment = models.CharField(max_length=100,null=True,default=0)
     subtotal = models.CharField(max_length=100,null=True)
     estimatetotal = models.CharField(max_length=100,null=True)
     file = models.FileField(upload_to='estimate',default="default.jpg")
