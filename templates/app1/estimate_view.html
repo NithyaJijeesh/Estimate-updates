@@ -2,264 +2,250 @@
 {% block body %}
 {% load social_share %}
 
-    {% load static %}
-    {% if user.is_authenticated %}
+{% load static %}
+{% if user.is_authenticated %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
 
-    <style>
+<style>
+    #div1{
+        /* background-color: rgb(0, 255, 21); */
+        width: 33.33%;
+        float: left;
+        height: 100px;
+        text-align: left;
+    }
+    #div2{
+        /* background-color: rgb(204, 0, 255); */
+        width: 33.33%;
+        margin: auto;
+        height: 100px;
+        text-align: left;
+    }
+    #div3{
+        /* background-color: rgb(255, 162, 0); */
+        width: 33.33%;
+        
+        float: right;
+        margin-top: -100px;
+        height: 100px;
+        
+        
+        
+    }
+    .ribbon .ribbon-inner {
+        text-align: center;
+        color: #fff;
+        top: -20px;
+        left: -90px;
+        width: 120px;
+        padding: 3px;
+        /* position: relative;
+        transform: rotate(-45deg); */
+    }
+    .ribbon .ribbon-open {
+        background-color: #268ddd;
+        border-color: #1c72b4;
+    }
 
-        #div1{
-            /* background-color: rgb(0, 255, 21); */
-            width: 33.33%;
-            float: left;
-            height: 100px;
-            text-align: left;
-        }
-        #div2{
-            /* background-color: rgb(204, 0, 255); */
-            width: 33.33%;
-            margin: auto;
-            height: 100px;
-            text-align: left;
-        }
-        #div3{
-            /* background-color: rgb(255, 162, 0); */
-            width: 33.33%;
-            
-            float: right;
-            margin-top: -100px;
-            height: 100px;
-           
-            
-            
-        }
-        .ribbon .ribbon-inner {
-    text-align: center;
-    color: #fff;
-    top: -20px;
-    left: -90px;
-    width: 120px;
-    padding: 3px;
-    /* position: relative;
-    transform: rotate(-45deg); */
-}
-.ribbon .ribbon-open {
-    background-color: #268ddd;
-    border-color: #1c72b4;
-}
+    :root {
+        --body-bg: rgb(204, 204, 204);
+        --white: #ffffff;
+        --darkWhite: #ccc;
+        --black: #000000;
+        --dark: #615c60;
+        --themeColor: #22b8d1;
+        --pageShadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+    }
 
-:root {
-    --body-bg: rgb(204, 204, 204);
-    --white: #ffffff;
-    --darkWhite: #ccc;
-    --black: #000000;
-    --dark: #615c60;
-    --themeColor: #22b8d1;
-    --pageShadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
-}
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
 
-/* Font Include */
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
+    body {
+        background-color: var(--body-bg);
+    }
 
-body {
-    background-color: var(--body-bg);
-}
+    .page {
+        background: var(--white);
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        box-shadow: var(--pageShadow);
+    }
 
-.page {
-    background: var(--white);
-    display: block;
-    margin: 0 auto;
-    position: relative;
-    box-shadow: var(--pageShadow);
-}
+    .page[size="A4"] {
+        width: 21cm;
+        height: 29.7cm;
+        overflow: hidden;
+    }
 
-.page[size="A4"] {
-    width: 21cm;
-    height: 29.7cm;
-    overflow: hidden;
-}
+    .bb {
+        border-bottom: 3px solid var(--darkWhite);
+    }
+    .top-content {
+        padding-bottom: 15px;
+    }
 
-.bb {
-    border-bottom: 3px solid var(--darkWhite);
-}
+    .logo img {
+        height: 60px;
+    }
 
-/* Top Section */
-.top-content {
-    padding-bottom: 15px;
-}
+    .top-left p {
+        margin: 0;
+        color: #000000;
+    }
 
-.logo img {
-    height: 60px;
-}
+    .top-left .graphic-path {
+        height: 40px;
+        position: relative;
+    }
 
-.top-left p {
-    margin: 0;
-    color: #000000;
-}
+    .top-left .graphic-path::before {
+        content: "";
+        height: 20px;
+        background-color: var(--dark);
+        position: absolute;
+        left: 15px;
+        right: 0;
+        top: -15px;
+        z-index: 2;
+    }
 
-.top-left .graphic-path {
-    height: 40px;
-    position: relative;
-}
+    .top-left .graphic-path::after {
+        content: "";
+        height: 22px;
+        width: 17px;
+        background: var(--black);
+        position: absolute;
+        top: -13px;
+        left: 6px;
+        transform: rotate(45deg);
+    }
 
-.top-left .graphic-path::before {
-    content: "";
-    height: 20px;
-    background-color: var(--dark);
-    position: absolute;
-    left: 15px;
-    right: 0;
-    top: -15px;
-    z-index: 2;
-}
+    .top-left .graphic-path p {
+        height: 40px;
+        left: 0;
+        right: -100px;
+        text-transform: uppercase;
+        background-color: var(--themeColor);
+        font: 26px;
+        z-index: 3;
+        position: absolute;
+        padding-left: 10px;
+    }
 
-.top-left .graphic-path::after {
-    content: "";
-    height: 22px;
-    width: 17px;
-    background: var(--black);
-    position: absolute;
-    top: -13px;
-    left: 6px;
-    transform: rotate(45deg);
-}
+    .store-user {
+        padding-bottom: 25px;
+    }
 
-.top-left .graphic-path p {
-    /* color: var(--white); */
-    height: 40px;
-    left: 0;
-    right: -100px;
-    text-transform: uppercase;
-    background-color: var(--themeColor);
-    font: 26px;
-    z-index: 3;
-    position: absolute;
-    padding-left: 10px;
-}
+    .store-user p {
+        margin: 0;
+        font-weight: 600;
+        color: #000000;
+    }
 
-/* User Store Section */
-.store-user {
-    padding-bottom: 25px;
-}
+    .store-user .address {
+        font-weight: 400;
+    }
 
-.store-user p {
-    margin: 0;
-    font-weight: 600;
-    color: #000000;
-}
+    .store-user h5 {
+        color: var(--themeColor);
+        font-family: 'Rajdhani', sans-serif;
+    }
 
-.store-user .address {
-    font-weight: 400;
-}
-
-.store-user h5 {
-    color: var(--themeColor);
-    font-family: 'Rajdhani', sans-serif;
-}
-
-.extra-info p span {
-    font-weight: 400;
-   
-}
-
-/* Product Section */
-thead {
-    color: var(--white);
-    background: var(--themeColor);
-}
-
-.table td,
-.table th {
-    text-align: center;
-    vertical-align: middle;
-}
-
-tr th:first-child,
-tr td:first-child {
-    text-align: left;
-}
-
-.media img {
-    height: 60px;
-    width: 60px;
-}
-
-.media p {
-    font-weight: 400;
-    margin: 0;
- 
-}
-
-.media p.title {
-    font-weight: 600;
+    .extra-info p span {
+        font-weight: 400;
     
-}
+    }
 
-/* Balance Info Section */
-.balance-info .table td,
-.balance-info .table th {
-    padding: 0;
-    border: 0;
-}
+    thead {
+        color: var(--white);
+        background: var(--themeColor);
+    }
 
-.balance-info tr td:first-child {
-    font-weight: 600;
-}
+    .table td,
+    .table th {
+        text-align: center;
+        vertical-align: middle;
+    }
 
-tfoot {
-    border-top: 2px solid var(--darkWhite);
-}
+    tr th:first-child,
+    tr td:first-child {
+        text-align: left;
+    }
 
-tfoot td {
-    font-weight: 600;
-}
+    .media img {
+        height: 60px;
+        width: 60px;
+    }
 
-/* Cart BG */
-.cart-bg {
-    height: 250px;
-    bottom: 32px;
-    left: -40px;
-    opacity: 0.3;
-    position: absolute;
-}
+    .media p {
+        font-weight: 400;
+        margin: 0;
+    
+    }
 
-/* Footer Section */
-footer {
-    text-align: center;
-    position: absolute;
-    bottom: 30px;
-    left: 75px;
-}
+    .media p.title {
+        font-weight: 600;
+        
+    }
 
-footer hr {
-    margin-bottom: -22px;
-    border-top: 3px solid var(--darkWhite);
-}
+    .balance-info .table td,
+    .balance-info .table th {
+        padding: 0;
+        border: 0;
+    }
 
-footer a {
-    color: var(--themeColor);
-}
+    .balance-info tr td:first-child {
+        font-weight: 600;
+    }
 
-footer p {
-    padding: 6px;
-    border: 3px solid var(--darkWhite);
-    background-color: var(--white);
-    display: inline-block;
-    color: #000000;
-}
+    tfoot {
+        border-top: 2px solid var(--darkWhite);
+    }
 
-.print-only {
-        /* display: none; */
+    tfoot td {
+        font-weight: 600;
+    }
+
+    .cart-bg {
+        height: 250px;
+        bottom: 32px;
+        left: -40px;
+        opacity: 0.3;
+        position: absolute;
+    }
+
+    footer {
+        text-align: center;
+        position: absolute;
+        bottom: 30px;
+        left: 75px;
+    }
+
+    footer hr {
+        margin-bottom: -22px;
+        border-top: 3px solid var(--darkWhite);
+    }
+
+    footer a {
+        color: var(--themeColor);
+    }
+
+    footer p {
+        padding: 6px;
+        border: 3px solid var(--darkWhite);
+        background-color: var(--white);
+        display: inline-block;
+        color: #000000;
+    }
+
+    .print-only {
         height: auto;
         width: auto;
         overflow-y: auto;
         border: none;
-        /* box-shadow: 5px 2px 5px 2px  grey; */
     }
-
-
-        @media print {
+    @media print {
         body * {
             visibility: hidden;
         }
@@ -273,15 +259,10 @@ footer p {
         }
 
         .print-only {
-            /* position: absolute; */
-            
-            /* position: fixed; */
             left: 0;
             top: 0;
             right: 0;
             height: auto;
-            /* page-break-before: always;
-            page-break-inside: avoid; */
         }
 
         @page {
@@ -291,18 +272,18 @@ footer p {
         }
 
         .print-only table {
-        border-collapse: collapse;
-        border: none;  
-        width: 100%;  
-        margin: 0;  
-    }
+            border-collapse: collapse;
+            border: none;  
+            width: 100%;  
+            margin: 0;  
+        }
 
-    .print-only th,
-    .print-only td {
-        border:none; 
-        padding: 8px; 
-        text-align: center; 
-    }
+        .print-only th,
+        .print-only td {
+            border:none; 
+            padding: 8px; 
+            text-align: center; 
+        }
 
     }
 
@@ -319,350 +300,269 @@ footer p {
     }
 
     .slip h5{
-            font-family: serif;
-        }
-        p {
-            font-size: 1.2em;
-        }
-        .receipt-item {
-            text-align: left;
-            margin-top: 10px;
-        }
-        .address{
-            display: flex;
-            flex-direction: column;
-        }
-        .address p,.footer p{
-            font-size: 1rem;
-            margin: 0;
-        }
-        .slip-container{
-            width: 80mm;
-            margin: 2rem auto;
-            padding: 2rem;
-        }
-        .divider{
-            margin: 1rem 0;
-            border-bottom: 3px dotted black;
-        }
-        .trns-id p,.datetime p{
-            font-size: 0.85rem;
-            margin: 0;
-        }
-       
-    </style>
+        font-family: serif;
+    }
+    p {
+        font-size: 1.2em;
+    }
+    .receipt-item {
+        text-align: left;
+        margin-top: 10px;
+    }
+    .address{
+        display: flex;
+        flex-direction: column;
+    }
+    .address p,.footer p{
+        font-size: 1rem;
+        margin: 0;
+    }
+    .slip-container{
+        width: 80mm;
+        margin: 2rem auto;
+        padding: 2rem;
+    }
+    .divider{
+        margin: 1rem 0;
+        border-bottom: .5px solid black;
+    }
+    .trns-id p,.datetime p{
+        font-size: 0.85rem;
+        margin: 0;
+    }
 
-    <div class="page-content" >
+    ::-webkit-scrollbar {
+                width: 5px; 
+            }
 
-        <div class="card radius-15">
-            <div class="card-body">
-                <div class="card-title">
-                    <center><h2 class="mb-0">ESTIMATE  - &nbsp;{{estimate.estimateno }}</h2> <h4></h4></center>
-                    <hr>
-                </div>
-                <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgba(0,0,0,.01);">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarScroll">
-                        <ul class="navbar-nav  mt-2 mt-lg-0 justify-content-left">
-                            <li class="nav-item tab mx-1 btn px-1">
-                                <a href="#" onclick="openTab('whatToPrint1')" aria-hidden="true" active class="text-grey"> Overview </a>
-                                
-                            </li>
-                            <li class="nav-item tab mx-0 btn px-1">
-                                <a href="#" onclick="openTab('whatToPrint2')" aria-hidden="true" class="text-grey"> Templates </a>
-                                
-                            </li>
-                            <li class="nav-item tab mx-0 btn px-3">
-                                <a href="#" onclick="openTab('whatToPrint3')" aria-hidden="true" class="text-grey"> Slip </a>
-                                
-                            </li>
-                            
-                        </ul>
-                        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                          <li class="nav-item mx-1">
-                            <a href="{% url 'editestimate' estimate.estimateid %}" role="button" aria-hidden="true" class=" btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-edit"> Edit </a>
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1; 
+            }
 
-                          </li>
-                          <li class="nav-item mx-1">
-                            <a  href="{% url 'deleteestimate' estimate.estimateid %}" role="button"id="deleteButton" aria-hidden="true" class=" btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-trash"> Delete </a>
-                          </li>
-                            <li class="nav-item active mx-1" >
-                            <a class="nav-link text-light  btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-print" aria-hidden="true" role="button" onclick="window.print()"> Print <span class="sr-only">(current)</span></a>
-                            </li>
-      
-                            <li class="nav-item mx-1">
-                              <a class="btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-file-pdf-o" aria-hidden="true" role="button" href="{% url 'render_pdfestimate_view' estimate.estimateid %}" id="downloadButton" > PDF </a>
-                            </li>
-                            <input type="hidden" id="status" value="{{estimate.status}}">
-                            <div class="dropdown p-0 nav-item mx-1 d-none" style="margin-top: 10px;" id="convert">
-                              <li  class="btn btn-outline-info rounded-pill text-grey py-1 px-2  dropdown-toggle  fa fa-exchange"data-toggle="dropdown" aria-hidden="true"> Convert </li>
-                                <ul class="dropdown-menu" style="background-color: black;">
-                                    <a class="dropdown-item " href="{% url 'convert1' estimate.estimateid %}"> &nbsp;to Saved </a>
-                                </ul>
-                              
-                            </div>
-                            
+            ::-webkit-scrollbar-thumb {
+                background: #888; 
+            }
 
-                            <div class="dropdown p-0 nav-item mx-1 "  style="margin-top: 10px;" onclick="uplodfile()">
-                              <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-share" aria-hidden="true" data-toggle="dropdown"> Share </li>
-                              <ul class="dropdown-menu" style="background-color: black;">
-      
-                                  <li style="margin-left: 50px;"  ></i>{% post_to_facebook object_or_url "Facebook!" %}</li>
-                                  <li style="margin-left: 50px;" > {% post_to_whatsapp object_or_url "WhatsApp" %}</li>
-                                  <li style="margin-left: 50px;" >{% send_email object.title "New Song: {{object.title}}. Check it out!" object_or_url "Email" %}</li>
-                                  
-                              </ul>
-                            </div>
-  
-                            <div class="dropdown p-0 nav-item mx-1 "  style="margin-top: 10px;">
-                                <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-paperclip" aria-hidden="true" data-toggle="dropdown"> Attach file </li>
-                                <ul class="dropdown-menu" style="background-color: black;">
-                                    <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
-                                    {% if estimate.file != "default.jpg" %}
-                                        <a class="dropdown-item fas fa-download" style="cursor: pointer;"download  href="{{estimate.file.url}}" >Download file</a>
-                                    {% endif %}
-                                </ul>
-                            </div>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <div class="card radius-15">
-            <div class="card-body">
-            <div class="tab-content" id="whatToPrint1" >
-                <!-- <h3 class="mb-0 mx-5 text-light text-capitalize" >{{ cmp1.cname }}</h3> -->
-                <div class="row g-0">
-                    <div class="col-md-6">
-                        From,
-                        <div>
-                            
-                            <div class="d-flex justify-content-between align-items-center m-5">
-                                <b><p class="text-capitalize">{{cmp1.cname}}</p></b>
-                                <p>{{cmp1.caddress}}</p>
-                                <p>{{cmp1.city}}</p>
-                                <p>{{cmp1.state}}</p>
-                                <p>{{cmp1.pincode}}</p>
-                            </div>
-
-                            <p class="text-grey">Bill No:</p>
-                            <div class="d-flex justify-content-between align-items-center mb-5">
-                                <b>
-                                    <span style=" color: #434141;">
-                                        <input type="text" value="{{ recur_bill.bill_no }}"
-                                            class="amnt text-dark" style="font-size: 18px; color: #434141;">
-                                    </span>
-                                </b>
-                            </div>
-                            <hr class="my-4">
-
-
-
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey ">Profile Name </h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0 " style="font-size: 18px; color: #434141;">{{ recur_bill.profile_name }}</p>
-                                </div>
-                            </div>
-
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey " >Repeat Every </h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.repeat_every }}</p>
-                                </div>
-                            </div>
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Start Date </h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.start_date |date:'d-m-Y' }}</p>
-                                </div>
-
-                            </div>
-
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">End Date</h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.end_date |date:'d-m-Y' }}</p>
-                                </div>
-                            </div>
-
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Payment Terms</h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0" style="font-size: 18px; color: #434141;"> NET {{ recur_bill.payment_terms }}</p>
-                                </div>
-                            </div>
-
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Payment Method</h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0" style="font-size: 18px; color: #434141;">{{ recur_bill.payment_method }}</p>
-                                </div>
-                            </div>
-
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Tax </h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <span style="font-size: 18px; color: #434141;">{{ gst_or_igst }} - </span>
-                                    {% for bi in tax %}
-                                        <input type="text" value="{{ bi|floatformat:2 }}" style="font-size: 18px; color: #434141; width: 55px;" class="tax 1 tx">
-                                    <span class="text-muted">%</span><br><span style="margin-left: 55px;"></span>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Source of Supply</h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0 text-capitalize" style="font-size: 18px; color: #434141;">{{ recur_bill.source_supply }}</p>
-                                </div>
-
-                            </div>
-                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                <div class="col-md-6 mt-3">
-                                    <h6 class="mb-0 text-grey">Note</h6>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <p class="mb-0 text-capitalize" style="font-size: 18px; color: #434141;">{{ recur_bill.note }}</p>
-                                </div>
-
-                            </div>
-                           
-                        </div>
-                    </div>
-                    <div class="col-md-5  " style="background-color:#243344; border-radius: 5px;" >
-                        <div style="padding-left: 20px;">
-                            <div class="d-block justify-content-between mb-5">
-                                <div class="col-md-12 mt-3">
-                                    <h5 style="color: #ccc;">Vendor</h5>
-                                </div><br>
-                                <div class="col-md-12 my-0 mx-5">
-                                    <h6 class="text-capitalize" style="color: azure;">{{ vendor_name }}</h6>
-                                </div>
-                            </div>
-                            <div class="d-block justify-content-between mb-5">
-                                <div class="col-md-12 mt-3">
-                                    <h5 style="color: #ccc;">Customer</h5>
-                                </div><br>
-                                <div class="col-md-12 my-0 mx-5">
-                                    <h6 class="text-capitalize " style="color: azure;">{{ customer_name }}
-                                    </h6>
-                                </div>
-                            </div>
-
-                            <hr class="my-4">
-
-                            <div class="d-flex justify-content-between mb-5">
-                                <div class="col-md-5 mt-3">
-                                    <h6 style="color: #ccc;">Subtotal</h5><br>
-                                </div>
-                                <div class="col-md-7 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.sub_total|floatformat:2 }} INR" class="amnt"
-                                        style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-                            <div class="justify-content-between mb-5 d-none" id="igst">
-                                <div class="col-md-4 mt-3">
-                                    <h6 style="color: #ccc;">IGST</h5><br>
-                                </div>
-                                <div class="col-md-8 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.igst|floatformat:2 }} INR" class="amnt"
-                                        style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-                            <div class=" justify-content-between mb-5 d-none" id="cgst">
-                                <div class="col-md-4 mt-3">
-                                    <h6 style="color: #ccc;">CGST</h5><br>
-                                </div>
-                                <div class="col-md-8 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.cgst|floatformat:2 }} INR" class="amnt"
-                                        style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-                            <div class=" justify-content-between mb-5  d-none" id="sgst">
-                                <div class="col-md-4 mt-3">
-                                    <h6 style="color: #ccc;">SGST</h5><br>
-                                </div>
-                                <div class="col-md-8 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.sgst|floatformat:2 }} INR" class="amnt"
-                                        style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-5">
-                                <div class="col-md-8 mt-3">
-                                    <h6 style="color: #ccc;">Shipping Charge</h5><br>
-                                </div>
-                                <div class="col-md-4 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.shipping_charge }} INR" class="amnt"
-                                        style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-5">
-                                <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Adjustment</h5><br>
-                                </div>
-                                <div class="col-md-6 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.adjustment|floatformat:2 }} INR"
-                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-5">
-                                <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Grand Total</h5><br>
-                                </div>
-                                <div class="col-md-6 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.grand_total|floatformat:2 }} INR"
-                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-5">
-                                <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Amount Paid</h5><br>
-                                </div>
-                                <div class="col-md-6 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.amt_paid|floatformat:2 }} INR"
-                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-5">
-                                <div class="col-md-6 mt-3">
-                                    <h6 style="color: #ccc;">Balance</h5><br>
-                                </div>
-                                <div class="col-md-6 mt-3 mx-3">
-                                    <input type="text" value="{{ recur_bill.balance|floatformat:2 }} INR"
-                                        class="amnt " style="font-size: 16px; color: azure;" readonly>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555; 
+            }
+            .modal{
+                z-index: 9999;
+                overflow: scroll;
+            }
     
+</style>
+
+<div class="page-content" >
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="card-title">
+                <center><h2 class="mb-0">ESTIMATE  - &nbsp;{{estimate.estimateno }}</h2> <h4></h4></center>
+                <hr>
+            </div>
+            <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgba(0,0,0,.01);">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarScroll">
+                    <ul class="navbar-nav  mt-2 mt-lg-0 justify-content-left">
+                        <li class="nav-item tab mx-1 btn px-1">
+                            <a href="#" onclick="openTab('whatToPrint1')" aria-hidden="true" active class="text-grey"> Overview </a>
+                        </li>
+                        <li class="nav-item tab mx-0 btn px-1">
+                            <a href="#" onclick="openTab('whatToPrint2')" aria-hidden="true" class="text-grey"> Templates </a>
+                            
+                        </li>
+                        <li class="nav-item tab mx-0 btn px-3">
+                            <a href="#" onclick="openTab('whatToPrint3')" aria-hidden="true" class="text-grey"> Slip </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item mx-1">
+                            <a href="{% url 'editestimate' estimate.estimateid %}" role="button" aria-hidden="true" class=" btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-edit"> Edit </a>
+                        </li>
+                        <li class="nav-item mx-1">
+                            <a  href="{% url 'deleteestimate' estimate.estimateid %}" role="button"id="deleteButton" aria-hidden="true" class=" btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-trash"> Delete </a>
+                        </li>
+                        <li class="nav-item active mx-1" >
+                            <a class="nav-link text-light  btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-print" aria-hidden="true" role="button" onclick="window.print()"> Print <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item mx-1">
+                            <a class="btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-file-pdf-o" aria-hidden="true" role="button" href="{% url 'render_pdfestimate_view' estimate.estimateid %}" id="downloadButton" > PDF </a>
+                        </li>
+                        <input type="hidden" id="status" value="{{estimate.status}}">
+                        <div class="dropdown p-0 nav-item mx-1 d-none" style="margin-top: 10px;" id="convert">
+                            <li class="btn btn-outline-info rounded-pill text-grey py-1 px-2  dropdown-toggle  fa fa-exchange"data-toggle="dropdown" aria-hidden="true"> Convert </li>
+                            <ul class="dropdown-menu" style="background-color: black;">
+                                <a class="dropdown-item " href="{% url 'convert1' estimate.estimateid %}"> &nbsp;to Saved </a>
+                            </ul>
+                        </div>
+                        <div class="dropdown p-0 nav-item mx-1 "  style="margin-top: 10px;" onclick="uplodfile()">
+                            <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-share" aria-hidden="true" data-toggle="dropdown"> Share </li>
+                            <ul class="dropdown-menu" style="background-color: black;">
+                                <!-- <li style="margin-left: 50px;"  ></i>{% post_to_facebook object_or_url "Facebook!" %}</li> -->
+                                <li style="margin-left: 50px;" > {% post_to_whatsapp object_or_url "WhatsApp" %}</li>
+                                <li style="margin-left: 50px;" >{% send_email object.title "New Song: {{object.title}}. Check it out!" object_or_url "Email" %}</li>
+                            </ul>
+                        </div>
+                        <div class="dropdown p-0 nav-item mx-1 "  style="margin-top: 10px;">
+                            <li  class=" dropdown-toggle btn btn-outline-info rounded-pill text-grey py-1 px-2 fa fa-paperclip" aria-hidden="true" data-toggle="dropdown"> Attach file </li>
+                            <ul class="dropdown-menu" style="background-color: black;">
+                                <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
+                                {% if estimate.file != "default.jpg" %}
+                                    <a class="dropdown-item fas fa-download" style="cursor: pointer;"download  href="{{estimate.file.url}}" >Download file</a>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="tab-content" id="whatToPrint1" >
+                <div class="row g-0" >
+                    <div class="col-lg-8">
+                        <div class="p-5">
+                            <div class="row mb-2 d-flex ">
+                                <div class="col-md-6 mt-3 justify-content-between align-items-center" >
+                                    <h5 >From,</h5>
+                                    <h5 class="mb-0 text-capitalize mx-2"><b>{{ cmp1.cname}}</b></h5>
+                                    <p class="mb-0 mx-2">{{ cmp1.caddress }}</p>
+                                    <p class="mb-0 mx-2">{{ cmp1.city }}</p>
+                                    <p class="mb-0 mx-2">{{ cmp1.state }}</p>
+                                    <p class="mb-0 mx-2">{{ cmp1.pincode }}</p><br>
+                                    <p class="mb-0"><strong>Email: </strong> {{ cmp1.cemail }}</p><br>
+                                    <p class="mb-0"><strong>Phone: </strong> {{ cmp1.phone }}</p>
+                                </div>
+                                <div class="col-md-6 mt-3 justify-content-between align-items-center">
+                                    <h5 >To,</h5>
+                                    <h5 class="mb-0 mx-2"><b>{{ cust.title }} {{ cust.firstname }} {{ cust.lastname }}</b></h5>
+                                    <p class="mb-0 mx-2">{{ cust.shipstreet }}</p>
+                                    <p class="mb-0 mx-2">{{ cust.shipcity }}</p>
+                                    <p class="mb-0 mx-2">{{ cust.shipstate }}</p>
+                                    <p class="mb-0 mx-2">{{ cust.shipcountry }}</p>
+                                    <p class="mb-0 mx-2">{{ cust.shippincode}}</p><br>
+                                    <p class="mb-0"><strong>Email: </strong>{{ cust.email }}</p><br>
+                                    <p class="mb-0"><strong>Phone: </strong>{{ cust.mobile }}</p><br>
+                                    <p class="mb-0"><strong>GSTIN: </strong>{{ cust.gstin }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <span><h5><em>------------------------------------------- Estimate Details -------------------------------------------</em></h5></span>
+                        <div class="row mb-2 d-flex justify-content-between align-items-center p-3">
+                            <div class="col-md-3">
+                                <h6 class="mb-0">Estimate Number : </h6><br>
+                                <h6 class="mb-0">Estimate date : </h6><br>
+                                <h6 class="mb-0">Expiration date : </h6><br>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0">{{ estimate.estimateno }}</p><br>
+                                <p class="mb-0">{{ estimate.estimatedate }}</p><br>
+                                <p class="mb-0">{{ estimate.expirationdate }}</p><br>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 class="mb-0">Reference Number : </h6><br>
+                                <h6 class="mb-0">Payment Terms : </h6><br>
+                                <h6 class="mb-0">Place of supply : </h6><br>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0">{{ estimate.reference_number }}</p><br>
+                                <p class="mb-0">{{ estimate.payment_term }}</p><br>
+                                <p class="mb-0">{{ estimate.placeofsupply }}</p><br>
+                            </div>
+                        </div>
+                        <span><h5><em>---------------------------------------------- Item Details ----------------------------------------------</em></h5></span>
+                        <section class="product-area mb-2 p-2">
+                            <table class="table table-hover table-bordered">
+                                <thead style="background-color: rgba(0, 0, 0, 0.4);">
+                                    <tr>
+                                        <td class="text-center">ITEMS</td>
+                                        <td class="text-center">HSN NUMBER</td>
+                                        <td class="text-center">QUANTITY</td>
+                                        <td class="text-center">PRICE</td>
+                                        <td class="text-center">TAX</td>
+                                        <td class="text-center">DISCOUNT</td>
+                                        <td class="text-center">TOTAL</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in estitems %}
+                                        <tr style="color: white;">
+                                            <td class="text-center" >{{ item.item }}</td>
+                                            <td class="text-center" >{{ item.hsn }}</td>
+                                            <td class="text-center" >{{ item.quantity }}</td>
+                                            <td class="text-center" >{{ item.rate }}</td>
+                                            <td class="text-center" >{{ item.tax }}</td>
+                                            <td class="text-center" >{{ item.discount }}</td>
+                                            <td class="text-center" >{{ item.total }}</td>
+                                        </tr>
+                                    {% endfor %} 
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+
+                    <div class="col-lg-4 bg-grey" style="background-color: rgba(0, 0, 0, 0.4);">
+                        <div class="p-5">
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Estimate Status :</h6>
+                                <p>{{ estimate.status }}</p>
+                            </div>
+                            <hr class="my-4" style="background-color: #fff;">
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Sub Total : </h6>
+                                <p>{{ estimate.subtotal }}</p>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Tax Amount : </h6>
+                                <p>{{ estimate.taxamount }}</p>
+                            </div>
+
+                            {% if estimate.IGST|floatformat:2 != "0.00" %}
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">IGST : </h6>
+                                <p>{{ estimate.IGST }}</p>
+                            </div>
+                            {% endif %}
+                            {% if estimate.CGST|floatformat:2 != "0.00"%}
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">CGST : </h5>
+                                <h6>{{ estimate.CGST }}</h6>
+                            </div>
+                            {% endif %}
+                            {% if estimate.SGST|floatformat:2 != "0.00" %}
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">SGST :</h6>
+                                <p>{{ estimate.SGST }}</p>
+                            </div>
+                            {% endif %}
+
+                            {% if estimate.shipping_charge != "0" %}
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Shipping Charge : </h6>
+                                <p>{{ estimate.shipping_charge}}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if estimate.adjustment|floatformat:2 != "0.00" %}
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Adjustment :</h6>
+                                <p>{{estimate.adjustment }}</p>
+                            </div>
+                            {% endif %}
+                            <hr class="my-4" style="background-color: #fff;">
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Grand Total :</h6>
+                                <p>{{ estimate.estimatetotal }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
         
         <div  id="whatToPrint2" class="print-only tab-content">
             
@@ -672,7 +572,7 @@ footer p {
                             <div class="ribbon-inner ribbon-open">{{estimate.status}}<!----></div></div>
                         <section class="top-content bb d-flex justify-content-between">
                             <div class="logo">
-                                <!-- <img src="logo.png" alt="" class="img-fluid"> -->
+                                <img src="logo.png" alt="" class="img-fluid">
                             </div>
                             <div class="top-left">
                                 <div class="graphic-path">
@@ -689,19 +589,23 @@ footer p {
                                 <div class="row bb pb-3">
                                     <div class="col-7">
                                         <p>FROM,</p>
-                                        <h5>{{cmp1.cname }}</h5>
-                                        <p class="address "> {{cmp1.caddress}}<br>
-                                            {{cmp1.city}},
-                                            {{cmp1.state}}<br>
-                                            {{cmp1.pincode}}<br>
-                                        </p>
-                                        
+                                        <h5 class="text-capitalize px-2">{{cmp1.cname }}</h5>
+                                            <p class="address px-3"> {{cmp1.caddress}}<br>
+                                                {{cmp1.city}},
+                                                {{cmp1.state}}<br>
+                                                {{cmp1.pincode}}<br>
+                                            </p>
+                                            <p>Email: {{ cmp1.cemail}} </p>
+                                            <p>Mobile: {{ cmp1.phone}} </p>
                                     </div>
                                     <div class="col-5">
                                         <p>TO,</p>
-                                        <h5>{{cust.title}} {{cust.firstname}} {{cust.lastname}}</h5>
-                                        <p class="address col-6" style="margin-left: -14px;" > {{ estimate.billingaddress}} </p>
+                                        <h5 class="text-capitalize px-2">{{cust.title}} {{cust.firstname}} {{cust.lastname}}</h5>
+                                        <p class="address col-6 px-3"  > {{ estimate.billingaddress}} </p>
                                         
+                                        <p>Email: {{ cust.email}} </p>
+                                        <p>Phone: {{ cust.mobile}} </p>
+                                        <p>GSTIN: {{ cust.gstin}} </p>
                                     </div>
                                 </div>
                                 <div class="row extra-info pt-3">
@@ -730,7 +634,7 @@ footer p {
                                 </thead>
                                 <tbody>
 
-                                    {% for j in estitem  %}
+                                    {% for j in estitems  %}
                                     <tr>
                                         
                                         <td style="color:black">{{j.item}}</td>
@@ -777,10 +681,12 @@ footer p {
                                                 {{estimate.adjustment}}
                                             </td>
                                         </tr>
+                                        {% if estimate.IGST|floatformat:2 != '0.00'%}
                                         <tr id="igstrow" style="display:none;">
                                             <td style="color:black;font-weight:bold">IGST</td>
                                             <td style="color:black; font-weight:bold" id="igst">{{estimate.taxamount}}</td>
                                         </tr>
+                                        {% endif %}
                                         <tr id="cgstrow" style="display: none;">
                                             <td style="color:black; font-weight:bold">CGST</td>
                                             <td style="color:black; font-weight:bold" id="cgst"></td>
@@ -789,11 +695,12 @@ footer p {
                                             <td style="color:black; font-weight:bold">SGST</td>
                                             <td style="color:black; font-weight:bold" id="sgst"></td>
                                         </tr>
-                                   
+                                        {% if estimate.taxamount|floatformat:2 != '0.00'%}
                                         <tr>
                                             <td style="color:black; font-weight:bold">Tax Amount</td>
                                             <td style="color:black; font-weight:bold">{{estimate.taxamount}}</td>
                                         </tr>
+                                        {% endif %}
 
                                         <tr id="shipchrgrow" style="display: none;">
                                             <td style="color:black; font-weight:bold">Shipping Charge</td>
@@ -816,8 +723,7 @@ footer p {
                             </div>
                         </section>
             
-                        <!-- Cart BG -->
-                        <img src="cart.jpg" class="img-fluid cart-bg" alt="">
+                         <img src="cart.jpg" class="img-fluid cart-bg" alt="">
             
                         <!-- <footer>
                             <hr>
@@ -856,15 +762,21 @@ footer p {
             </div>
 
             <div class="tab-content" id="whatToPrint3">
-                <div class="container-fluid py-5 bg-secondary">
-                    <div class="slip-container bg-light" id="slip_container">
+                <div class="container-fluid py-5 ">
+                    <div class="slip-container bg-white text-dark" id="slip_container">
                         <div class="slip">
-                            <h5 class="fw-bold">BUSINESS NAME</h5>
-                            <div class="address">
-                                <p>1234 Main street</p>
-                                <p>Suite 567</p>
-                                <p>City Nane, State 54321</p>
-                                <p>123-456-7890</p>
+                            <div class="row address">
+                                <div class="col-sm-5">
+                                    <h5 class="fw-bold text-uppercase text-center text-dark" style="font-size: 10px;">{{cmp1.cname}}</h5>
+                                    <p class="text-center " style="font-size: 10px;">{{cmp1.caddress}} <br> {{cmp1.city}} <br>{{cmp1.state}} <br>
+                                    {{cmp1.cemail}} <br> +91-{{cmp1.phone}}</p>
+                                </div>
+                            
+                                <div class="col-sm-5">
+                                    <h5 class="fw-bold text-uppercase text-center text-dark "style="font-size: 10px;">{{cust.title}} {{cust.firstname}} {{cust.lastname}}</h5>
+                                    <p class="text-center " style="font-size: 10px;">{{cust.shipstreet}} <br> {{cust.shipcity}} <br>{{cust.shipstate}}<br>
+                                    {{cust.email}} <br> +91-{{cust.mobile}}</p>
+                                </div>
                             </div>
                             <div class="divider">
                             </div>
@@ -915,26 +827,8 @@ footer p {
                                 <span><strong>$35.85</strong></span>
                             </div>
                             <div class="divider"></div>
-                            <div class="paid-by mb-4 d-flex justify-content-between">
-                                <span>Paid By:</span>
-                                <span>Credit</span>
-                            </div>
-                            <div class="datetime d-flex justify-content-start">
-                                <p class="">{% now "d/m/Y g:i A" %}</p>
-                            </div>
-                            <div class="trns-id d-flex flex-column">
-                                <div>
-                                    <p class="float-start">
-                                        <span>Transaction ID:</span>
-                                        <span>234-567890</span>
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="float-start">
-                                        <span>Vendor ID:</span>
-                                        <span>987654-321</span>
-                                    </p>
-                                </div>
+                            
+                            
                             </div>
                             
                         </div>
@@ -975,7 +869,6 @@ footer p {
             openTab('whatToPrint1');
             pstate = $("#sply").html().trim();
             cmpstate = $("#cmp").html().trim();
-            // console.log(pstate == cmpstate);
             if(pstate == cmpstate){
 
                 $('#igstrow').hide();
@@ -989,8 +882,6 @@ footer p {
               
             }
             else{
-               
-
                 $('#igstrow').show();
                 $('#sgstrow').hide();
                 $('#cgstrow').hide();

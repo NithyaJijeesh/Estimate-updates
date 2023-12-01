@@ -26915,25 +26915,16 @@ def goestimate(request):
     }
     return render(request,'app1/goestimate.html',context)
 
-from django.db import connection
-import re
-from django.db.models import Max
+
 
 @login_required(login_url='regcomp')
 def estindex2(request):
     try:
-        # changed by Nithya----- to get estimate number in the create page----
-        model_meta = estimate._meta
-        pk_name = model_meta.pk.name
-        table_name = model_meta.db_table
-        with connection.cursor() as cursor:
-            cursor.execute(f"SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_NAME = %s", [table_name])
-            next_id = cursor.fetchone()[0]
-
         cmp1 = company.objects.get(id=request.session["uid"])
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
         customers = customer.objects.filter(cid=cmp1).all()
+    
         est1 = estimate.objects.filter(cid=cmp1).all()
         inv = inventory.objects.filter(cid=cmp1).all()
         bun = bundle.objects.filter(cid=cmp1).all()
@@ -26949,9 +26940,35 @@ def estindex2(request):
         payment_term = payment_terms.objects.filter(company=cmp1)
         banks = bankings_G.objects.filter(cid = cmp1)
         est_count = estimate.objects.filter(cid = cmp1).count()
-        est_last = estimate.objects.filter(cid = cmp1).last().estimateno
 
-        last_digit_index = len(est_last)
+        latest_bill = estimate.objects.filter(cid = cmp1).order_by('-estimateid').first()
+
+        if latest_bill:
+            last_number = int(latest_bill.reference_number)
+            new_number = last_number + 1
+        else:
+            new_number = 1000
+
+        if estimate_reference.objects.filter(cid = cmp1).exists():
+            deleted = estimate_reference.objects.get(cid = cmp1)
+            
+            if deleted:
+                while int(deleted.reference_number) >= new_number:
+                    new_number+=1
+        else:
+            estimate_reference(cid = cmp1, reference_number = new_number).save()
+                    
+        # est_last1 = estimate.objects.filter(cid = cmp1)
+        # est_last = 0
+        # if est_last1.exists():
+        #     est_last = estimate.objects.filter(cid = cmp1).last().estimateno
+        # else:
+        #     est_last = 1
+        # print(est_last)
+        # .last().estimateno if estimate.objects.filter(cid = cmp1).last().exists() else 0
+
+
+        '''last_digit_index = len(est_last)
         for i in range(len(est_last) - 1, -1, -1):
             if not est_last[i].isdigit():
                 last_digit_index = i + 1
@@ -26962,13 +26979,17 @@ def estindex2(request):
 
         number += 1
 
-        next_estimate_number = f"{prefix}{number}"
-        print(next_estimate_number)
-
+        next_estimate_number = f"{prefix}{number}"'''
+        # print(next_id1)
+        # if estimate_reference.objects.filter(cid=cmp1, estimate = next_id1).exists():
+        #     next_id = estimate_reference.objects.get(cid=cmp1, estimate = next_id1).reference_number
+        # else:
+        #     next_id = 1000
+        # print(next_id)
 
         context = {'est': est1, 'customers': customers, 'cmp1': cmp1, 'inv': inv, 'bun': bun, 'noninv': noninv,'item':item,
-                    'ser': ser, 'tod': tod, 'terms':payment_term, 'number': next_id+1000 , 'next_estimate': next_estimate_number,
-                    'unit':unit,'acc':acc,'acc1':acc1, 'est_count' : est_count, 'last_est' : est_last, 'banks' : banks,
+                    'ser': ser, 'tod': tod, 'terms':payment_term, 'unit':unit,'acc':acc,'acc1':acc1, 'number': new_number,
+                    'est_count' : est_count,'banks' : banks, #'last_est' : est_last, 'next_estimate': next_estimate_number,'number': next_id+1000
                     }
         return render(request, 'app1/estimate2.html', context)
     except:
@@ -26987,7 +27008,8 @@ def estcreate2(request):
                 estimatedate=request.POST.get('estimatedate'), 
                 expirationdate=request.POST.get('expirationdate'),
                 placeofsupply=request.POST.get('placosupply'),
-                reference_number='1000',
+                # reference_number='1000',
+                reference_number = request.POST.get('ref_no'),
                 cid=cmp1,
                 estimateno = request.POST.get('est_no').upper(),
                 note = request.POST.get('Note'),
@@ -26996,6 +27018,7 @@ def estcreate2(request):
                 CGST  = request.POST.get('cgst'),
                 SGST = request.POST.get('sgst'),
                 taxamount = request.POST.get('taxamount'),
+                adjustment = round(float(request.POST.get('adj')),2),
                 shipping_charge = request.POST.get('ship'),
                 estimatetotal=request.POST.get('grandtotal'),
                 status = 'Saved',
@@ -27003,8 +27026,8 @@ def estcreate2(request):
             if len(request.FILES) != 0:
                 est2.file=request.FILES.get('file')
             est2.save()
-            est2.reference_number = int(est2.reference_number) + est2.estimateid
-            est2.save()
+            # est2.reference_number = int(est2.reference_number) + est2.estimateid
+            # est2.save()
 
 
         elif 'draft_button' in request.POST:
@@ -27014,7 +27037,8 @@ def estcreate2(request):
                 estimatedate=request.POST.get('estimatedate'), 
                 expirationdate=request.POST.get('expirationdate'),
                 placeofsupply=request.POST.get('placosupply'),
-                reference_number='1000',
+                # reference_number='1000',
+                reference_number = request.POST.get('ref_no'),
                 cid=cmp1,
                 estimateno = request.POST.get('est_no').upper(),
                 note = request.POST.get('Note'),
@@ -27023,6 +27047,7 @@ def estcreate2(request):
                 CGST  = request.POST.get('cgst'),
                 SGST = request.POST.get('sgst'),
                 taxamount = request.POST.get('taxamount'),
+                adjustment = round(float(request.POST.get('adj')),2),
                 shipping_charge = request.POST.get('ship'),
                 estimatetotal=request.POST.get('grandtotal'),
                 status = 'Draft'
@@ -27030,8 +27055,16 @@ def estcreate2(request):
             if len(request.FILES) != 0:
                 est2.file=request.FILES.get('file')
             est2.save()
-            est2.reference_number = int(est2.reference_number) + est2.estimateid
-            est2.save()
+            # est2.reference_number = int(est2.reference_number) + est2.estimateid
+            # est2.save()
+            # model_meta = estimate._meta
+            # pk_name = model_meta.pk.name
+            # table_name = model_meta.db_table
+            # with connection.cursor() as cursor:
+            #     cursor.execute(f"SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_NAME = %s", [table_name])
+            #     next_id = cursor.fetchone()[0]
+            # print(next_id)
+            # estimate_reference(estimate = next_id, cid = cmp1, reference_number = int(request.POST.get('ref_no')) +1).save()
 
         items = request.POST.getlist("product[]")
         hsn = request.POST.getlist("hsn[]")
@@ -27350,7 +27383,24 @@ def deleteestimate(request, id):
         cmp1 = company.objects.get(id=request.session['uid'])
 
         upd = estimate.objects.get(estimateid=id, cid=cmp1)
-        # os.remove(upd.estimate.path)
+        print(upd)
+        # Storing ref number to deleted table
+        # if entry exists and lesser than the current, update and save => Only one entry per company
+
+        if estimate_reference.objects.filter(cid = cmp1).exists():
+            deleted = estimate_reference.objects.get(cid = cmp1)
+            if deleted:
+                print('yes')
+                if int(upd.reference_number) > int(deleted.reference_number):
+                    print(upd.reference_number)
+                    deleted.reference_number = upd.reference_number
+                    deleted.save()
+            
+        else:
+            deleted = estimate_reference.objects.filter(cid = cmp1, reference_number = upd.reference_number)
+            deleted.save()
+        estimate_item.objects.filter(cid = cmp1 , estimate = upd).delete()
+
         upd.delete()
         return redirect('goestimate')
     except:
@@ -27396,11 +27446,12 @@ def estimate_view(request,id):
     cmp1 = company.objects.get(id=request.session['uid'])
     upd = estimate.objects.get(estimateid=id, cid=cmp1)
     cust = customer.objects.get(customerid = upd.customer.split(" ")[0])
-    estitem = estimate_item.objects.filter(estimate=id)
+    estitems = estimate_item.objects.filter(estimate=id)
+    print(type(upd.SGST))
     context ={
         'estimate':upd,
         'cmp1':cmp1,
-        'estitem':estitem,
+        'estitems':estitems,
         'cust' : cust,
 
     }

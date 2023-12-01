@@ -1053,14 +1053,14 @@ class estimate(models.Model):
     placeofsupply = models.CharField(max_length=100,null=True)
 
     taxamount = models.CharField(max_length=100, default='')
-    reference_number = models.CharField(max_length=100, default='')
+    reference_number = models.CharField(max_length=100, null=True, blank=True)
     note = models.TextField(null=True)
     IGST = models.CharField(max_length=100,null=True)
     CGST  =  models.CharField(max_length=100,null=True)
     SGST =  models.CharField(max_length=100,null=True)
     TCS =  models.CharField(max_length=100,null=True)
     shipping_charge = models.CharField(max_length=100,null=True,default=0)
-    adjustment = models.CharField(max_length=100,null=True,default=0)
+    adjustment = models.FloatField(null=True,default='0.00')
     subtotal = models.CharField(max_length=100,null=True)
     estimatetotal = models.CharField(max_length=100,null=True)
     file = models.FileField(upload_to='estimate',default="default.jpg")
@@ -1097,11 +1097,12 @@ class estimate_item(models.Model):
     discount = models.CharField(max_length=100,null=True,default=0)
     total = models.CharField(max_length=100,null=True,default=0)
 
+class estimate_reference(models.Model):
+    reference_number = models.CharField(max_length=50,null=True,blank=True,default='')
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
 
 class salesorder(models.Model):
-
     cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
-    
     salename = models.CharField(max_length=100,null=True)
     saleemail = models.EmailField(null=True)
     saleaddress = models.CharField(max_length=150,null=True)

@@ -2,6 +2,7 @@
 {% block body %}
 {% load static %}
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
 
 
 <style>
@@ -11,6 +12,26 @@
     border-radius: 5px;
     color: white;
   }
+  ::-webkit-scrollbar {
+      width: 5px; 
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888; 
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }
+  .modal{
+      z-index: 9999;
+      overflow: scroll;
+    }
+
 </style>
 <form action="{% url 'updateestimate2' estimate.estimateid %}" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
   {% csrf_token %}
@@ -19,7 +40,7 @@
     <div class="card radius-15">
       <div class="card-body">
         <div class="card-title">
-          <center><h2 class="mb-0" id="estno">EDIT ESTIMATE NO.{{ estimate.estimateno }}</h2></center>
+          <center><h2 class="mb-0" id="estno">EDIT ESTIMATE NO. {{ estimate.estimateno }}</h2></center>
       </div>
         <hr />
       </div>
@@ -27,46 +48,109 @@
     <div class="card radius-15">
       <div class="card-body">
         <div id="invoice">
-
-          <div class="row mt-3">
-            <!-- <div class="col-md-3">
-                <label class="col-form-label">Customer</label>
-                <input name="customer" value="{{ estimate.customer }}" class="form-control">
-            </div> -->
-            <div class="col-md-4">
-              <label class="col-form-label">Customer</label>
-              <div class="d-flex">
-                  <select name="customer" id="customer" class="form-control" style="width: 95%;">
-                      <option value="{{ estimate.customer }}" selected>{{cust1.title}} {{cust1.firstname}} {{cust1.lastname}}
-                      </option>
-                      {% for cust in customers %}
-                          {% if cust.cid_id == cmp1.cid %}
-                              <option text=""
-                                      value="{{ cust.customerid }} {{ cust.firstname }} {{ cust.lastname }}">{{cust.title}} {{ cust.firstname }} {{ cust.lastname }}</option>
-                          {% endif %}
-                      {% endfor %}
-                  </select>
-                  <a data-toggle="modal" href="#customercreation">
-                      <button type="button" class="btn btn-outline-secondary ml-1">+</button>
-                  </a>
-              </div>
-
-          </div>
-          <div class="col-md-4">
-            <label class="col-form-label">Email</label>
-            <input type="text" class="form-control" id="cust_email" value="{{ estimate.email }}" name="email"
-                   placeholder="Email">
-        </div>
-            <div class="col-md-4">
-              <label class="col-form-label">Billing Address</label>
-              <label for="billingaddress"></label>
-              <textarea class="form-control" rows="7" id="bname" value="{{estimate.billingaddress}}"
-                        name="billingaddress">{{ estimate.billingaddress }}</textarea>
-          </div>
-        </div>
-        <!-- <div class="row mt-3">
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Customer</label>
+                            <div class="d-flex">
+                                <select name="customer" id="customer" class="form-control" style="width: 95%;">
+                                    <option value="{{ estimate.customer }}" selected>{{cust1.title}} {{cust1.firstname}} {{cust1.lastname}}
+                                    </option>
+                                    {% for cust in customers %}
+                                        {% if cust.cid_id == cmp1.cid %}
+                                            <option text=""
+                                                    value="{{ cust.customerid }} {{ cust.firstname }} {{ cust.lastname }}">{{cust.title}} {{ cust.firstname }} {{ cust.lastname }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <a data-toggle="modal" href="#customercreation">
+                                    <button type="button" class="btn btn-outline-secondary ml-1">+</button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Email</label>
+                            <input type="text" class="form-control" id="cust_email" value="{{ estimate.email }}" name="email" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">GST Treatment</label>
+                            <select class="custom-select" id="gsttype" name="gsttype" style="background-color: #43596c; color: white;" required >
+                                <option value="{{estimate.gst_treatment}}" selected>{{estimate.gst_treatment}}</option>
+                                <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
+                                <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
+                                <option value="Unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
+                                <option value="Overseas">Overseas (Import/Export of supply outside india)</option>
+                                <option value="Consumer">Consumer</option>
+                                <option value="Special Economic Zone (SEZ)">Special Economic Zone (SEZ) (Business that is located in a special economic zone of india or a SEZ developer)</option>
+                                <option value="Demed Exports">Demed Exports (Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</option>
+                                <option value="Tax Deductor">Tax Deductor (State of central gov,government agencies or local authority)</option>
+                                <option value="SEZ Developer">SEZ Developer (A person or organization who owns atleast 26% eqaulity in creating business units in special economic zone)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Place of supply</label>
+                            <select type="text" class="form-control" id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onchange="state(this)">
+                                <option value="{{ estimate.placeofsupply }}" selected> {{ estimate.placeofsupply }}</option>
+                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                                <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chandigarh">Chandigarh</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                <option value="Damn anad Diu">Damn anad Diu</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Predesh">Himachal Predesh</option>
+                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Ladakh">Ladakh</option>
+                                <option value="Lakshadweep">Lakshadweep</option>
+                                <option value="Madhya Predesh">Madhya Predesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Puducherry">Puducherry</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Predesh">Uttar Predesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Other Territory">Other Territory</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row d-none" id="gst_number">
+                        <div class="col-md-6">
+                            <label class="col-form-label">GST Number</label>
+                            <input type="text" class="form-control" id="est_gstnum" name="gstnum" placeholder="GST Number">
+                        </div>
+                    </div>
+                </div>
             
-        </div> -->
+                <div class="col-md-4">
+                    <label class="col-form-label">Billing Address</label>
+                    <label for="billingaddress"></label>
+                    <textarea class="form-control" rows="7" id="bname" value="{{estimate.billingaddress}}"
+                            name="billingaddress">{{ estimate.billingaddress }}</textarea>
+                </div>
+            </div>
+            <hr>
         <div class="row mt-3">
             
             
@@ -91,48 +175,7 @@
                 <input type="text" class="form-control" name="Ref_No" value="{{ estimate.reference_number }}"><br>
             </div>
             <div class="col-md-4 ">
-              <label class="col-form-label">Place of supply</label>
-              <select type="text" class="form-control" id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onchange="state(this)">
-                <option value="{{ estimate.placeofsupply }}" selected> {{ estimate.placeofsupply }}</option>
-                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
-                <option value="Andhra Predhesh">Andhra Predhesh</option>
-                <option value="Arunachal Predesh">Arunachal Predesh</option>
-                <option value="Assam">Assam</option>
-                <option value="Bihar">Bihar</option>
-                <option value="Chandigarh">Chandigarh</option>
-                <option value="Chhattisgarh">Chhattisgarh</option>
-                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
-                <option value="Damn anad Diu">Damn anad Diu</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Goa">Goa</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Haryana">Haryana</option>
-                <option value="Himachal Predesh">Himachal Predesh</option>
-                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                <option value="Jharkhand">Jharkhand</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Kerala">Kerala</option>
-                <option value="Ladakh">Ladakh</option>
-                <option value="Lakshadweep">Lakshadweep</option>
-                <option value="Madhya Predesh">Madhya Predesh</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Manipur">Manipur</option>
-                <option value="Meghalaya">Meghalaya</option>
-                <option value="Mizoram">Mizoram</option>
-                <option value="Nagaland">Nagaland</option>
-                <option value="Odisha">Odisha</option>
-                <option value="Puducherry">Puducherry</option>
-                <option value="Punjab">Punjab</option>
-                <option value="Rajasthan">Rajasthan</option>
-                <option value="Sikkim">Sikkim</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Telangana">Telangana</option>
-                <option value="Tripura">Tripura</option>
-                <option value="Uttar Predesh">Uttar Predesh</option>
-                <option value="Uttarakhand">Uttarakhand</option>
-                <option value="West Bengal">West Bengal</option>
-                <option value="Other Territory">Other Territory</option>
-              </select>
+              
             </div>
             
         </div>
@@ -222,8 +265,8 @@
                     <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1{{ forloop.counter }}" class="form-control taxamount" />
                     </td>
                     <td>
-                      <button type="button" id="{{forloop.counter}}" class="btn  font-weight-bold clone_row fas fa-clone px-2 my-1 py-1" title="Clone Row" style="background-color:rgb(88, 107, 143);"></button><br>
-                      <button type="button" id="{{forloop.counter}}" class="btn btn-danger remove_row px-2 py-1 mx-1 fas fa-close" title="Remove Row"> </button>
+                      <button type="button" id="{{forloop.counter}}" class="btn  font-weight-bold clone_row fa fa-clone px-2 my-1 py-1" title="Clone Row" style="background-color:rgb(88, 107, 143);"></button><br>
+                      <button type="button" id="{{forloop.counter}}" class="btn btn-danger remove_row px-2 py-1 mx-1 fa fa-close" title="Remove Row"> </button>
                   </td>
                   </tr>
                   {% endfor %}
@@ -1831,6 +1874,48 @@
                             console.log(data.email);
                             document.getElementById('cust_email').value = data.email;
                             document.getElementById('bname').value = data.street + '\n' + data.city + '\n' + data.state + '\n' + data.country  + '\n' + data.pincode ;
+                            document.getElementById('gsttype').value = data.gsttype;
+                            document.getElementById('plosu').value = data.shipstate;
+
+                            if (data.gsttype == 'Unregistered Business'  || data.gsttype == 'Consumer' || data.gsttype == 'Overseas'){
+                                $('#gst_number').removeClass('d-flex');
+                                $('#gst_number').addClass('d-none');
+                            }
+                            else{
+                                $('#gst_number').removeClass('d-none');
+                                $('#gst_number').addClass('d-flex');
+                                $("#est_gstnum").val(data.gstno)
+                            }
+
+
+                            var bc = data.shipstate;
+                            var compstate = document.getElementById("cmpstate").value;
+                            if (bc == compstate ) {
+
+                                $(".inter_tax").removeClass('d-flex');
+                                $(".inter_tax").addClass('d-none');
+
+                                $(".intra_tax").removeClass('d-none');
+                                $(".intra_tax").addClass('d-flex');
+
+                                document.getElementById('cgst1').style.display = 'flex';
+                                document.getElementById('sgst1').style.display = 'flex';
+                                document.getElementById('igst1').style.display = 'none'; 
+
+                            } else {
+                                $(".intra_tax").removeClass('d-flex');
+                                $(".intra_tax").addClass('d-none');
+
+                                $(".inter_tax").removeClass('d-none');
+                                $(".inter_tax").addClass('d-flex');
+
+                                document.getElementById('cgst1').style.display = 'none';
+                                document.getElementById('sgst1').style.display = 'none';
+                                document.getElementById('igst1').style.display = 'flex';
+                            }
+
+                            calc();
+
                         }
                     });
                 });

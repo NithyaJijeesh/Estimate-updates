@@ -17,6 +17,25 @@
   .form-control::placeholder{
     color: gray;
   }
+  ::-webkit-scrollbar {
+      width: 5px; 
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888; 
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }
+  .modal{
+      z-index: 9999;
+      overflow: scroll;
+    }
   
 </style>
 <form action="estcreate2" method="post" class="needs-validation" enctype="multipart/form-data"  novalidate >{% csrf_token %}
@@ -43,7 +62,7 @@
                                 <label class="col-form-label">Customer</label>
                                 <div class="d-flex">
                                     <select name="customer" id="customer" class="form-control" style="width: 95%;">
-                                        <option value="NIL" selected>Select Customer</option>
+                                        <option value="" selected>Select Customer</option>
                                         {% for cust in customers %}
                                             {% if cust.cid_id == cmp1.cid %}
                                                 <option  value="{{ cust.customerid }} {{ cust.firstname }} {{ cust.lastname }}">{{ cust.title }} {{ cust.firstname }} {{ cust.lastname }}</option>
@@ -55,8 +74,8 @@
                                 <input hidden value="{{cmp1.state}}" id="cmpstate">
                             </div>
                             <div class="col-md-6">
-                            <label class="col-form-label" id="gstnum">Email</label>
-                            <input type="text" class="form-control" id="est_email" name="email" placeholder="Email">
+                                <label class="col-form-label" id="gstnum">Email</label>
+                                <input type="text" class="form-control" id="est_email" name="email" placeholder="Email">
                             </div>
                         </div>
                         <div class="row">
@@ -73,9 +92,7 @@
                                     <option value="Demed Exports">Demed Exports (Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</option>
                                     <option value="Tax Deductor">Tax Deductor (State of central gov,government agencies or local authority)</option>
                                     <option value="SEZ Developer">SEZ Developer (A person or organization who owns atleast 26% eqaulity in creating business units in special economic zone)</option>
-
                                 </select>
-
                             </div>
                             <div class="col-md-6">
                                 <label class="col-form-label">Palce of Supply</label>
@@ -182,7 +199,7 @@
                     {% endif %}
                     <div class="col-md-4">
                         <label class="col-form-label">Reference Number</label>
-                        <input type="text" class="form-control" name="ref_no" value="{{number}}"><br>
+                        <input type="text" class="form-control" name="ref_no" value="{{number}}" readonly><br>
                     </div>
                     <div class="col-md-4">
                         
@@ -365,7 +382,7 @@
                             <div class="row container-fluid p-2 m-0">
                                 <div class="col-sm-4 mt-2"><label for="a" class="text-center">Adjustment</label></div>
                                 <div class="col-sm-1 mt-2">:</div>
-                                <div class="col-sm-7 mt-2"><input type="number" step="any" name='adj' id="adj" placeholder='0.00' 
+                                <div class="col-sm-7 mt-2"><input type="number" step="any" name='adj' id="adj" placeholder='0.00' value="0.00"
                                     class="form-control"/>
                                 </div>
                                 <div class="col-sm-4 m-0 p-0"></div>
@@ -1319,8 +1336,8 @@ $(document).ready(function() {
                     </td>
                     <td><input type="number" name='total[]' id="total${roinc}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                     <td>
-                    <button type="button" id="${roinc}" class="btn  font-weight-bold clone_row fas fa-clone px-2 py-1 my-1" style="background-color:rgb(88, 107, 143);"></button><br>
-                    <button type="button" id="${roinc}" class="btn btn-danger px-2 mx-1 py-1 remove_row fas fa-close"></button>
+                    <button type="button" id="${roinc}" class="btn  font-weight-bold clone_row fa fa-clone px-2 py-1 my-1" style="background-color:rgb(88, 107, 143);"></button><br>
+                    <button type="button" id="${roinc}" class="btn btn-danger px-2 mx-1 py-1 remove_row fa fa-close"></button>
                     </td>
                 </tr>`
             );
@@ -1376,8 +1393,6 @@ $(document).ready(function() {
                 document.getElementById('qtyspan'+n).innerHTML = data2;
                 document.getElementById('unit'+n).value = data3;
 
-                // console.log(response.tax_ref == 'non taxable');
-
                 if(response.tax_ref == 'non taxable'){
                     document.getElementById('tax1'+n).value = intra;
                     document.getElementById('tax1'+n).html = intra+"% GST";
@@ -1386,13 +1401,21 @@ $(document).ready(function() {
                     document.getElementById('tax2'+n).html = inter+"% IGST";
 
                     for (var i = 0; i < document.getElementById('tax1'+n).options.length; i++) {
-                        console.log(document.getElementById('tax1'+n).options[i].value);
 
                         if (document.getElementById('tax1'+n).options[i].value != 0) {
                             document.getElementById('tax1'+n).options[i].disabled = true;
                         }
                         else {
                             document.getElementById('tax1'+n).options[i].disabled = false;
+                        }
+                    }
+                    for (var i = 0; i < document.getElementById('tax2'+n).options.length; i++) {
+
+                        if (document.getElementById('tax2'+n).options[i].value != 0) {
+                            document.getElementById('tax2'+n).options[i].disabled = true;
+                        }
+                        else {
+                            document.getElementById('tax2'+n).options[i].disabled = false;
                         }
                     }
                 }
@@ -1402,6 +1425,14 @@ $(document).ready(function() {
 
                     document.getElementById('tax2'+n).value = inter;
                     document.getElementById('tax2'+n).html = inter+"% IGST";
+
+                    for (var i = 0; i < document.getElementById('tax1'+n).options.length; i++) {
+                        document.getElementById('tax1'+n).options[i].disabled = false;
+                    }
+                    for (var i = 0; i < document.getElementById('tax2'+n).options.length; i++) {
+                        document.getElementById('tax2'+n).options[i].disabled = false;
+                    }
+
                 }
 
                 if($("#plosu").val() == $("#cmpstate").val()){
@@ -1422,7 +1453,6 @@ $(document).ready(function() {
 
                 }
 
-                
                 calc();
             },
         });
@@ -1449,7 +1479,6 @@ $(document).ready(function() {
         clonedRow.find('[id]').each(function() {
             var oldId = $(this).attr('id');
             var newId = oldId.replace(/\d+/, roinc+1);
-            // console.log(newId)
             $(this).attr('id', newId );
         });
 
@@ -1853,7 +1882,6 @@ $(document).ready(function() {
                         document.getElementById('cgst1').style.display = 'none';
                         document.getElementById('sgst1').style.display = 'none';
                         document.getElementById('igst1').style.display = 'flex';
-
                     }
 
                     calc();
@@ -2130,10 +2158,9 @@ $(document).ready(function() {
         console.log(est_date);
 
         if (!isNaN(days) && est_date) {
-            // Calculate the expiration date by adding the selected payment term (in days) to the estimate date
             const expirationDate = new Date(est_date);
             expirationDate.setDate(expirationDate.getDate() + days);
-            const formattedExpirationDate = expirationDate.toISOString().slice(0, 10); // Format as YYYY-MM-DD
+            const formattedExpirationDate = expirationDate.toISOString().slice(0, 10); 
             $("#expirationdate").val(formattedExpirationDate);
         } else {
             $("#expirationdate").val(" ");
