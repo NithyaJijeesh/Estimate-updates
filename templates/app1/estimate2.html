@@ -10,10 +10,7 @@
     border-radius: 5px;
     color: white;
   }
-  .modal{
-    z-index: 9999;
-
-  }
+  
   .form-control::placeholder{
     color: gray;
   }
@@ -275,11 +272,11 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td><input type="text" name='hsn[]' id="hsn1" placeholder='HSN Code' class="form-control" style="width: 80px;" /></td>
-                                <td><input type="number" name='qty[]'  placeholder='Quantity' id="qty1"  class="form-control qty" step=0 min=0 style="margin-top: 21px; color: white;" />
+                                <td><input type="text" name='hsn[]' id="hsn1" placeholder='HSN' class="form-control" style="width: 90px;" /></td>
+                                <td><input type="number" name='qty[]'  placeholder='Quantity' id="qty1"  class="form-control qty" step=0 min=0 style="width: 120px; margin-top: 21px; color: white;" />
                                     <div class="d-flex"><span>Available Qty :</span> <span id="qtyspan1" class=''></span></div>
                                 </td>
-                                <td><input type="number" name='price[]' id="unit1" placeholder='Unit Price' class="form-control price" step="0.00" min="0" style="width: 100px;" /></td>
+                                <td><input type="number" name='price[]' id="unit1" placeholder='Unit Price' class="form-control price" step="0.00" min="0" style="width: 150px;" /></td>
                                 <td>
                                     
                                     <!-- <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex" style="width: 130px;"> -->
@@ -2260,8 +2257,6 @@ $(document).ready(function() {
             error.text(" ");
         }
     });
-
-    
 
     $(document).on('change', '#est_number', function(){
         var estNoValue = this.value.toLowerCase();

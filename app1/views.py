@@ -26941,6 +26941,7 @@ def estindex2(request):
         banks = bankings_G.objects.filter(cid = cmp1)
         est_count = estimate.objects.filter(cid = cmp1).count()
 
+        # to set next reference number
         latest_bill = estimate.objects.filter(cid = cmp1).order_by('-estimateid').first()
 
         if latest_bill:
@@ -26957,18 +26958,18 @@ def estindex2(request):
                     new_number+=1
         else:
             estimate_reference(cid = cmp1, reference_number = new_number).save()
+
+        # to show next estimate number
                     
-        # est_last1 = estimate.objects.filter(cid = cmp1)
-        # est_last = 0
-        # if est_last1.exists():
-        #     est_last = estimate.objects.filter(cid = cmp1).last().estimateno
-        # else:
-        #     est_last = 1
-        # print(est_last)
-        # .last().estimateno if estimate.objects.filter(cid = cmp1).last().exists() else 0
+        est_last1 = estimate.objects.filter(cid = cmp1)
+        est_last = 0
+        if est_last1.exists():
+            est_last = estimate.objects.filter(cid = cmp1).last().estimateno
+        else:
+            est_last = 1
 
 
-        '''last_digit_index = len(est_last)
+        last_digit_index = len(est_last)
         for i in range(len(est_last) - 1, -1, -1):
             if not est_last[i].isdigit():
                 last_digit_index = i + 1
@@ -26979,17 +26980,11 @@ def estindex2(request):
 
         number += 1
 
-        next_estimate_number = f"{prefix}{number}"'''
-        # print(next_id1)
-        # if estimate_reference.objects.filter(cid=cmp1, estimate = next_id1).exists():
-        #     next_id = estimate_reference.objects.get(cid=cmp1, estimate = next_id1).reference_number
-        # else:
-        #     next_id = 1000
-        # print(next_id)
-
+        next_estimate_number = f"{prefix}{number}"
+       
         context = {'est': est1, 'customers': customers, 'cmp1': cmp1, 'inv': inv, 'bun': bun, 'noninv': noninv,'item':item,
                     'ser': ser, 'tod': tod, 'terms':payment_term, 'unit':unit,'acc':acc,'acc1':acc1, 'number': new_number,
-                    'est_count' : est_count,'banks' : banks, #'last_est' : est_last, 'next_estimate': next_estimate_number,'number': next_id+1000
+                    'est_count' : est_count,'banks' : banks,'next_estimate': next_estimate_number, 'last_est' : est_last, 
                     }
         return render(request, 'app1/estimate2.html', context)
     except:
@@ -27006,9 +27001,9 @@ def estcreate2(request):
                 email=request.POST.get('email'), 
                 billingaddress=request.POST.get('billingaddress'), 
                 estimatedate=request.POST.get('estimatedate'), 
+                payment_term=request.POST.get('term'),
                 expirationdate=request.POST.get('expirationdate'),
                 placeofsupply=request.POST.get('placosupply'),
-                # reference_number='1000',
                 reference_number = request.POST.get('ref_no'),
                 cid=cmp1,
                 estimateno = request.POST.get('est_no').upper(),
@@ -27026,8 +27021,6 @@ def estcreate2(request):
             if len(request.FILES) != 0:
                 est2.file=request.FILES.get('file')
             est2.save()
-            # est2.reference_number = int(est2.reference_number) + est2.estimateid
-            # est2.save()
 
 
         elif 'draft_button' in request.POST:
@@ -27035,9 +27028,9 @@ def estcreate2(request):
                 email=request.POST.get('email'), 
                 billingaddress=request.POST.get('billingaddress'), 
                 estimatedate=request.POST.get('estimatedate'), 
+                payment_term=request.POST.get('term'),
                 expirationdate=request.POST.get('expirationdate'),
                 placeofsupply=request.POST.get('placosupply'),
-                # reference_number='1000',
                 reference_number = request.POST.get('ref_no'),
                 cid=cmp1,
                 estimateno = request.POST.get('est_no').upper(),
@@ -27055,20 +27048,9 @@ def estcreate2(request):
             if len(request.FILES) != 0:
                 est2.file=request.FILES.get('file')
             est2.save()
-            # est2.reference_number = int(est2.reference_number) + est2.estimateid
-            # est2.save()
-            # model_meta = estimate._meta
-            # pk_name = model_meta.pk.name
-            # table_name = model_meta.db_table
-            # with connection.cursor() as cursor:
-            #     cursor.execute(f"SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_NAME = %s", [table_name])
-            #     next_id = cursor.fetchone()[0]
-            # print(next_id)
-            # estimate_reference(estimate = next_id, cid = cmp1, reference_number = int(request.POST.get('ref_no')) +1).save()
 
         items = request.POST.getlist("product[]")
         hsn = request.POST.getlist("hsn[]")
-        # description = request.POST.getlist("description[]")
         quantity = request.POST.getlist("qty[]")
         rate = request.POST.getlist("price[]")
         if request.POST.get('placosupply') == cmp1.state:
@@ -27127,8 +27109,6 @@ def new_customers(request):
         return render(request, 'app1/customers.html', context)
     except:
         return redirect('estindex2')
-
-
 
 
 def estimate_create_item(request):
@@ -27238,13 +27218,15 @@ def editestimate(request, id):
         edt = estimate.objects.get(estimateid=id, cid=cmp1)
         item = itemtable.objects.filter(cid=cmp1).all()
         estimateitem = estimate_item.objects.filter(estimate=id).all()
+
+        payment_term = payment_terms.objects.filter(company=cmp1)
+        banks = bankings_G.objects.filter(cid = cmp1)
+
         
         cust1 = customer.objects.get(customerid = edt.customer.split(" ")[0])
-        # print(cust1)
-        # print(edt.customer.split(" ")[0])
         context = {'estimate': edt, 'cmp1': cmp1, 'inv': inv,
                    'noninv': noninv, 'bun': bun, 'ser': ser,'item':item,
-                   'estimateitem':estimateitem ,'customers':customers,'cust1' : cust1}
+                   'estimateitem':estimateitem ,'customers':customers,'cust1' : cust1, 'terms' : payment_term}
         
         return render(request, 'app1/edit_estimate.html', context)
     except:
