@@ -26995,10 +26995,12 @@ def estindex2(request):
 def estcreate2(request):
     if request.method == 'POST':
         cmp1 = company.objects.get(id=request.session["uid"])
-
+        print(request.POST)
         if 'save_button' in request.POST:
             est2 = estimate(customer=request.POST.get('customer'), 
                 email=request.POST.get('email'), 
+                gst_treatment=request.POST.get('gsttype'),
+                gst_number=request.POST.get('gstnum'),
                 billingaddress=request.POST.get('billingaddress'), 
                 estimatedate=request.POST.get('estimatedate'), 
                 payment_term=request.POST.get('term'),
@@ -27026,6 +27028,8 @@ def estcreate2(request):
         elif 'draft_button' in request.POST:
             est2 = estimate(customer=request.POST.get('customer'), 
                 email=request.POST.get('email'), 
+                gst_treatment=request.POST.get('gsttype'),
+                gst_number=request.POST.get('gstnum'),
                 billingaddress=request.POST.get('billingaddress'), 
                 estimatedate=request.POST.get('estimatedate'), 
                 payment_term=request.POST.get('term'),
@@ -27365,7 +27369,6 @@ def deleteestimate(request, id):
         cmp1 = company.objects.get(id=request.session['uid'])
 
         upd = estimate.objects.get(estimateid=id, cid=cmp1)
-        print(upd)
         # Storing ref number to deleted table
         # if entry exists and lesser than the current, update and save => Only one entry per company
 

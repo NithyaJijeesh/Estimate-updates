@@ -143,7 +143,7 @@
                     <div class="row d-none" id="gst_number">
                         <div class="col-md-6">
                             <label class="col-form-label">GST Number</label>
-                            <input type="text" class="form-control" id="est_gstnum" name="gstnum" placeholder="GST Number">
+                            <input type="text" class="form-control" id="est_gstnum" name="gstnum" placeholder="GST Number" value="{{estimate.gst_number}}">
                         </div>
                     </div>
                 </div>
@@ -167,6 +167,8 @@
                     <div class="d-flex">
                         <select class="form-control" name="term" id="term" >
                             {% if estimate.payment_term == 0 %}
+                            <option value="{{ estimate.payment_term }}" selected> Due on Receipt </option>
+                            {% elif estimate.payment_term == NULL %}
                             <option value="{{ estimate.payment_term }}" selected> Due on Receipt </option>
                             {% else %}
                             <option value="{{ estimate.payment_term }}" selected> NET {{ estimate.payment_term }}</option>
@@ -1192,14 +1194,24 @@
 
 
 <script>
+    $(document).ready(function() {
+        if ($("#gsttype") == 'Unregistered Business'  || $("#gsttype") == 'Consumer' || $("#gsttype") == 'Overseas'){
+            $('#gst_number').removeClass('d-flex');
+            $('#gst_number').addClass('d-none');
+        }
+        else{
+            $('#gst_number').removeClass('d-none');
+            $('#gst_number').addClass('d-flex');
+        }
+        
+    });
   $(document).ready(function() {
-            $("#gsttype").change(function() {
+        $("#gsttype").change(function() {
             var x=$('#gsttype').val();
             if(x=="unregistered Business") 
             {
                 $(".gstrow").removeClass('d-block');
                 $(".gstrow").addClass('d-none');
-
             }
             else if(x == 'Overseas'){
                 $(".gstrow").removeClass('d-block');
